@@ -83,7 +83,9 @@ static int cmd_si(char *args){
 	char *token = strtok(NULL, " ");
 	if(token){
 		n = strtoull(token,NULL,10);//parse token to uint64_t
+		printf("%ld",n);
 	}
+
 	cpu_exec(n);
 	return 0;
 }
