@@ -52,6 +52,12 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_si(char *args);
+static int cmd_info(char *args);
+static int cmd_x(char *args);
+static int cmd_p(char *args);
+static int cmd_w(char *args);
+static int cmd_d(char *args);
 static int cmd_help(char *args);
 
 static struct {
@@ -62,11 +68,33 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  { "si", "Single step execution",cmd_si},
+  { "info", "Print the info of Registers or Watchpoints",cmd_info},
+  { "x", "Print the 4N Bytes from EXPR address",cmd_x},
+  { "p", "Get the value of EXPR", cmd_p},
+  { "w", "Set a watchpoint at EXPR address", cmd_w},
+  { "d", "Delete the N_th watchpoint",cmd_d},
   /* TODO: Add more commands */
 
 };
-
+static int cmd_si(char *args){
+	return 0;
+}
+static int cmd_info(char *args){
+	return 0;
+}
+static int cmd_x(char *args){
+	return 0;
+}
+static int cmd_p(char *args){
+	return 0;
+}
+static int cmd_w(char *args){
+	return 0;
+}
+static int cmd_d(char *args){
+	return 0;
+}
 #define NR_CMD ARRLEN(cmd_table)
 
 static int cmd_help(char *args) {
