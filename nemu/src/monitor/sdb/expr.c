@@ -23,7 +23,7 @@
 enum {
   TK_NOTYPE = 256, TK_EQ,
 	TK_DNUM,TK_HNUM,
-  /* TODO: Add more token types */
+  /* Add more token types */
 
 };
 
@@ -32,7 +32,7 @@ static struct rule {
   int token_type;
 } rules[] = {
 
-  /* TODO: Add more rules.
+  /* Add more rules.
    * Pay attention to the precedence level of different rules.
    */
   
@@ -96,7 +96,7 @@ static bool make_token(char *e) {
 
         position += substr_len;
 
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
+        /*  Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
@@ -104,7 +104,7 @@ static bool make_token(char *e) {
          switch (rules[i].token_type) {
 		case TK_DNUM:
 		case TK_HNUM:
- 			if(substr_len>32){
+  			if(substr_len>32){
                                 printf("A number's length in this expr is longer than 32\n");
                                 return false;
                         }
@@ -144,10 +144,10 @@ bool check_parentheses(int left,int right){
 			left_left_par++;
 		}
 		else if(tokens[i].type==')'){
-			if(left_left_par){
+ 			if(left_left_par){
 				left_left_par--;
 			}
-			else{
+ 			else{
 				return false;
 			}
 		}
@@ -198,8 +198,8 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
 
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  /*  Insert codes to evaluate the expression. */
+  //TODO();
 
   return eval_expr(0,nr_token-1);
 }
