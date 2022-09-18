@@ -136,6 +136,7 @@ static int cmd_x(char *args){
 		printf("Failed to convert %s to %d",arg2,expr_val);
 	}
 	for(;N>0;N--){
+		// TODO: vaddr_read or paddr_read ?
 		printf("address:0X%08X	value:0X%08X\n",expr_val,vaddr_read(expr_val,4));
 		expr_val+=4;
 	}
