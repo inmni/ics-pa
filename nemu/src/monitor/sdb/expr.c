@@ -23,7 +23,7 @@
 enum {
   TK_NOTYPE = 256, TK_EQ,
 	TK_DNUM,TK_HNUM,
-  /* Add more token types */
+  /* TODO: Add more token types */
 
 };
 
@@ -96,7 +96,7 @@ static bool make_token(char *e) {
 
         position += substr_len;
 
-        /*  Now a new token is recognized with rules[i]. Add codes
+        /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
@@ -198,8 +198,9 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
 
-  /*  Insert codes to evaluate the expression. */
+  /* TODO: Insert codes to evaluate the expression. */
   //TODO();
-
-  return eval_expr(0,nr_token-1);
+  word_t result = eval_expr(0,nr_token-1);
+  *success = true;
+  return result;
 }
