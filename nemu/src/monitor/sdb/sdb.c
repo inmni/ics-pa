@@ -104,6 +104,7 @@ static int cmd_info(char *args){
 		token = strtok(NULL," ");
 		if(!token){
 			wp_all_display();
+			return 0;
 		}
 		int n = atoi(token);// 0 or error, and to display 0th watchpoint
 		wp_display(n);
