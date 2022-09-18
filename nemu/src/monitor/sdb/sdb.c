@@ -96,9 +96,9 @@ static int cmd_info(char *args){
 	if(!token){
 		return 0;
 	}
-	if(token[0]=='r'){
+	if(strcmp(token,"r")){
+		printf("r\n");
 		isa_reg_display();
-		printf("r");
 	}
 	
 	return 0;
