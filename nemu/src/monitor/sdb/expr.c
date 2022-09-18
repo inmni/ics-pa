@@ -40,9 +40,11 @@ static struct rule {
   {"\\b\\d+\\b",TK_DNUM},		// dec number
   {"\\b0[xX][0-9a-zA-Z]",TK_HNUM},		// hex number
   {"\\+", '+'},         // plus
-  {"\\-", '-'},		// minus
-  {"\\*", '*'},		// multiply
-  {"\\/", '/'},		// divide
+  {"\\-", '-'},		// sub
+  {"\\*", '*'},		// mul
+  {"\\/", '/'},		// div
+  {"\\(", '('},		// lpa
+  {"\\)", ')'},		// rpa
   {"==", TK_EQ},        // equal
 };
 
@@ -82,7 +84,7 @@ static bool make_token(char *e) {
 
   nr_token = 0;
 
-  while (e[position] != '\0') {
+  while ( e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
@@ -99,13 +101,30 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
 
-        switch (rules[i].token_type) {
+         switch (rules[i].token_type) {
+		case TK_DNUM:
+		case TK_HNUM:
+ 			if(substr_len>32){
+                                printf("A number's length in this expr is longer than 32\n");
+                                return false;
+                        }
+		case TK_EQ:
+		case '+':
+		case '-':
+		case '*':
+		case '/':
+		case '(':
+		case ')':
+			tokens[nr_token].type = rules[i].token_type;
+			strncpy(tokens[nr_token].str, substr_start,substr_len);
+			nr_token++;
+			break;
           default: TODO();
         }
 
         break;
-      }
-    }
+       }
+     }
 
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
@@ -115,8 +134,64 @@ static bool make_token(char *e) {
 
   return true;
 }
-
-
+bool check_parentheses(int left,int right){
+	if(tokens[left].type!='('||tokens[right].type!=')'){
+		return false;
+	}
+	int left_left_par = 0;
+	for(int i=left+1;i<right;i++){
+		if(tokens[i].type=='('){
+			left_left_par++;
+		}
+		else if(tokens[i].type==')'){
+			if(left_left_par){
+				left_left_par--;
+			}
+			else{
+				return false;
+			}
+		}
+	}
+	return !left_left_par;
+}
+int cut(int left, int right){
+	return left+1;
+}
+word_t eval_expr(int left,int right){
+	if(left>right){
+		//Bad expression
+		return 0;
+	}
+	else if(left==right){
+		//It must be a number
+		if(tokens[left].type==TK_DNUM){
+			//dec
+			return strtoul(tokens[left].str,NULL,10);
+		}
+		else if(tokens[left].type==TK_HNUM){
+			//hex
+			return strtoul(tokens[left].str,NULL,16);
+		}
+		printf("Not a number found in \" left==right\" in expr.c(eval_expr)");
+		assert(0);
+	}
+	else{ 
+		if(check_parentheses(left,right)){
+			return eval_expr(left+1,right-1);
+	 	}
+		int cut_point = cut(left,right);
+		uint32_t left_val = eval_expr(left,cut_point-1);
+		uint32_t right_val = eval_expr(cut_point+1,right);
+		switch(tokens[cut_point].type){
+			case '+':return left_val+right_val;
+			case '-':return left_val-right_val;
+			case '*':return left_val*right_val;
+			case '/':return left_val/right_val;
+			default:assert(0);
+	 	}
+		return 0;
+	}
+}
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -126,5 +201,5 @@ word_t expr(char *e, bool *success) {
   /* TODO: Insert codes to evaluate the expression. */
   TODO();
 
-  return 0;
+  return eval_expr(0,nr_token-1);
 }
