@@ -67,6 +67,18 @@ void wp_display(int n){
 	printf("NO.%d watchpoint does not exist or not active",n);
 	return;
 }
+void fwp_all_display(){
+	if(free_==NULL){
+		printf("No free watchpoints now!\n");
+		return;
+	}
+	WP* wp = free_;
+	while(wp){
+		print_wp(wp);
+		wp = wp->next;
+	}
+	return;
+}
 WP* find_wp(int n){
 	WP* wp = head;
 	while(wp){
