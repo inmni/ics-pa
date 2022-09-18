@@ -24,6 +24,7 @@ void init_regex();
 void init_wp_pool();
 void wp_all_display();
 void wp_display();
+void fwp_all_display();
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -107,6 +108,10 @@ static int cmd_info(char *args){
 			return 0;
 		}
 		int n = atoi(token);// 0 or error, and to display 0th watchpoint
+		if(n==-1){
+			fwp_all_display();
+			return 0;
+		}
 		wp_display(n);
 	}
 	return 0;
