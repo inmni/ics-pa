@@ -60,7 +60,7 @@ static int cmd_p(char *args);
 static int cmd_w(char *args);
 static int cmd_d(char *args);
 static int cmd_help(char *args);
-
+static int cmd_temp(char *args);
 static struct {
   const char *name;
   const char *description;
@@ -76,7 +76,7 @@ static struct {
   { "w", "Set a watchpoint at EXPR address", cmd_w},
   { "d", "Delete the N_th watchpoint",cmd_d},
   /* TODO: Add more commands */
-
+  { "t", "Temp",cmd_temp},
 };
 static int cmd_si(char *args){
 	uint64_t n =1;
@@ -126,6 +126,10 @@ static int cmd_w(char *args){
 	return 0;
 }
 static int cmd_d(char *args){
+	return 0;
+}
+static int cmd_temp(char *args){
+	printf("%ld\n", sizeof(word_t));
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
