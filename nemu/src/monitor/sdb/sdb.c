@@ -78,6 +78,7 @@ static struct {
 
 };
 static int cmd_si(char *args){
+	if(args)printf("%s",args);
 	return 0;
 }
 static int cmd_info(char *args){
