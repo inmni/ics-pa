@@ -85,7 +85,7 @@ static int cmd_si(char *args){
 		n = strtoull(token,NULL,10);//parse token to uint64_t
 		if(!n){
 			printf("Wrong argument! It should be integer!\n");
-			return -1;
+			return 0;
 		}
 	}
 	cpu_exec(n);
@@ -94,11 +94,12 @@ static int cmd_si(char *args){
 static int cmd_info(char *args){
 	char *token = strtok(NULL, " ");
 	if(!token){
-		return -1;
+		return 0;
 	}
 	if(token[0]=='r'){
 		isa_reg_display();
 	}
+	
 	return 0;
 }
 static int cmd_x(char *args){
