@@ -98,6 +98,7 @@ static int cmd_info(char *args){
 	}
 	if(token[0]=='r'){
 		isa_reg_display();
+		printf("r");
 	}
 	
 	return 0;
