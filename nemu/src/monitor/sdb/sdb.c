@@ -22,7 +22,8 @@
 static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
-
+void wp_all_display();
+void wp_display();
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -97,10 +98,16 @@ static int cmd_info(char *args){
 		return 0;
 	}
 	if(!strcmp(token,"r")){
-		printf("r\n");
 		isa_reg_display();
 	}
-	
+	else if(!strcmp(token,"w")){
+		token = strtok(NULL," ");
+		if(!token){
+			wp_all_display();
+		}
+		int n = atoi(token);// 0 or error, and to display 0th watchpoint
+		wp_display(n);
+	}
 	return 0;
 }
 static int cmd_x(char *args){
