@@ -25,7 +25,6 @@ void init_wp_pool();
 void wp_all_display();
 void wp_display();
 void fwp_all_display();
-uint32_t eval_expr(char *expr);
 word_t paddr_read(paddr_t addr,int len);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -130,7 +129,11 @@ static int cmd_x(char *args){
 	if(!arg2){
 		printf("Wrong argument2!\n");
 	}
-	uint32_t expr_val = eval_expr(arg2);
+	bool success;
+	word_t expr_val = expr(arg2,&success);
+	if(!success){
+		printf("Failed to convert %s to %d",arg2,expr_val);
+	}
 	for(;N>0;N--){
 		printf("address:0X%08X	value:0X%08X\n",expr_val,paddr_read(expr_val,4));
 		expr_val+=4;

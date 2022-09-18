@@ -22,7 +22,7 @@
 
 enum {
   TK_NOTYPE = 256, TK_EQ,
-
+	TK_DNUM,TK_HNUM,
   /* TODO: Add more token types */
 
 };
@@ -35,9 +35,14 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-
+  
   {" +", TK_NOTYPE},    // spaces
+  {"\\b\\d+\\b",TK_DNUM},		// dec number
+  {"\\b0[xX][0-9a-zA-Z]",TK_HNUM},		// hex number
   {"\\+", '+'},         // plus
+  {"\\-", '-'},		// minus
+  {"\\*", '*'},		// multiply
+  {"\\/", '/'},		// divide
   {"==", TK_EQ},        // equal
 };
 
