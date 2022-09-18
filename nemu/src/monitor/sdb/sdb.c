@@ -20,7 +20,6 @@
 #include "sdb.h"
 
 static int is_batch_mode = false;
-
 void init_regex();
 void init_wp_pool();
 
@@ -78,7 +77,14 @@ static struct {
 
 };
 static int cmd_si(char *args){
-	if(args)printf("%s",args);
+	uint64_t n =1;
+	/* args have been stored in a static buffer
+	 * at sdb_mainloop()*/
+	char *token = strtok(NULL, " ");
+	if(token){
+		n = strtoull(token,NULL,10);//parse token to uint64_t
+	}
+	cpu_exec(n);
 	return 0;
 }
 static int cmd_info(char *args){
