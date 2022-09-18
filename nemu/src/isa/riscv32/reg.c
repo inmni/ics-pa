@@ -29,6 +29,7 @@ void isa_reg_display() {
 	for(i = 0; i<32; i++,line_count++){
 		printf("%s	0X%08X	",regs[i],cpu.gpr[i]);
 		if(line_count==4){
+			line_count=0;
 			printf("\n");
 		}
 	}
