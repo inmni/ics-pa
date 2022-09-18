@@ -38,7 +38,7 @@ static struct rule {
   
   {" +", TK_NOTYPE},    // spaces
   {"\\b\\d+\\b",TK_DNUM},		// dec number
-  {"\\b0[xX][0-9a-zA-Z]",TK_HNUM},		// hex number
+  {"\\b0[xX][0-9a-zA-Z]+",TK_HNUM},		// hex number
   {"\\+", '+'},         // plus
   {"\\-", '-'},		// sub
   {"\\*", '*'},		// mul
