@@ -31,6 +31,6 @@ int main(int argc, char *argv[]) {
   /* Start engine. */
   engine_start();
   int temp = is_exit_status_bad();
-printf("%d",temp);
+printf("%d\n",temp);
   return temp;
 }
