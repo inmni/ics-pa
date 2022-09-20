@@ -23,6 +23,7 @@
 enum {
   TK_NOTYPE = 256, TK_EQ,
 	TK_DNUM,TK_HNUM,
+	TK_A,
   /* TODO: Add more token types */
   TK_REG,
   TK_NEQ,
@@ -51,6 +52,7 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 	{"\\$", TK_REG},
+	{"[$a-z0-9]+\\b",TK_A},
 	{"&&",TK_AND},
 	{"\\|\\|",TK_OR},
 	{"!=",TK_NEQ},
