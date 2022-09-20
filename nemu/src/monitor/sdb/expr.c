@@ -156,6 +156,11 @@ static bool make_token(char *e) {
                                 printf("A number's length in this expr is longer than 32\n");
                                 return false;
                         }
+		case TK_LEQ:
+		case TK_GEQ:
+		case TK_NEQ:
+		case TK_REG:
+		case TK_DEREF:
 		case TK_MUL:
 	 		if(i>0&&check_deref(tokens[i-1].type)){
 				tokens[i].type = TK_DEREF;
@@ -171,7 +176,7 @@ static bool make_token(char *e) {
 		case TK_LPA:
 		case TK_RPA:
 			break;
-          default: TODO();
+		default: printf("expr.c:no special setting for type %d\n",rules[i].token_type);
         } 
 
         break;
