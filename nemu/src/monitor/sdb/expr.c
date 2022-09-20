@@ -207,7 +207,7 @@ int getPr(int type){
 	switch(type){
 		case TK_DNUM:
 		case TK_HNUM:
-			return 0;
+			return -1;
 		case TK_DEREF:
 		case TK_REG:
 		case TK_NOT:
