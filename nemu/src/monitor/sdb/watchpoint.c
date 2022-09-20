@@ -40,7 +40,7 @@ void init_wp_pool() {
   free_ = wp_pool;
 }
 void print_wp(WP* wp){
-	printf("NO:%d,ADDRESS:%s,CURRENT_VALUE:%d,TARGET_VALUE:%d\n",wp->NO,wp->EXPR,wp->oldValue,wp->targetValue);
+	printf("NO:%d,EXPR:%s,CURRENT_VALUE:%d,TARGET_VALUE:%d\n",wp->NO,wp->EXPR,wp->oldValue,wp->targetValue);
 }
 /* TODO: Implement the functionality of watchpoint */
 void wp_all_display(){

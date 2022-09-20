@@ -157,11 +157,10 @@ static int cmd_p(char *args){
 	return 0;
 }
 static int cmd_w(char *args){
-	char *arg1 = strtok(NULL," ");
-	if(arg1==NULL){
-		printf("No argument!\n");
+	if(args==NULL){
+		printf("No arguments!\n");
 	}
-	new_wp(arg1);
+	new_wp(args);
 	return 0;
 }
 static int cmd_d(char *args){
