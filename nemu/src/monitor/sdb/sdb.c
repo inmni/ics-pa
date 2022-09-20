@@ -149,7 +149,7 @@ static int cmd_p(char *args){
 		printf("No argument!\n");
 	}
 	bool success = false;
-	printf("%d",expr(arg,&success));
+	printf("%d\n",expr(arg,&success));
 	return 0;
 }
 static int cmd_w(char *args){
