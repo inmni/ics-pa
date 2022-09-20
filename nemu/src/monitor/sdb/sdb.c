@@ -18,13 +18,17 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-#include "watchpoint.c"
+//#include "watchpoint.h"
 static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void wp_all_display();
 void wp_display();
 void fwp_all_display();
+typedef struct watchpoint WP;
+void free_wp(WP* wp);
+WP* new_wp(char* EXPR);
+WP* find_wp(int n);
 word_t vaddr_read(vaddr_t addr,int len);
 word_t paddr_read(paddr_t addr,int len);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
