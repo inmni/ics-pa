@@ -31,7 +31,12 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
-
+typedef struct watchpoint{
+int NO;struct watchpoint *next;      
+char EXPR[32];int oldValue,targetValue;
+}WP;
+WP* head;
+word_t expr(char *e,bool *success);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
@@ -42,7 +47,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   WP* wp = head;
   int hPrint = 0;
   while(wp){
-	int newValue = expr(wp->EXPR);
+	bool success = false;
+	int newValue = expr(wp->EXPR,&success);
 	printf("%d",newValue);
 	if(newValue!=wp->oldValue){
 		wp->oldValue = newValue;
