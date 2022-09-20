@@ -231,7 +231,7 @@ int getPr(int type){
 int cut(int left, int right){
 	int res=left;
 	int temp;
-	int hPr = 0;
+	int lPr = 0;
 	int paCount = 0;
 	for(int i=left;i<=right;i++){
 		if(tokens[res].type==TK_LPA){
@@ -247,8 +247,8 @@ int cut(int left, int right){
 		}
 		temp = getPr(tokens[i].type);
 		printf("%d\t",temp);
-		if(temp>hPr){
-			hPr = temp;
+		if(temp<=lPr){
+			lPr = temp;
 			res = i;
 		}
 	}
