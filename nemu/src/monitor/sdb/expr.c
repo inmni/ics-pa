@@ -242,7 +242,7 @@ int cut(int left, int right){
 			paCount--;
 			continue;
 		}
-		if(!paCount){
+		if(paCount){
 			continue;
 		}
 		temp = getPr(tokens[res].type);
