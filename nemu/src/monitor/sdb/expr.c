@@ -149,34 +149,24 @@ static bool make_token(char *e) {
          strncpy(tokens[nr_token].str, substr_start,substr_len);
 	 nr_token++;
 
-         switch (rules[i].token_type) {
+         switch (tokens[nr_token].type) {
 		case TK_DNUM:
 		case TK_HNUM:
   			if(substr_len>32){
                                 printf("A number's length in this expr is longer than 32\n");
                                 return false;
                         }
-		case TK_LEQ:
-		case TK_GEQ:
-		case TK_NEQ:
-		case TK_REG:
-		case TK_DEREF:
 		case TK_MUL:
 	 		if(i>0&&check_deref(tokens[i-1].type)){
 				tokens[i].type = TK_DEREF;
 			}
 			break;
-		case TK_EQ:
-		case TK_PLUS:
 		case TK_SUB:
 			if(i==0||check_neg(tokens[i-1].type)){
 				tokens[i].type = TK_NEG;
 			}
-		case TK_DIV:
-		case TK_LPA:
-		case TK_RPA:
 			break;
-		default: printf("expr.c:no special setting for type %d\n",rules[i].token_type);
+		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
         } 
 
         break;
