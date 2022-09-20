@@ -245,8 +245,8 @@ int cut(int left, int right){
 		if(paCount){
 			continue;
 		}
-		temp = getPr(tokens[res].type);
-		printf("%d\t",temp);
+		temp = getPr(tokens[i].type);
+		//printf("%d\t",temp);
 		if(temp>hPr){
 			hPr = temp;
 			res = i;
