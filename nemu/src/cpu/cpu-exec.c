@@ -55,7 +55,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 		nemu_state.state = NEMU_STOP;
 		if(!hPrint){
 			hPrint = 0;
-			printf("The value of expression %s changes", wp->EXPR);
+			printf("The value of expression %s changes, stop at pc=0X%08X now\n", wp->EXPR,cpu.pc);
 		}
 	}
 	wp = wp->next;
