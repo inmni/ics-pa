@@ -24,7 +24,22 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 	TK_DNUM,TK_HNUM,
   /* TODO: Add more token types */
-
+  TK_REG,
+  TK_NEQ,
+  TK_GEQ,
+  TK_LEQ,
+  TK_NOT,
+  TK_AND,
+  TK_OR,
+  TK_REF,
+  TK_DEREF,
+  TK_NEG,
+  TK_PLUS,
+  TK_SUB,
+  TK_MUL,
+  TK_DIV,
+  TK_LPA,
+  TK_RPA,
 };
 
 static struct rule {
@@ -35,16 +50,23 @@ static struct rule {
   /* Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-  
+	{"$", TK_REG},
+	{"&&",TK_AND},
+	{"||",TK_OR},
+	{"!=",TK_NEQ},
+	{"<=",TK_LEQ},
+	{">=",TK_GEQ},
+	{"!", TK_NOT},
+	{"&", TK_REF},
   {" +", TK_NOTYPE},    // spaces
   {"\\b[0-9]+\\b",TK_DNUM},		// dec number
   {"\\b0[xX][0-9a-zA-Z]+",TK_HNUM},		// hex number
-  {"\\+", '+'},         // plus
-  {"\\-", '-'},		// sub
-  {"\\*", '*'},		// mul
-  {"\\/", '/'},		// div
-  {"\\(", '('},		// lpa
-  {"\\)", ')'},		// rpa
+  {"\\+", TK_PLUS},         // plus
+  {"\\-", TK_SUB},		// sub
+  {"\\*", TK_MUL},		// mul
+  {"\\/", TK_DIV},		// div
+  {"\\(", TK_LPA},		// lpa
+  {"\\)", TK_RPA},		// rpa
   {"==", TK_EQ},        // equal
 };
 
@@ -73,7 +95,30 @@ typedef struct token {
   int type;
   char str[32];
 } Token;
-
+word_t paddr_read(paddr_t addr,int len);
+int check_deref(int type){
+	switch(type){
+		case TK_PLUS:
+		case TK_SUB:
+		case TK_MUL:
+		case TK_DIV:
+			return 1;
+		default:
+			return 0;
+	}
+}
+int check_neg(int type){
+	switch(type){
+		case TK_PLUS:
+		case TK_SUB:
+		case TK_MUL:
+		case TK_DIV:
+		case TK_LPA:
+			return 1;
+		default:
+			return 0;
+	}
+}
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
@@ -100,6 +145,9 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
+	 tokens[nr_token].type = rules[i].token_type;
+         strncpy(tokens[nr_token].str, substr_start,substr_len);
+	 nr_token++;
 
          switch (rules[i].token_type) {
 		case TK_DNUM:
@@ -108,22 +156,26 @@ static bool make_token(char *e) {
                                 printf("A number's length in this expr is longer than 32\n");
                                 return false;
                         }
+		case TK_MUL:
+	 		if(i>0&&check_deref(tokens[i-1].type)){
+				tokens[i].type = TK_DEREF;
+			}
+			break;
 		case TK_EQ:
-		case '+':
-		case '-':
-		case '*':
-		case '/':
-		case '(':
-		case ')':
-			tokens[nr_token].type = rules[i].token_type;
-			strncpy(tokens[nr_token].str, substr_start,substr_len);
-			nr_token++;
+		case TK_PLUS:
+		case TK_SUB:
+			if(i==0||check_neg(tokens[i-1].type)){
+				tokens[i].type = TK_NEG;
+			}
+		case TK_DIV:
+		case TK_LPA:
+		case TK_RPA:
 			break;
           default: TODO();
-        }
+        } 
 
         break;
-       }
+       } 
      }
 
     if (i == NR_REGEX) {
@@ -135,15 +187,15 @@ static bool make_token(char *e) {
   return true;
 }
 bool check_parentheses(int left,int right){
-	if(tokens[left].type!='('||tokens[right].type!=')'){
+	if(tokens[left].type!=TK_LPA||tokens[right].type!=TK_RPA){
 		return false;
 	}
 	int left_left_par = 0;
 	for(int i=left+1;i<right;i++){
-		if(tokens[i].type=='('){
+		if(tokens[i].type==TK_LPA){
 			left_left_par++;
 		}
-		else if(tokens[i].type==')'){
+		else if(tokens[i].type==TK_RPA){
  			if(left_left_par){
 				left_left_par--;
 			}
@@ -154,8 +206,55 @@ bool check_parentheses(int left,int right){
 	}
 	return !left_left_par;
 }
+int getPr(int type){
+	switch(type){
+		case TK_DNUM:
+		case TK_HNUM:
+			return 0;
+		case TK_DEREF:
+		case TK_REG:
+		case TK_NOT:
+		case TK_PLUS:
+		case TK_SUB:
+			return 2;
+		case TK_MUL:
+		case TK_DIV:
+			return 4;
+		case TK_EQ:
+		case TK_NEQ:
+			return 8;
+		case TK_AND:
+			return 12;
+		case TK_OR:
+			return 13;
+		default:
+			return 0;
+	}
+}
 int cut(int left, int right){
-	return left+1;
+	int res=left;
+	int temp;
+	int hPr = 0;
+	int paCount = 0;
+	for(int i=left;i<=right;i++){
+		if(tokens[res].type==TK_LPA){
+			paCount++;
+			continue;
+		}
+		else if(tokens[res].type==TK_RPA){
+			paCount--;
+			continue;
+		}
+		if(!paCount){
+			continue;
+		}
+		temp = getPr(tokens[res].type);
+		if(temp>hPr){
+			hPr = temp;
+			res = i;
+		}
+	}
+	return res;
 }
 word_t eval_expr(int left,int right){
 	if(left>right){
@@ -180,13 +279,31 @@ word_t eval_expr(int left,int right){
 			return eval_expr(left+1,right-1);
 	 	}
 		int cut_point = cut(left,right);
-		uint32_t left_val = eval_expr(left,cut_point-1);
-		uint32_t right_val = eval_expr(cut_point+1,right);
+		uint32_t left_val = 0;
+		if(tokens[cut_point].type!=TK_DEREF || tokens[cut_point].type!=TK_NEG){
+			left_val = eval_expr(left,cut_point-1);
+		}
+		
+		uint32_t right_val = 0;
+		if(tokens[cut_point].type!=TK_REG){
+			right_val = eval_expr(cut_point+1,right);
+		}
+
 		switch(tokens[cut_point].type){
-			case '+':return left_val+right_val;
-			case '-':return left_val-right_val;
-			case '*':return left_val*right_val;
-			case '/':return left_val/right_val;
+			case TK_PLUS:return left_val+right_val;
+			case TK_SUB:return left_val-right_val;
+			case TK_MUL:return left_val*right_val;
+			case TK_DIV:return left_val/right_val;
+			case TK_REG:bool success;return isa_reg_str2val(tokens[cut_point+1].str,&success);
+			case TK_DEREF:return paddr_read(right_val,4);
+			case TK_NEG:return -right_val;
+			case TK_EQ:return left_val==right_val;
+			case TK_NEQ:return left_val!=right_val;
+			case TK_LEQ:return left_val<=right_val;
+			case TK_GEQ:return left_val>=right_val;
+
+			case TK_AND:return left_val&&right_val;
+			case TK_OR:return left_val||right_val;
 			default:assert(0);
 	 	}
 		return 0;
@@ -199,7 +316,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  //TODO();
+  TODO();
   word_t result = eval_expr(0,nr_token-1);
   *success = true;
   return result;
