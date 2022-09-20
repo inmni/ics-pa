@@ -58,7 +58,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 			printf("The value of expression %s changes", wp->EXPR);
 		}
 	}
-
+	wp = wp->next;
   }
 #endif
 }
