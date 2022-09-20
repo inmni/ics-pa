@@ -231,7 +231,7 @@ int getPr(int type){
 int cut(int left, int right){
 	int res=left;
 	int temp;
-	int lPr = 0;
+	int lPr = getPr(tokens[left].type);
 	int paCount = 0;
 	for(int i=left;i<=right;i++){
 		if(tokens[res].type==TK_LPA){
