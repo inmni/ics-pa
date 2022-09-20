@@ -30,9 +30,22 @@ static char *code_format =
 "  printf(\"%%u\", result); "
 "  return 0; "
 "}";
-
+void gen_int(int num);
+void gen_str(char *str);
+void gen_char(char ch);
+void gen_num();
+void gen_op();
 static void gen_rand_expr() {
-  buf[0] = '\0';
+  switch(choose(3)){
+	case 0:gen_num();break;
+	case 1:gen_char('(');gen_rand_expr();gen_char(')');break;
+	default: gen_rand_expr();gen_op();gen_rand_expr();break;
+  }
+}
+void gen_op(){
+	switch(choose(10)){
+		case 0:gen_char('-');
+	}
 }
 
 int main(int argc, char *argv[]) {
