@@ -50,7 +50,7 @@ static struct rule {
   /* Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-	{"$", TK_REG},
+	{"\\$", TK_REG},
 	{"&&",TK_AND},
 	{"\\|\\|",TK_OR},
 	{"!=",TK_NEQ},
