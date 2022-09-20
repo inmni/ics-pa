@@ -276,6 +276,7 @@ word_t eval_expr(int left,int right){
 			return eval_expr(left+1,right-1);
 	 	}
 		int cut_point = cut(left,right);
+		printf("cut point:%d\n",cut_point);
 		uint32_t left_val = 0;
 		if(tokens[cut_point].type!=TK_DEREF || tokens[cut_point].type!=TK_NEG){
 			left_val = eval_expr(left,cut_point-1);
