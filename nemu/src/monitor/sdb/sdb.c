@@ -161,6 +161,7 @@ static int cmd_w(char *args){
 		printf("No arguments!\n");
 	}
 	new_wp(args);
+
 	return 0;
 }
 static int cmd_d(char *args){

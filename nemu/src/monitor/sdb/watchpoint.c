@@ -102,6 +102,8 @@ WP* new_wp(char* EXPR){
 	wp->next = head;
 	strncpy(wp->EXPR,EXPR,32);
 	head = wp;
+	bool success = false;
+	wp->oldValue = expr(EXPR,&success);
 	return wp;
 }
 void free_wp(WP* wp){

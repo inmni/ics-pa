@@ -49,7 +49,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   while(wp){
 	bool success = false;
 	int newValue = expr(wp->EXPR,&success);
-	printf("%d",newValue);
+	printf("%d\n",newValue);
 	if(newValue!=wp->oldValue){
 		wp->oldValue = newValue;
 		nemu_state.state = NEMU_STOP;
