@@ -174,7 +174,9 @@ static int cmd_d(char *args){
 	return 0;
 }
 static int cmd_temp(char *args){
-	printf("%ld\n", sizeof(word_t));
+#ifdef CONFIG_WATCHPOINT
+	printf("wa\n");
+#endif
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
