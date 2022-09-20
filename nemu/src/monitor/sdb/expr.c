@@ -246,6 +246,7 @@ int cut(int left, int right){
 			continue;
 		}
 		temp = getPr(tokens[res].type);
+		printf("%d\t",temp);
 		if(temp>hPr){
 			hPr = temp;
 			res = i;
