@@ -52,7 +52,7 @@ static struct rule {
    */
 	{"$", TK_REG},
 	{"&&",TK_AND},
-	{"||",TK_OR},
+	{"\\|\\|",TK_OR},
 	{"!=",TK_NEQ},
 	{"<=",TK_LEQ},
 	{">=",TK_GEQ},
