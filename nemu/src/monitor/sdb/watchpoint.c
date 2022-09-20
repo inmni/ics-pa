@@ -79,6 +79,9 @@ void fwp_all_display(){
 	}
 	return;
 }
+WP* get_wp_head(){
+	return head;
+}
 WP* find_wp(int n){
 	WP* wp = head;
 	while(wp){
