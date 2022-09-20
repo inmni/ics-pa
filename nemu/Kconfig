@@ -120,7 +120,9 @@ config CC_ASAN
 endmenu
 
 menu "Testing and Debugging"
-
+config CONFIG_WATCHPOINT
+  bool "Enable watchpoint"
+  default n
 
 config TRACE
   bool "Enable tracer"

@@ -23,7 +23,7 @@ typedef struct watchpoint {
 
   /* TODO: Add more members if necessary */
   char EXPR[32];
-  int currValue,targetValue;
+  int oldValue,targetValue;
 } WP;
 
 static WP wp_pool[NR_WP] = {};
@@ -40,7 +40,7 @@ void init_wp_pool() {
   free_ = wp_pool;
 }
 void print_wp(WP* wp){
-	printf("NO:%d,ADDRESS:%s,CURRENT_VALUE:%d,TARGET_VALUE:%d\n",wp->NO,wp->EXPR,wp->currValue,wp->targetValue);
+	printf("NO:%d,ADDRESS:%s,CURRENT_VALUE:%d,TARGET_VALUE:%d\n",wp->NO,wp->EXPR,wp->oldValue,wp->targetValue);
 }
 /* TODO: Implement the functionality of watchpoint */
 void wp_all_display(){
@@ -88,4 +88,37 @@ WP* find_wp(int n){
 		wp = wp->next;
 	}
 	return NULL;
+}
+WP* new_wp(char* EXPR){
+	WP* wp = free_;
+	if(wp==NULL){
+		printf("No free watchpoints!\n");
+		assert(0);
+	}
+	free_ = free_->next;
+	wp->next = head;
+	strncpy(wp->EXPR,EXPR,32);
+	head = wp;
+	return wp;
+}
+void free_wp(WP* wp){
+	if(wp==NULL){
+		return;
+	}
+	if(wp==head){
+		head = head->next;
+		wp->next = free_;
+		return;
+	}
+	WP* prev = head;
+	WP* temp = head->next;
+	while(temp){
+		if(wp==temp){
+			prev->next = temp->next;
+			wp->next = free_;
+			return;
+		}
+	}
+	printf("No such watchpoint working!\n");
+	return;
 }

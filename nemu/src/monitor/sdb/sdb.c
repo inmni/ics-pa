@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#include "watchpoint.c"
 static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
@@ -153,9 +153,21 @@ static int cmd_p(char *args){
 	return 0;
 }
 static int cmd_w(char *args){
+	char *arg1 = strtok(NULL," ");
+	if(arg1==NULL){
+		printf("No argument!\n");
+	}
+	new_wp(arg1);
 	return 0;
 }
 static int cmd_d(char *args){
+	char *arg = strtok(NULL," ");
+	if(arg==NULL){
+		printf("No argument!\n");
+	}
+	int n = atoi(arg);
+	WP* wp_to_free = find_wp(n);
+	free_wp(wp_to_free);
 	return 0;
 }
 static int cmd_temp(char *args){
