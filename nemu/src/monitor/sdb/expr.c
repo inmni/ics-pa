@@ -62,8 +62,8 @@ static struct rule {
 	{"!", TK_NOT},
 	{"&", TK_REF},
   {" +", TK_NOTYPE},    // spaces
-  {"\\b[0-9]+\\b",TK_DNUM},		// dec number
-  {"\\b0[xX][0-9a-zA-Z]+",TK_HNUM},		// hex number
+  {"[0-9]+",TK_DNUM},		// dec number
+  {"0[xX][0-9a-zA-Z]+",TK_HNUM},		// hex number
   {"\\+", TK_PLUS},         // plus
   {"\\-", TK_SUB},		// sub
   {"\\*", TK_MUL},		// mul
@@ -293,17 +293,15 @@ word_t eval_expr(int left,int right){
 		if(tokens[cut_point].type!=TK_REG){
 			right_val = eval_expr(cut_point+1,right);
 		}
-
+		bool success;
 		switch(tokens[cut_point].type){
 			case TK_PLUS:return left_val+right_val;
 			case TK_SUB:return left_val-right_val;
 			case TK_MUL:return left_val*right_val;
 			case TK_DIV:return left_val/right_val;
 			case TK_REG:
-				    bool success; 
-				    uint32_t r= isa_reg_str2val(tokens[cut_point+1].str,&success);
-				    printf("%08X\n",r);
-				    return r;
+				  
+				    return isa_reg_str2val(tokens[cut_point+1].str,&success);
 			case TK_DEREF:return paddr_read(right_val,4);
 			case TK_NEG:return -right_val;
 			case TK_EQ:return left_val==right_val;

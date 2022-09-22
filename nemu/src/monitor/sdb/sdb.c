@@ -28,7 +28,6 @@ typedef struct watchpoint WP;
 void free_wp(WP* wp);
 WP* new_wp(char* EXPR);
 WP* find_wp(int n);
-word_t vaddr_read(vaddr_t addr,int len);
 word_t paddr_read(paddr_t addr,int len);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -123,7 +122,6 @@ static int cmd_info(char *args){
 	return 0;
 }
 static int cmd_x(char *args){
-	//Waiting
 	char *arg1 = strtok(NULL," ");
 	int N;
 	if(!arg1||(N=atoi(arg1))==0){
@@ -140,8 +138,7 @@ static int cmd_x(char *args){
 		printf("Failed to convert %s to %d",arg2,expr_val);
 	}
 	for(;N>0;N--){
-		// TODO: vaddr_read or paddr_read ?
-		printf("address:0X%08X	value:0X%08X\n",expr_val,vaddr_read(expr_val,4));
+		printf("address:0X%08X	value:0X%08X\n",expr_val,paddr_read(expr_val,4));
 		expr_val+=4;
 	}
 	return 0;
