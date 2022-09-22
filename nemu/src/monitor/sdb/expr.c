@@ -268,6 +268,7 @@ word_t eval_expr(int left,int right){
 		}
 		else if(tokens[left].type==TK_HNUM){
 			//hex
+			printf("%08X\n",(uint32_t)strtoul(tokens[left].str,NULL,16));
 			return strtoul(tokens[left].str,NULL,16);
 		}
 		printf("Not a number found in \" left==right\" in expr.c(eval_expr)");
