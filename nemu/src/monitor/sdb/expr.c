@@ -222,6 +222,7 @@ int getPr(int type){
 			return 100;
 		case TK_DEREF:
 		case TK_REG:
+			return 6;
 		case TK_NOT:
 		case TK_PLUS:
 		case TK_SUB:
