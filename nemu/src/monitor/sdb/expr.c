@@ -173,7 +173,7 @@ static bool make_token(char *e) {
 			break;
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
-	printf("%d\n",tokens[nr_token].type);
+	printf("%d\n",tokens[nr_token-1].type);
         break;
        }   
      }
