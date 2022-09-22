@@ -318,15 +318,15 @@ word_t eval_expr(int left,int right){
 		return 0;
 	}
 }
-word_t expr(char *e, int *success) {
+word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
-    *success = 0;
+    *success = false;
     return 0;
   }
 
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
   word_t result = eval_expr(0,nr_token-1);
-  *success = 1;
+  *success = true;
   return result;
 }
