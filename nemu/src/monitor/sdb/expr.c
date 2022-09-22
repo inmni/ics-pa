@@ -146,8 +146,8 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-          //  i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 	if(rules[i].token_type==TK_NOTYPE){break;}
@@ -176,7 +176,7 @@ static bool make_token(char *e) {
 		case TK_SUB:{
 			if(nr_token==1||check_neg(tokens[nr_token-2].type)){
 				tokens[nr_token-1].type = TK_NEG;
- 	 		} printf("neg:%d\n",tokens[nr_token].type==TK_NEG);
+ 	 		} printf("neg:%d\n",tokens[nr_token-1].type==TK_NEG);
 			break;}
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
