@@ -73,7 +73,7 @@ static struct rule {
 };
 
 #define NR_REGEX ARRLEN(rules)
-
+#define NR_TK_STR 32
 static regex_t re[NR_REGEX] = {};
 
 /* Rules are used for many times.
@@ -95,7 +95,7 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[NR_TK_STR];
 } Token;
 word_t paddr_read(paddr_t addr,int len);
 int check_deref(int type){
@@ -148,6 +148,7 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
 	 tokens[nr_token].type = rules[i].token_type;
+	 memset(tokens[nr_token].str,0,NR_TK_STR);
          strncpy(tokens[nr_token].str, substr_start,substr_len);
 	 nr_token++;
 
