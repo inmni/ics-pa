@@ -228,6 +228,8 @@ int getPr(int type){
 		case TK_MUL:
 		case TK_DIV:
 			return 4;
+		case TK_NEG:
+			return 5;
 		case TK_EQ:
 		case TK_NEQ:
 			return 8;
