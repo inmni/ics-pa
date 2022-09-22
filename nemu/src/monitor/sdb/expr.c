@@ -176,7 +176,7 @@ static bool make_token(char *e) {
 		case TK_SUB:{
 			if(nr_token==0||check_neg(tokens[nr_token-1].type)){
 				tokens[nr_token].type = TK_NEG;
- 	 		} printf("%d\n",tokens[nr_token].type==TK_NEG);
+ 	 		} printf("neg:%d\n",tokens[nr_token].type==TK_NEG);
 			break;}
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
