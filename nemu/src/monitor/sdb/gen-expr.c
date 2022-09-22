@@ -61,7 +61,7 @@ uint32_t choose(uint32_t num){
 static void gen_rand_expr();
 static void gen_rand_2expr(){
 	switch(choose(2)){
-		case 0:gen_char('$');gen_str(regs[choose(32)]);break;
+		case 0:gen_char('-');gen_rand_expr();break;//gen_char('$');gen_str(regs[choose(32)]);break;
 		case 1:gen_char('-');gen_rand_expr();break;
 	}
 }
@@ -147,15 +147,15 @@ int test(int argc) {
 	buf[nr_buf]='\0';
     sprintf(code_buf, code_format, buf);
 
-    FILE *fp = fopen(".code.c", "w");
+    FILE *fp = fopen("/tmp/.code.c", "w");
     assert(fp != NULL);
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc .code.c -o .expr");
+    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
     if (ret != 0) continue;
 
-    fp = popen(".expr", "r");
+    fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
     int result;
