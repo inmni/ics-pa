@@ -78,14 +78,14 @@ static void gen_rand_expr() {
 		gen_num();
 		return;
 	}
-	gen_blankspace();
+//	gen_blankspace();
   switch(choose(3)){
 	case 0:gen_num();break;
 	case 1:gen_char('(');gen_rand_expr();gen_char(')');break;
 	//case 2:gen_char('(');gen_rand_2expr();gen_char(')');break;
 	default: ;gen_rand_expr();gen_op();gen_rand_expr();break;
   }
-  gen_blankspace();
+ // gen_blankspace();
 }
 static void gen_blankspace(){
 int count =choose(16);
