@@ -148,10 +148,10 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-	 tokens[nr_token].type = rules[i].token_type;
 	 memset(tokens[nr_token].str,0,NR_TK_STR);
 	 memcpy(tokens[nr_token].str,substr_start,substr_len);
-         //strncpy(tokens[nr_token].str, substr_start,substr_len);
+         tokens[nr_token].type = rules[i].token_type;
+	 //strncpy(tokens[nr_token].str, substr_start,substr_len);
 	 nr_token++;
 
          switch (tokens[nr_token].type) {
@@ -162,14 +162,14 @@ static bool make_token(char *e) {
                                 return 0;
                           }
 		case TK_MUL:
-	 		if(i==0||check_deref(tokens[i-1].type)){
-				tokens[i].type = TK_DEREF;
+	 		if(nr_token==0||check_deref(tokens[nr_token-1].type)){
+				tokens[nr_token].type = TK_DEREF;
  	 		}
 			break;
 		case TK_SUB:
-			if(i==0||check_neg(tokens[i-1].type)){
-				tokens[i].type = TK_NEG;
- 	 		}
+			if(nr_token==0||check_neg(tokens[nr_token-1].type)){
+				tokens[nr_token].type = TK_NEG;
+ 	 		} 
 			break;
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
