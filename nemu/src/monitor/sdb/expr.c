@@ -83,7 +83,7 @@ static struct rule {
 void logerror(){
 	printf("An error in dealing with the expression(length:%d):\n",nr_token);
 	for(int i=0;i<nr_token;i++){
-		printf("%s",tokens[nr_token].str);
+		printf("%s",tokens[i].str);
 	}
 	printf("\n");
 }
