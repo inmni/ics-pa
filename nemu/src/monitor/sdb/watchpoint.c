@@ -99,7 +99,8 @@ WP* new_wp(char* EXPR){
 	}
 	free_ = free_->next;
 	wp->next = head;
-	strncpy(wp->EXPR,EXPR,32);
+	//strncpy(wp->EXPR,EXPR,32);
+	memcpy(wp->EXPR.EXPR,32);
 	head = wp;
 	bool success = false;
 	wp->oldValue = expr(EXPR,&success);
