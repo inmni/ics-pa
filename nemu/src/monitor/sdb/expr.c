@@ -266,7 +266,7 @@ int cut(int left, int right){
 	return res;
 }
 word_t eval_expr(int left,int right){
-//	printf("deal between:%d and %d\n",left,right);
+	printf("deal between:%d and %d\n",left,right);
 	if(left>right){
 		//Bad expression
 		return 0;
@@ -326,11 +326,11 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-//	printf("start evaluate %s\n",e);
+	printf("start evaluate %s\n",e);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
   word_t result = eval_expr(0,nr_token-1);
-  //printf("success\n");
+  printf("success\n");
   *success = true;
   return result;
 }
