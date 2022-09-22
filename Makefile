@@ -19,5 +19,6 @@ _default:
 submit:
 	git gc
 	STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
-
+count:
+	find -name "*[.h|.c]" -type f| xargs cat|grep -v ^$$ | wc -l 
 .PHONY: default submit
