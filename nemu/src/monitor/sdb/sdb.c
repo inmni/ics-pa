@@ -176,7 +176,9 @@ static int cmd_temp(char *args){
 	uint32_t result=0;
 	uint32_t temp=0;
 	bool success = false;
+	printf("begin\n");
 	while(fscanf(test,"%u %s",&result,line)){
+		printf("once\n");
 		temp = expr(line,&success);
 		if(temp!=result){
 			printf("%s\ncorrect:%u,expr:%u\n",line,result,temp);
