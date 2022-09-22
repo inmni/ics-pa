@@ -271,8 +271,6 @@ word_t eval_expr(int left,int right){
 		}
 		else if(tokens[left].type==TK_HNUM){
 			//hex
-			//printf("%s\n",tokens[left].str);
-			//printf("%08X\n",(uint32_t)strtoul(tokens[left].str,NULL,16));
 			return strtoul(tokens[left].str,NULL,16);
 		}
 		printf("Not a number found in \" left==right\" in expr.c(eval_expr)");
@@ -299,9 +297,7 @@ word_t eval_expr(int left,int right){
 			case TK_SUB:return left_val-right_val;
 			case TK_MUL:return left_val*right_val;
 			case TK_DIV:return left_val/right_val;
-			case TK_REG:
-				  
-				    return isa_reg_str2val(tokens[cut_point+1].str,&success);
+			case TK_REG:return isa_reg_str2val(tokens[cut_point+1].str,&success);
 			case TK_DEREF:return paddr_read(right_val,4);
 			case TK_NEG:return -right_val;
 			case TK_EQ:return left_val==right_val;
