@@ -62,8 +62,8 @@ static struct rule {
 	{"!", TK_NOT},
 	{"&", TK_REF},
   {" +", TK_NOTYPE},    // spaces
-  {"[0-9]+",TK_DNUM},		// dec number
   {"0[xX][0-9a-zA-Z]+",TK_HNUM},		// hex number
+  {"[0-9]+",TK_DNUM},		// dec number
   {"\\+", TK_PLUS},         // plus
   {"\\-", TK_SUB},		// sub
   {"\\*", TK_MUL},		// mul
