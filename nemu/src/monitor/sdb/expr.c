@@ -168,20 +168,20 @@ static bool make_token(char *e) {
                                 printf("A number's length in this expr is longer than 32\n");
                                 return 0;
                           }
-		case TK_MUL:
+		case TK_MUL:{
 	 		if(nr_token==0||check_deref(tokens[nr_token-1].type)){
 				tokens[nr_token].type = TK_DEREF;
  	 		}
-			break;
-		case TK_SUB:
+			break;}
+		case TK_SUB:{
 			if(nr_token==0||check_neg(tokens[nr_token-1].type)){
 				tokens[nr_token].type = TK_NEG;
  	 		} 
-			break;
-		case TK_NOTYPE:
+			break;}
+		case TK_NOTYPE:{
 			nr_token--;
 			printf("deal with a blankspace");
-			break;
+			break;}
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
 	printf("%d\n",tokens[nr_token-1].type);
