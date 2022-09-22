@@ -140,12 +140,13 @@ int test(int argc) {
   uint32_t temp = 0;
   //FILE *res = fopen("/tmp/result.txt","w");  assert(res!=NULL);  
   for (i = 0; i < loop; i ++) {
+printf("before reset\n");
 	  memset(buf,0,MAX_NR_BUF);
 	  nr_buf=0;
-    printf("before generate");
+   // printf("before generate");
 	  gen_rand_expr();
 	buf[nr_buf]='\0';
-	printf("expression:%s",buf);
+	printf("expression:%s\n",buf);
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
