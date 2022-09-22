@@ -178,10 +178,6 @@ static bool make_token(char *e) {
 				tokens[nr_token].type = TK_NEG;
  	 		} 
 			break;}
-		case TK_NOTYPE:{
-			nr_token--;
-			printf("deal with a blankspace");
-			break;}
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
 //	printf("%d\n",tokens[nr_token-1].type);
@@ -270,6 +266,7 @@ int cut(int left, int right){
 	return res;
 }
 word_t eval_expr(int left,int right){
+	printf("deal between:%d and %d",left,right);
 	if(left>right){
 		//Bad expression
 		return 0;
@@ -329,7 +326,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+	printf("start evaluate %s",e);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
   word_t result = eval_expr(0,nr_token-1);
