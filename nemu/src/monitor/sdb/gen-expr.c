@@ -146,7 +146,7 @@ printf("before reset\n");
    // printf("before generate");
 	  gen_rand_expr();
 	buf[nr_buf]='\0';
-	printf("expression:%s\n",buf);
+//	printf("expression:%s\n",buf);
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");

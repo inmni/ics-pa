@@ -266,7 +266,7 @@ int cut(int left, int right){
 	return res;
 }
 word_t eval_expr(int left,int right){
-	printf("deal between:%d and %d\n",left,right);
+	//printf("deal between:%d and %d\n",left,right);
 	if(left>right){
 		//Bad expression
 		return 0;
