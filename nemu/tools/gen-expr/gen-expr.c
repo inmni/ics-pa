@@ -124,7 +124,7 @@ static void gen_hnum(int digit){
 static void gen_str(const char* str){
 	extern int nr_buf;
 	int str_len = strlen(str);
-	strncpy(&buf[nr_buf],str,str_len);
+	memcpy(&buf[nr_buf],str,str_len);
 	nr_buf+=str_len;
 	return;
 }
