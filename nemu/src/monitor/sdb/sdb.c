@@ -172,7 +172,7 @@ static int cmd_d(char *args){
 }
 int test(int loop);
 static int cmd_temp(char *args){
-	test(10);
+	test(100);
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
