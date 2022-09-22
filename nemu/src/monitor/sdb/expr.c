@@ -180,6 +180,7 @@ static bool make_token(char *e) {
 			break;
 		case TK_NOTYPE:
 			nr_token--;
+			printf("deal with a blankspace");
 			break;
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
