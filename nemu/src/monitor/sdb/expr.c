@@ -30,6 +30,8 @@ enum {
   TK_NEQ,
   TK_GEQ,
   TK_LEQ,
+  TK_GNQ,
+  TK_LNQ,
   TK_NOT,
   TK_AND,
   TK_OR,
@@ -67,6 +69,8 @@ static struct rule {
 	{"!=",TK_NEQ},
 	{"<=",TK_LEQ},
 	{">=",TK_GEQ},
+	{">" ,TK_GNQ},
+	{"<", TK_LNQ},
 	{"!", TK_NOT},
 	{"&", TK_REF},
   {" +", TK_NOTYPE},    // spaces
@@ -216,24 +220,19 @@ int check_parentheses(int left,int right){
 }
 int getPr(int type){
 	switch(type){
-		case TK_DNUM:
-		case TK_HNUM:
-		case TK_A:
+		case TK_DNUM:case TK_HNUM:case TK_A:
 			return 100;
-		case TK_DEREF:
-		case TK_REG:
+		case TK_DEREF:case TK_REG:
 			return 6;
-		case TK_NOT:
-		case TK_PLUS:
-		case TK_SUB:
+		case TK_NOT:case TK_PLUS:case TK_SUB:
 			return 2;
-		case TK_MUL:
-		case TK_DIV:
+		case TK_MUL:case TK_DIV:
 			return 4;
 		case TK_NEG:
 			return 5;
-		case TK_EQ:
-		case TK_NEQ:
+		case TK_LEQ:case TK_GEQ:case TK_LNQ:case TK_GNQ:
+			return 7;
+		case TK_EQ:case TK_NEQ:
 			return 8;
 		case TK_AND:
 			return 12;
@@ -317,7 +316,8 @@ word_t eval_expr(int left,int right){
 			case TK_NEQ:return left_val!=right_val;
 			case TK_LEQ:return left_val<=right_val;
 			case TK_GEQ:return left_val>=right_val;
-
+			case TK_LNQ:return left_val<right_val;
+			case TK_GNQ:return left_val>right_val;
 			case TK_AND:return left_val&&right_val;
 			case TK_OR:return left_val||right_val;
 			default:printf("ERROR type:%s %d,position:%d\n",tokens[cut_point].str,tokens[cut_point].type,cut_point);logerror();assert(0);
