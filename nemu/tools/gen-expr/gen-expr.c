@@ -19,8 +19,18 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
-
+const char *regs[];
 // this should be enough
+static char* ops[] = {
+"&&","||","!=","<=",">=",
+"+","-","*","/","=="
+}
+static char* pre_ops[]={
+"$","*"
+}
+#define NR_OP ARRLEN(ops)
+#define NR_PRE_OP ARRLEN(pre_ops)
+static int nr_buf=0;
 static char buf[65536] = {};
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
@@ -35,19 +45,34 @@ void gen_str(char *str);
 void gen_char(char ch);
 void gen_num();
 void gen_op();
+
+static void gen_rand_expr();
+static void gen_rand_2expr(){
+	switch(choose(2)){
+		case 0:gen_char('$');gen_str(regs[choose(32)]);break;
+		case 1:gen_char('*');gen_expr();break;
+	}
+}
 static void gen_rand_expr() {
-  switch(choose(3)){
+  switch(choose(4)){
 	case 0:gen_num();break;
 	case 1:gen_char('(');gen_rand_expr();gen_char(')');break;
+	case 2:gen_char('(');gen_rand_2expr();gen_char(')');break;
 	default: gen_rand_expr();gen_op();gen_rand_expr();break;
   }
 }
 void gen_op(){
-	switch(choose(10)){
-		case 0:gen_char('-');
-	}
+	gen_str(ops[choose(NR_OP)]);
 }
+void gen_num(){
 
+}
+void gen_str(char* str){
+
+}
+void gen_char(char ch){
+	buf[
+}
 int main(int argc, char *argv[]) {
   int seed = time(0);
   srand(seed);
