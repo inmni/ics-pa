@@ -170,7 +170,10 @@ static int cmd_d(char *args){
 	free_wp(wp_to_free);
 	return 0;
 }
+int test(int loop);
 static int cmd_temp(char *args){
+	test(10);
+	return 0;
 	FILE *test = fopen("/tmp/result.txt","r");
 	char *line="";
 	uint32_t result=0;
