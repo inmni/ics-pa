@@ -142,7 +142,8 @@ int test(int argc) {
   for (i = 0; i < loop; i ++) {
 	  memset(buf,0,MAX_NR_BUF);
 	  nr_buf=0;
-    gen_rand_expr();
+    printf("before generate");
+	  gen_rand_expr();
 	buf[nr_buf]='\0';
 	printf("expression:%s",buf);
     sprintf(code_buf, code_format, buf);
