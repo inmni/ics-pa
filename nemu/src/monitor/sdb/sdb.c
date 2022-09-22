@@ -173,6 +173,12 @@ static int cmd_d(char *args){
 //int test(int loop);
 static int cmd_temp(char *args){
 	//test(100);
+	for(int i=0;i<1000;i++){
+		for(int j=0;j<1000;j++){
+			printf("%d",i*j);
+		}
+		printf("\n");
+	}
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
