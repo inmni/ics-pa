@@ -163,11 +163,12 @@ static bool make_token(char *e) {
 
          switch (tokens[nr_token-1].type) {
 		case TK_DNUM:
-		case TK_HNUM:
+		case TK_HNUM:{
   	 		if(substr_len>32){
                                 printf("A number's length in this expr is longer than 32\n");
                                 return 0;
                           }
+			break;}
 		case TK_MUL:{
 	 		if(nr_token==1||check_deref(tokens[nr_token-2].type)){
 				tokens[nr_token-1].type = TK_DEREF;
