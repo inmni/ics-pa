@@ -170,9 +170,9 @@ static int cmd_d(char *args){
 	free_wp(wp_to_free);
 	return 0;
 }
-int test(int loop);
+//int test(int loop);
 static int cmd_temp(char *args){
-	test(100);
+	//test(100);
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
