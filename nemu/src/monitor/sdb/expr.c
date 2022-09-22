@@ -162,7 +162,7 @@ static bool make_token(char *e) {
                                 return 0;
                           }
 		case TK_MUL:
-	 		if(i>0&&check_deref(tokens[i-1].type)){
+	 		if(i==0||check_deref(tokens[i-1].type)){
 				tokens[i].type = TK_DEREF;
  	 		}
 			break;
