@@ -28,8 +28,7 @@ const char *regs[] = {
 
 // this should be enough
 const char* ops[] = {
-"&&","||","!=","<=",">=",
-"+","-","*","/","==",
+"+","-","*",
 };
 const char* pre_ops[]={
 "$","*",
@@ -37,7 +36,7 @@ const char* pre_ops[]={
 const char num[]={
 '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F',
 };
-#define NR_OP 10
+#define NR_OP 3
 #define NR_PRE_OP 2
 #define MAX_NR_BUF 65536
 //#define TEST_32

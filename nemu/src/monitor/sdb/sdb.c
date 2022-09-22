@@ -149,7 +149,7 @@ static int cmd_p(char *args){
 		printf("No argument!\n");
 	}
 	bool success = false;
-	printf("%d\n",expr(arg,&success));
+	printf("%i\n",expr(arg,&success));
 	return 0;
 }
 static int cmd_w(char *args){
@@ -171,6 +171,17 @@ static int cmd_d(char *args){
 	return 0;
 }
 static int cmd_temp(char *args){
+	FILE *test = fopen("/tmp/result.txt","r");
+	char *line="";
+	uint32_t result=0;
+	uint32_t temp=0;
+	bool success = false;
+	while(fscanf(test,"%u %s",&result,line)){
+		temp = expr(line,&success);
+		if(temp!=result){
+			printf("%s\ncorrect:%u,expr:%u\n",line,result,temp);
+		}
+	}
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
