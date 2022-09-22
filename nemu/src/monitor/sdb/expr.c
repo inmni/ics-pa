@@ -13,13 +13,14 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
+#include <isa.h>
 #include <regex.h>
-
+//const char *regs[];
+// isa_reg_str2val(const char *s,bool *success);
 enum {
   TK_NOTYPE = 256, TK_EQ,
 	TK_DNUM,TK_HNUM,
@@ -134,7 +135,7 @@ static bool make_token(char *e) {
   while ( e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
-      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
+       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
@@ -143,7 +144,7 @@ static bool make_token(char *e) {
 
         position += substr_len;
 
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
+         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
@@ -158,36 +159,36 @@ static bool make_token(char *e) {
 		case TK_HNUM:
   			if(substr_len>32){
                                 printf("A number's length in this expr is longer than 32\n");
-                                return false;
-                        }
+                                return 0;
+                          }
 		case TK_MUL:
 	 		if(i>0&&check_deref(tokens[i-1].type)){
 				tokens[i].type = TK_DEREF;
-			}
+ 	 		}
 			break;
 		case TK_SUB:
 			if(i==0||check_neg(tokens[i-1].type)){
 				tokens[i].type = TK_NEG;
-			}
+ 	 		}
 			break;
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
-        } 
+         }  
 
         break;
-       }  
+       }   
      }
 
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
-      return false;
+      return 0;
     }
   }
 
-  return true;
+  return 1;
 }
-bool check_parentheses(int left,int right){
+int check_parentheses(int left,int right){
 	if(tokens[left].type!=TK_LPA||tokens[right].type!=TK_RPA){
-		return false;
+		return 0;
 	}
 	int left_left_par = 0;
 	for(int i=left+1;i<right;i++){
@@ -197,10 +198,10 @@ bool check_parentheses(int left,int right){
 		else if(tokens[i].type==TK_RPA){
  			if(left_left_par){
 				left_left_par--;
-			}
+			 }
  			else{
-				return false;
-			}
+				return 0;
+			} 
 		}
 	}
 	return !left_left_par;
@@ -317,15 +318,15 @@ word_t eval_expr(int left,int right){
 		return 0;
 	}
 }
-word_t expr(char *e, bool *success) {
+word_t expr(char *e, int *success) {
   if (!make_token(e)) {
-    *success = false;
+    *success = 0;
     return 0;
   }
 
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
   word_t result = eval_expr(0,nr_token-1);
-  *success = true;
+  *success = 1;
   return result;
 }
