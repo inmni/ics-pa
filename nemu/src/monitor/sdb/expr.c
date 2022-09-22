@@ -43,6 +43,14 @@ enum {
   TK_LPA,
   TK_RPA,
 };
+#define NR_TK_STR 32
+typedef struct token{
+	int type;
+	char str[NR_TK_STR];
+} Token;
+static Token tokens[1024] __attribute__((used)) = {};
+
+static int nr_token __attribute__((used))  = 0;
 
 static struct rule {
   const char *regex;
@@ -72,9 +80,14 @@ static struct rule {
   {"\\)", TK_RPA},		// rpa
   {"==", TK_EQ},        // equal
 };
-
+void logerror(){
+	printf("An error in dealing with the expression:\n");
+	for(int i=0;i<nr_token;i++){
+		printf("%s",tokens[nr_token].str);
+	}
+	printf("\n");
+}
 #define NR_REGEX ARRLEN(rules)
-#define NR_TK_STR 32
 static regex_t re[NR_REGEX] = {};
 
 /* Rules are used for many times.
@@ -94,10 +107,6 @@ void init_regex() {
   }
 }
 
-typedef struct token {
-  int type;
-  char str[NR_TK_STR];
-} Token;
 word_t paddr_read(paddr_t addr,int len);
 int check_deref(int type){
 	switch(type){
@@ -122,8 +131,6 @@ int check_neg(int type){
 			return 0;
 	}
 }
-static Token tokens[1024] __attribute__((used)) = {};
-static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
   int position = 0;
@@ -273,6 +280,7 @@ word_t eval_expr(int left,int right){
 			//hex
 			return strtoul(tokens[left].str,NULL,16);
 		}
+		logerror();
 		printf("Not a number found in \" left==right\" in expr.c(eval_expr)");
 		assert(0);
 	}
@@ -307,7 +315,7 @@ word_t eval_expr(int left,int right){
 
 			case TK_AND:return left_val&&right_val;
 			case TK_OR:return left_val||right_val;
-			default:assert(0);
+			default:logerror();assert(0);
 	 	}
 		return 0;
 	}
