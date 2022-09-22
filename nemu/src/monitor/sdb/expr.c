@@ -315,7 +315,7 @@ word_t eval_expr(int left,int right){
 
 			case TK_AND:return left_val&&right_val;
 			case TK_OR:return left_val||right_val;
-			default:logerror();assert(0);
+			default:printf("ERROR type:%s,position:%d",tokens[cut_point].str,tokens[cut_point].type);logerror();assert(0);
 	 	}
 		return 0;
 	}
