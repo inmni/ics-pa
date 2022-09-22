@@ -157,7 +157,7 @@ static bool make_token(char *e) {
          switch (tokens[nr_token].type) {
 		case TK_DNUM:
 		case TK_HNUM:
-  			if(substr_len>32){
+  	 		if(substr_len>32){
                                 printf("A number's length in this expr is longer than 32\n");
                                 return 0;
                           }
