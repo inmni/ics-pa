@@ -41,7 +41,6 @@ static char buf[MAX_NR_BUF] = {};
 static char code_buf[MAX_NR_BUF + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
-"#include <isa.h>\n"
 "int main() { "
 "  unsigned result = %s; "
 "  printf(\"%%u\", result); "
