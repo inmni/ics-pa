@@ -19,22 +19,28 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
-const char *regs[];
+const char *regs[] = {
+	    "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+	     "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+	      "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+	       "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6",
+};
+
 // this should be enough
-static char* ops[] = {
+const char* ops[] = {
 "&&","||","!=","<=",">=",
-"+","-","*","/","=="
-}
-static char* pre_ops[]={
-"$","*"
-}
-static char* num[]={
-'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
-}
-#define NR_OP ARRLEN(ops)
-#define NR_PRE_OP ARRLEN(pre_ops)
+"+","-","*","/","==",
+};
+const char* pre_ops[]={
+"$","*",
+};
+const char num[]={
+'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F',
+};
+#define NR_OP 10
+#define NR_PRE_OP 2
 #define MAX_NR_BUF 65536
-#define TEST_32
+//#define TEST_32
 #define MAX_DIGIT 8
 static int nr_buf=0;
 static char buf[MAX_NR_BUF] = {};
@@ -46,85 +52,102 @@ static char *code_format =
 "  printf(\"%%u\", result); "
 "  return 0; "
 "}";
-void gen_dnum(int digit);
-void gen_hnum(int digit);
-void gen_str(char *str);
-void gen_char(char ch);
-void gen_num();
-void gen_op();
+static void gen_dnum(int digit);
+static void gen_hnum(int digit);
+static void gen_str(const char *str);
+static void gen_char(char ch);
+static void gen_num();
+static void gen_op();
+static void gen_blankspace();
 uint32_t choose(uint32_t num){
 	return rand()%num;
 }
 static void gen_rand_expr();
 static void gen_rand_2expr(){
+	extern int nr_buf;
 	if(nr_buf>=MAX_NR_BUF-64){
 		return;
 	}
 	switch(choose(2)){
-		case 0:gen_char('$');gen_str(regs[choose(32)]);break;
-		case 1:gen_char('*');gen_expr();break;
+		case 0:break;//gen_char('$');gen_str(regs[choose(32)]);break;
+		case 1:break;//gen_char('*');gen_rand_expr();break;
 	}
 }
 static void gen_rand_expr() {
-	if(nr_buf>=MAX_NR_BUF-64){
+	extern int nr_buf;
+	if(nr_buf>=(MAX_NR_BUF>>1)){
+		gen_num();
 		return;
 	}
-  switch(choose(4)){
+	gen_blankspace();
+  switch(choose(3)){
 	case 0:gen_num();break;
 	case 1:gen_char('(');gen_rand_expr();gen_char(')');break;
-	case 2:gen_char('(');gen_rand_2expr();gen_char(')');break;
-	default: gen_rand_expr();gen_op();gen_rand_expr();break;
+	//case 2:gen_char('(');gen_rand_2expr();gen_char(')');break;
+	default: ;gen_rand_expr();gen_op();gen_rand_expr();break;
   }
+  gen_blankspace();
 }
-void gen_op(){
-	if(nr_buf>=MAXNR_BUF-64){
-		return;
-	}
+static void gen_blankspace(){
+int count =choose(16);
+for(;count>0;count--){
+gen_char(' ');
+}
+}
+static void gen_op(){
 	gen_str(ops[choose(NR_OP)]);
 }
-void gen_num(){
-	if(nr_buf>=MAX_NR_BUF-64){
-		return;
-	}
+static void gen_num(){
 #ifdef TEST_32
 	int digit = choose(32)+1;
 #else
 	int digit = choose(MAX_DIGIT)+1;
 #endif
 	switch(choose(2)){
-		case 0:gen_dnum(digit);
-		case 1:gen_hnum(digit);
+		case 0:gen_dnum(digit);break;
+		case 1:gen_hnum(digit);break;
 	}
 	return;
 }
-void gen_dnum(int digit){
-	for(;digit>0;digit--){
+static void gen_dnum(int digit){
+	digit--;
+	gen_char(num[choose(9)+1]);
+	for(;digit>1;digit--){
 		gen_char(num[choose(10)]);
 	}
 }
-void gen_hnum(int digit){
+static void gen_hnum(int digit){
 	gen_str("0x");
 	for(;digit>0;digit--){
 		gen_char(num[choose(16)]);
 	}
 }
-void gen_str(char* str){
+static void gen_str(const char* str){
+	extern int nr_buf;
 	int str_len = strlen(str);
 	strncpy(&buf[nr_buf],str,str_len);
 	nr_buf+=str_len;
 	return;
 }
-void gen_char(char ch){
+static void gen_char(char ch){
+	extern int nr_buf;
 	buf[nr_buf] = ch;
 	nr_buf++;
 	return;
 }
-void rand_expr(int loop) {
+int main(int argc, char* argv[]) {
+  extern int nr_buf;
   int seed = time(0);
   srand(seed);
   int loop = 1;
+  if (argc > 1) {
+	      sscanf(argv[1], "%d", &loop);
+  }
   int i;
+  FILE *res = fopen("/tmp/result.txt","w");  assert(res!=NULL);  
   for (i = 0; i < loop; i ++) {
+	  memset(buf,0,MAX_NR_BUF);
+	  nr_buf=0;
     gen_rand_expr();
 	buf[nr_buf]='\0';
     sprintf(code_buf, code_format, buf);
@@ -143,8 +166,9 @@ void rand_expr(int loop) {
     int result;
     fscanf(fp, "%d", &result);
     pclose(fp);
-
-    printf("%u %s\n", result, buf);
+    fprintf(res,"%u %s\n",result,buf);
+    //printf("%u %s\n", result, buf);
   }
-  return;
+  pclose(res);
+  return 0;
 }
