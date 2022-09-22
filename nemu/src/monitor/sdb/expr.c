@@ -178,6 +178,9 @@ static bool make_token(char *e) {
 				tokens[nr_token].type = TK_NEG;
  	 		} 
 			break;
+		case TK_NOTYPE:
+			nr_token--;
+			break;
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
 	printf("%d\n",tokens[nr_token-1].type);
