@@ -161,7 +161,7 @@ static bool make_token(char *e) {
 	 //strncpy(tokens[nr_token].str, substr_start,substr_len);
 	 nr_token++;
 
-         switch (tokens[nr_token].type) {
+         switch (tokens[nr_token-1].type) {
 		case TK_DNUM:
 		case TK_HNUM:
   	 		if(substr_len>32){
