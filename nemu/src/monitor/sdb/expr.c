@@ -146,8 +146,8 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+          //  i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 	if(rules[i].token_type==TK_NOTYPE){break;}
@@ -261,7 +261,7 @@ int cut(int left, int right){
 			continue;
 		}
 		temp = getPr(tokens[i].type);
-		printf("%d\t",temp);
+	//	printf("%d\t",temp);
 		if(temp<=lPr){
 			lPr = temp;
 			res = i;
@@ -285,7 +285,7 @@ word_t eval_expr(int left,int right){
 			return strtoul(tokens[left].str,NULL,16);
 		}
 		logerror();
-		printf("Not a number found in \" left==right\" in expr.c(eval_expr)");
+	//	printf("Not a number found in \" left==right\" in expr.c(eval_expr)");
 		assert(0);
 	}
 	else{ 
@@ -293,7 +293,7 @@ word_t eval_expr(int left,int right){
 			return eval_expr(left+1,right-1);
 	 	}
 		int cut_point = cut(left,right);
-		printf("cut point:%d\n",cut_point);
+	//	printf("cut point:%d\n",cut_point);
 		uint32_t left_val = 0;
 		if(tokens[cut_point].type!=TK_DEREF || tokens[cut_point].type!=TK_NEG){
 			left_val = eval_expr(left,cut_point-1);
