@@ -170,23 +170,8 @@ static int cmd_d(char *args){
 	free_wp(wp_to_free);
 	return 0;
 }
-int test(int loop);
+//int test(int loop);
 static int cmd_temp(char *args){
-	test(10);
-	return 0;
-	FILE *test = fopen("/tmp/result.txt","r");
-	char *line="";
-	uint32_t result=0;
-	uint32_t temp=0;
-	bool success = false;
-	printf("begin\n");
-	while(fscanf(test,"%u %s",&result,line)){
-		printf("once\n");
-		temp = expr(line,&success);
-		if(temp!=result){
-			printf("%s\ncorrect:%u,expr:%u\n",line,result,temp);
-		}
-	}
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)
