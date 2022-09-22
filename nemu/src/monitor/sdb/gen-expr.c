@@ -144,6 +144,7 @@ int test(int argc) {
 	  nr_buf=0;
     gen_rand_expr();
 	buf[nr_buf]='\0';
+	printf("expression:%s",buf);
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
@@ -158,7 +159,7 @@ int test(int argc) {
     assert(fp != NULL);
 
     int result;
-    printf("to get the correct anwser");
+    printf("to get the correct anwser\n");
     if(!fscanf(fp, "%d", &result)){pclose(fp);continue;}
     else{pclose(fp);}
     temp = expr(buf,&success);
