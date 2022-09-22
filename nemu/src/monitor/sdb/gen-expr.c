@@ -158,11 +158,13 @@ int test(int argc) {
     assert(fp != NULL);
 
     int result;
+    printf("to get the correct anwser");
     if(!fscanf(fp, "%d", &result)){pclose(fp);continue;}
-    pclose(fp);
+    else{pclose(fp);}
     temp = expr(buf,&success);
     if(temp!=result){
     	printf("%s\ncorrect:%u,expr:%u\n",buf,result,temp);
+    	assert(0);
     }
     //fprintf(res,"%u %s\n",result,buf);
     //printf("%u %s\n", result, buf);
