@@ -147,15 +147,15 @@ int test(int argc) {
 	buf[nr_buf]='\0';
     sprintf(code_buf, code_format, buf);
 
-    FILE *fp = fopen("/tmp/.code.c", "w");
+    FILE *fp = fopen(".code.c", "w");
     assert(fp != NULL);
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc .code.c -o .expr");
     if (ret != 0) continue;
 
-    fp = popen("/tmp/.expr", "r");
+    fp = popen(".expr", "r");
     assert(fp != NULL);
 
     int result;
