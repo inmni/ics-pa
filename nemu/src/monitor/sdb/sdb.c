@@ -174,10 +174,10 @@ static int cmd_d(char *args){
 	free_wp(wp_to_free);
 	return 0;
 }
+void rand_expr(int loopCount);
 static int cmd_temp(char *args){
-#ifdef CONFIG_WATCHPOINT
-	printf("wa\n");
-#endif
+	int loop = atoi(strtok(NULL," "));
+	rand_expr(loop);
 	return 0;
 }
 #define NR_CMD ARRLEN(cmd_table)

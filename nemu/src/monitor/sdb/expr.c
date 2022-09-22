@@ -269,7 +269,7 @@ word_t eval_expr(int left,int right){
 		}
 		else if(tokens[left].type==TK_HNUM){
 			//hex
-			printf("%s\n",tokens[left].str);
+			//printf("%s\n",tokens[left].str);
 			//printf("%08X\n",(uint32_t)strtoul(tokens[left].str,NULL,16));
 			return strtoul(tokens[left].str,NULL,16);
 		}
