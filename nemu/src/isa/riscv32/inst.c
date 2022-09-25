@@ -35,7 +35,6 @@ enum {
 //immJ means to get offset in J,
 #define immJ() do { *imm = SEXT(BITS(i, 31, 20), 12);\
 				if(SEXT(BITS(i,31,31),1)){\
-					printf("%d",*imm);\
 					*imm = *imm-1;\
 				}\
 } while(0)
