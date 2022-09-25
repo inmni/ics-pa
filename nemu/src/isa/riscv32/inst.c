@@ -23,7 +23,7 @@
 #define Mw vaddr_write
 
 enum {
-  TYPE_I, TYPE_U, TYPE_S,	TYPE_R,	TYPE_b,	TYPE_J,
+  TYPE_I, TYPE_U, TYPE_S,	TYPE_R,	TYPE_B,	TYPE_J,
   TYPE_N, // none
 };
 
@@ -32,7 +32,8 @@ enum {
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
-
+//immJ means to get offset in J,
+#define immJ() do { *imm = SEXT(BITS(i, 31, 12), 20); } while(0)
 static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
   int rd  = BITS(i, 11, 7);
@@ -45,6 +46,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
     case TYPE_U:                   immU(); break;
     case TYPE_S: src1R(); src2R(); immS(); break;
 		case TYPE_R: src1R(); src2R(); /*TODO*/; break;
+		case TYPE_J: 									 immJ(); break;
   }
 }
 
@@ -67,7 +69,7 @@ static int decode_exec(Decode *s) {
 	INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, /*         */);
   INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, R(dest) = Mr(src1 + imm, 4));
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
-  //INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, /*         */);
+  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4, s->pc += imm);
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();
 
