@@ -92,11 +92,12 @@ finish:
   pattern_decode(pattern, STRLEN(pattern), &key, &mask, &shift); \
   if (((INSTPAT_INST(s) >> shift) & mask) == key) { \
     INSTPAT_MATCH(s, ##__VA_ARGS__); \
+		printf("before the instpat end"); \
     goto *(__instpat_end); \
   } \
 } while (0)
 
 #define INSTPAT_START(name) { const void ** __instpat_end = &&concat(__instpat_end_, name);
-#define INSTPAT_END(name) printf("before instpat end");  concat(__instpat_end_, name): ; }
+#define INSTPAT_END(name)  concat(__instpat_end_, name): ; }
 
 #endif
