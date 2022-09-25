@@ -114,13 +114,13 @@ void init_regex() {
 word_t paddr_read(paddr_t addr,int len);
 int check_deref(int type){
 	switch(type){
-		case TK_PLUS:
-		case TK_SUB:
-		case TK_MUL:
-		case TK_DIV:
-			return 1;
-		default:
+		case TK_HNUM:
+		case TK_DNUM:
+		case TK_RPA:
+		case TK_A:
 			return 0;
+		default:
+			return 1;
 	}
 }
 int check_neg(int type){
@@ -154,7 +154,6 @@ static bool make_token(char *e) {
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
-	if(rules[i].token_type==TK_NOTYPE){break;}
          /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
@@ -166,6 +165,10 @@ static bool make_token(char *e) {
 	 nr_token++;
 
          switch (tokens[nr_token-1].type) {
+         	case TK_NOTYPE:{
+         		nr_token--;
+         		break;
+         	}
 		case TK_DNUM:
 		case TK_HNUM:{
   	 		if(substr_len>32){
@@ -181,7 +184,7 @@ static bool make_token(char *e) {
 		case TK_SUB:{
 			if(nr_token==1||check_neg(tokens[nr_token-2].type)){
 				tokens[nr_token-1].type = TK_NEG;
- 	 		} printf("neg:%d\n",tokens[nr_token-1].type==TK_NEG);
+ 	 		} 
 			break;}
 		default: break;printf("expr.c:no special setting for type %d\n",rules[i].token_type);
          }  
