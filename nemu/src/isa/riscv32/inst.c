@@ -40,7 +40,6 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   int rs2 = BITS(i, 24, 20);
   printf("dest:%d,src1:%d,src2;%d,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
   *dest = rd;
-  printf("%d\n",TYPE_I);
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
     case TYPE_U:                   immU(); break;
