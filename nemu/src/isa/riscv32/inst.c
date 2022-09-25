@@ -38,6 +38,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   int rd  = BITS(i, 11, 7);
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
+  printf("dest:%d,src1:%d,src2;%d,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
   *dest = rd;
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
@@ -67,8 +68,7 @@ static int decode_exec(Decode *s) {
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
-printf("after decode exec");
-	      	return 0;
+  return 0;
 }
 
 int isa_exec_once(Decode *s) {
