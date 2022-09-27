@@ -224,14 +224,12 @@ int check_parentheses(int left,int right){
 int getPr(int type){
 	switch(type){
 		case TK_DNUM:case TK_HNUM:case TK_A:
-			return 100;
-		case TK_DEREF:case TK_REG:
-			return 6;
-		case TK_NOT:case TK_PLUS:case TK_SUB:
+			return -1;
+		case TK_DEREF:case TK_REG:case TK_NOT:case TK_NEG:
 			return 2;
 		case TK_MUL:case TK_DIV:
 			return 4;
-		case TK_NEG:
+		case TK_PLUS:case TK_SUB:
 			return 5;
 		case TK_LEQ:case TK_GEQ:case TK_LNQ:case TK_GNQ:
 			return 7;
@@ -264,7 +262,7 @@ int cut(int left, int right){
 		}
 		temp = getPr(tokens[i].type);
 		printf("%d\t",temp);
-		if(temp<=lPr){
+		if(temp>=lPr){
 			lPr = temp;
 			res = i;
 		}
