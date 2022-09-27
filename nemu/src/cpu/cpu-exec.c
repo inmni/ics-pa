@@ -49,16 +49,15 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   while(wp){
 	bool success = false;
 	int newValue = expr(wp->EXPR,&success);
-	printf("%d\n",newValue);
 	if(newValue!=wp->oldValue){
-		wp->oldValue = newValue;
 		if(nemu_state.state==NEMU_RUNNING){
 			nemu_state.state = NEMU_STOP;
 		}
 		if(!hPrint){
 			hPrint = 0;
-			printf("The value of expression %s changes, stop at pc=0X%08X now\n", wp->EXPR,cpu.pc);
+			printf("The value of expression %s changes from %08x to %08x, stop at pc=0X%08X now\n", wp->EXPR,wp->oldValue,newValue,cpu.pc);
 		}
+		wp->oldValue = newValue;
 	}
 	wp = wp->next;
   }
