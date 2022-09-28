@@ -7,7 +7,7 @@
 size_t strlen(const char *s) {
 	if(s==NULL)return 0;
 	size_t ans = 0;
-	while(*(s+(ans++)));
+	while(*(s++)){ans++;}
 	return ans;
 }
 
@@ -37,7 +37,11 @@ char *strncpy(char *dst, const char *src, size_t n) {
 char *strcat(char *dst, const char *src) {
 	if(src==NULL||dst==NULL)return dst;
 	char *tmp = dst+strlen(dst);
-	while(((*(tmp++))=(*(src++))));
+	while(*src){
+		*tmp = *src;
+		tmp++;src++;
+	}
+	*tmp = 0;
 	return dst;
 }
 
