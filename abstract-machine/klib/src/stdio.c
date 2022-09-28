@@ -26,12 +26,14 @@ int sprintf(char *out, const char *fmt, ...) {
 			int d = va_arg(ap, int);
 			itoa(d, out, 10);
 			while(*out++);
+			fmt++;
 		}
 		else if(*fmt=='s'){
 			char *str = va_arg(ap, char *);
 			int len = strlen(str);
 			strcpy(out,str);
 			out+=len;
+			fmt++;
 		}
 		else{panic("No found format");}
 	}
