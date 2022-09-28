@@ -5,31 +5,69 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
-  panic("Not implemented");
+	if(s==NULL)return 0;
+	size_t ans = 0;
+	while(*(s+(ans++)));
+	return ans;
 }
 
 char *strcpy(char *dst, const char *src) {
-  panic("Not implemented");
+	if(src==NULL||dst==NULL)return dst;
+	int index = 0;
+	while(*(src+index)){
+		*(dst+index) = *(src+index);
+		index++;
+	}
+	*(dst+index) =  0;
+	return dst;
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
-  panic("Not implemented");
+	if(src==NULL||dst==NULL)return dst;
+	size_t i;
+	for(i = 0; i < n && !src[i]; i++){
+		*(dst+i) = *(src+i);
+	}
+	for(; i<n;i++){
+		*(dst+i) = 0;
+	}
+	return dst;
 }
 
 char *strcat(char *dst, const char *src) {
-  panic("Not implemented");
+	if(src==NULL||dst==NULL)return dst;
+	char *tmp = dst+strlen(dst);
+	while(((*(tmp++))=(*(src++))));
+	return dst;
 }
 
 int strcmp(const char *s1, const char *s2) {
-  panic("Not implemented");
+	if(s1==NULL)return s2?-1:0;
+	if(s2==NULL)return 1;
+	int ans = 0;
+	while(*s2 && !(ans = *(unsigned char*)s1++ - *(unsigned char*)s2++));
+	//if *s1 is zero, then ans < 0, break
+	//if *s2 is zero, break, last ans >=0, if last ans is not zero, break;
+	if(ans) return ans<0?-1:1;
+	return 0;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
-  panic("Not implemented");
+	size_t i = 0;
+	for(; i<n; i++){
+		if(*(s1+i)==*(s2+i))	continue;
+		return *(s1+i) < *(s2+i) ? -1:1;
+	}
+	return 0;
 }
 
 void *memset(void *s, int c, size_t n) {
-  panic("Not implemented");
+	if(s==NULL)return s;
+	char* pb = (char*)s;
+	while(n-->0){
+		*pb = c; pb++;
+	}
+	return s;
 }
 
 void *memmove(void *dst, const void *src, size_t n) {
@@ -41,7 +79,14 @@ void *memcpy(void *out, const void *in, size_t n) {
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
-  panic("Not implemented");
+	if(s1==NULL)return s2?-1:0;
+	if(s2==NULL)return 1;
+	size_t i = 0;
+	for(; i<n; i++){
+		if(*(char *)(s1+i)==*(char *)(s2+i))continue;
+		return *(char *)(s1+i) <*(char *)(s2+i) ? -1:1;
+	}
+	return 0;
 }
 
 #endif
