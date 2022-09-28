@@ -63,7 +63,7 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 	{"\\$", TK_REG},
-	{"[$a-z][a-z0-9]+\\b",TK_A},
+	{"\\b[$a-z][a-z0-9]+\\b",TK_A},
 	{"&&",TK_AND},
 	{"\\|\\|",TK_OR},
 	{"!=",TK_NEQ},
@@ -150,8 +150,8 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+          //  i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
          /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -224,14 +224,12 @@ int check_parentheses(int left,int right){
 int getPr(int type){
 	switch(type){
 		case TK_DNUM:case TK_HNUM:case TK_A:
-			return 100;
-		case TK_DEREF:case TK_REG:
-			return 6;
-		case TK_NOT:case TK_PLUS:case TK_SUB:
+			return -1;
+		case TK_DEREF:case TK_REG:case TK_NOT:case TK_NEG:
 			return 2;
 		case TK_MUL:case TK_DIV:
 			return 4;
-		case TK_NEG:
+		case TK_PLUS:case TK_SUB:
 			return 5;
 		case TK_LEQ:case TK_GEQ:case TK_LNQ:case TK_GNQ:
 			return 7;
@@ -248,7 +246,7 @@ int getPr(int type){
 int cut(int left, int right){
 	int res=left;
 	int temp;
-	int lPr = 9999999;
+	int lPr = -2;
 	int paCount = 0;
 	for(int i=left;i<=right;i++){
 		if(tokens[i].type==TK_LPA){
@@ -263,8 +261,8 @@ int cut(int left, int right){
 			continue;
 		}
 		temp = getPr(tokens[i].type);
-		printf("%d\t",temp);
-		if(temp<=lPr){
+		//printf("%d\t",temp);
+		if(temp>=lPr){
 			lPr = temp;
 			res = i;
 		}
@@ -296,7 +294,7 @@ word_t eval_expr(int left,int right){
 			return eval_expr(left+1,right-1);
 	 	}
 		int cut_point = cut(left,right);
-		printf("cut point:%d\n",cut_point);
+		//printf("cut point:%d\n",cut_point);
 		uint32_t left_val = 0;
 		if(tokens[cut_point].type!=TK_DEREF || tokens[cut_point].type!=TK_NEG){
 			left_val = eval_expr(left,cut_point-1);
@@ -333,11 +331,11 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-	printf("start evaluate \n");
+	//printf("start evaluate \n");
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
   word_t result = eval_expr(0,nr_token-1);
-  printf("success\n");
+  //printf("success\n");
   *success = true;
   return result;
 }
