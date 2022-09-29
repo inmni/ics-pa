@@ -30,7 +30,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-IRB iRingBuffer;
+IRB iRB;
 
 void device_update();
 typedef struct watchpoint{
@@ -73,6 +73,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
+	char *head = p;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
   int ilen = s->snpc - s->pc;
   int i;
@@ -86,6 +87,17 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
+
+	if(iRB.cur_len<MAX_NR_IRB){
+		iRB.buf[iRB.cur_len] = (char *)malloc(128);
+		strcpy(iRB.buf[iRB.cur_len], head);
+		iRB.cur_len++;
+	}
+	else{
+		strcpy(iRB.buf[iRB.st_index], head);
+		iRB.st_index++;
+		iRB.st_index%=MAX_NR_IRB;
+	}
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
