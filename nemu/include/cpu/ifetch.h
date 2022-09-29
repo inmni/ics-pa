@@ -19,7 +19,7 @@
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
   uint32_t inst = vaddr_ifetch(*pc, len);
-	char inst_str[8]; uint8_t code[4];
+	char inst_str[16]; uint8_t code[4];
 	disassemble(inst_str, 8, *pc, code, len);
   (*pc) += len;
   return inst;
