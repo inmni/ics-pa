@@ -147,7 +147,10 @@ config ITRACE_COND
   depends on ITRACE
   string "Only trace instructions when the condition is true"
   default "true"
-
+config ITRACE_RING
+	depends on ITRACE
+	string "Only trace error instructions when the condition is true and ITRACE_COND is false"
+	default "false"
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF

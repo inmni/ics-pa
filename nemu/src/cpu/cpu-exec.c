@@ -43,6 +43,16 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
+#ifdef CONFIG_ITRACE_COND_RING
+	if (ITRACE_RING&&nemu_state.state==NEMU_ABORT){
+		int tmp = iRB.st_index;
+		do{
+			log_write("%s\n", iRB.buf[tmp]);
+			tmp++;
+			tmp%=MAX_NR_IRB;
+		}while(tmp!=iRB.st_index && tmp<cur_len);
+	}
+#endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 #ifdef CONFIG_WATCHPOINT
@@ -87,7 +97,11 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
-
+	
+	void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+	disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
+			MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+// adjust order to make it faster.
 	if(iRB.cur_len<MAX_NR_IRB){
 		iRB.buf[iRB.cur_len] = (char *)malloc(128);
 		strcpy(iRB.buf[iRB.cur_len], head);
@@ -99,9 +113,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
 		iRB.st_index%=MAX_NR_IRB;
 	}
 
-  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
-      MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #endif
 }
 
