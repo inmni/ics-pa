@@ -152,6 +152,11 @@ config ITRACE_RING
 	string "Only trace error instructions when the condition is true and ITRACE_COND is false"
 	default "false"
 
+config MTRACE
+	depends on TRACE
+	string "Enable memory tracer"
+	default n
+
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"

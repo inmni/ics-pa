@@ -47,7 +47,7 @@ static void out_of_bound(paddr_t addr) {
 	do{
 		log_write("%s\n", mrwb.buf[tmp]);
 		tmp++;
-		tnp%=MAX_NR_MRWB;
+		tmp%=MAX_NR_MRWB;
 	}while(tmp!=mrwb.st_index && tmp<mrwb.cur_len);
 	printf("Latest memory operations have been stored in nemu-log\n");
 #endif
