@@ -111,6 +111,7 @@ char *itoa(int num, char *str, int base){
 	if(flag){*str++='-';}
 	while(i>=0){
 		*str++=tmp[i];
+		i--;
 	}
 	*str=0;
 	return head;
