@@ -44,6 +44,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
 #ifdef CONFIG_ITRACE_RING
+	printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
 	if (!ITRACE_COND&&nemu_state.state==NEMU_ABORT){
 		int tmp = iRB.st_index;
 		do{
