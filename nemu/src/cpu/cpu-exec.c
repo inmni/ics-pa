@@ -43,14 +43,14 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
-#ifdef CONFIG_ITRACE_COND_RING
-	if (ITRACE_RING&&nemu_state.state==NEMU_ABORT){
+#ifdef CONFIG_ITRACE_RING
+	if (!ITRACE_COND&&nemu_state.state==NEMU_ABORT){
 		int tmp = iRB.st_index;
 		do{
 			log_write("%s\n", iRB.buf[tmp]);
 			tmp++;
 			tmp%=MAX_NR_IRB;
-		}while(tmp!=iRB.st_index && tmp<cur_len);
+		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
 	}
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
