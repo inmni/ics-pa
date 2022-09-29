@@ -43,16 +43,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
-#ifdef CONFIG_ITRACE_RING
-	if (!ITRACE_COND){
-		int tmp = iRB.st_index;
-		do{
-			log_write("%s\n", iRB.buf[tmp]);
-			tmp++;
-			tmp%=MAX_NR_IRB;
-		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
-	}
-#endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 #ifdef CONFIG_WATCHPOINT
@@ -137,6 +127,13 @@ static void statistic() {
 }
 
 void assert_fail_msg() {
+	int tmp=0;
+	do{
+		log_write("%s\n", iRB.buf[tmp]);
+		tmp++;
+		tmp%=MAX_NR_IRB;
+	}while(tmp!=iRB.st_index &&tmp<iRB.cur_len);
+	printf("Latest instructions have been stored in nemu-log\n");
   isa_reg_display();
   statistic();
 }
