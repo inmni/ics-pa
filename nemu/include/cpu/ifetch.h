@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #ifndef __CPU_IFETCH_H__
+#define __CPU_IFETCH_H__
 #include <memory/vaddr.h>
 #define SINGLE_INST_LEN 32
 #define MAX_NR_IRB 16
