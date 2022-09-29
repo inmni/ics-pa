@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #ifndef __CPU_IFETCH_H__
+#define __CPU_IFETCH_H__
 #define MAX_INST_RING_BUF
 struct iringbuf{
 	int cur_len;
