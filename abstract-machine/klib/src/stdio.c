@@ -30,9 +30,7 @@ int sprintf(char *out, const char *fmt, ...) {
 		}
 		else if(*fmt=='s'){
 			char *str = va_arg(ap, char *);
-			size_t len = strlen(str);
-			strcpy(out,str);
-			out+=len;
+			out = strcpy(out,str);
 			fmt++;
 		}
 		else{panic("No found format");return 0;}
