@@ -26,12 +26,17 @@ typedef struct inst_ring_buf{
 	uint64_t pc[MAX_NR_IRB];
 }	IRB;
 IRB iRingBuffer;
+
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+
 static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
   uint32_t inst = vaddr_ifetch(*pc, len);
+
 	char inst_str[SINGLE_INST_LEN]; uint8_t code[4];
+
 	disassemble(inst_str, SINGLE_INST_LEN, *pc, code, len);
-  if(iRingBuffer.cur_len<MAX_NR_IRB){
+ 
+ 	if(iRingBuffer.cur_len<MAX_NR_IRB){
 		iRingBuffer.insts[iRingBuffer.cur_len] = (char *)malloc(SINGLE_INST_LEN);
 		strcpy(iRingBuffer.insts[iRingBuffer.cur_len],inst_str);
 		iRingBuffer.codes[iRingBuffer.cur_len] = (code[0]<<24)+(code[1]<<16)+(code[2]<<8)+code[3];
@@ -45,6 +50,7 @@ static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
 		iRingBuffer.st_index ++;
 		iRingBuffer.st_index %= MAX_NR_IRB;
 	}
+
 	(*pc) += len;
   return inst;
 }
