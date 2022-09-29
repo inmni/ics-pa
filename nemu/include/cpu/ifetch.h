@@ -25,7 +25,7 @@ typedef struct inst_ring_buf{
 	uint64_t codes[MAX_NR_IRB];
 	uint64_t pc[MAX_NR_IRB];
 }	IRB;
-IRB iRingBuffer;
+static IRB iRingBuffer;
 
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
