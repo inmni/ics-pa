@@ -92,6 +92,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 	disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
 			MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 // adjust order to make it faster.
+#ifdef CONFIG_ITRACE_RING
 	if(iRB.cur_len<MAX_NR_IRB){
 		iRB.buf[iRB.cur_len] = (char *)malloc(128);
 		strcpy(iRB.buf[iRB.cur_len], head);
@@ -102,7 +103,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 		iRB.st_index++;
 		iRB.st_index%=MAX_NR_IRB;
 	}
-
+#endif
 #endif
 }
 
@@ -127,14 +128,16 @@ static void statistic() {
 }
 
 void assert_fail_msg() {
-	int tmp=0;
+#ifdef CONFIG_ITRACE_RING
+	int tmp=iRB.st_index;
 	do{
 		log_write("%s\n", iRB.buf[tmp]);
 		tmp++;
 		tmp%=MAX_NR_IRB;
 	}while(tmp!=iRB.st_index &&tmp<iRB.cur_len);
 	printf("Latest instructions have been stored in nemu-log\n");
-  isa_reg_display();
+#endif
+	isa_reg_display();
   statistic();
 }
 
