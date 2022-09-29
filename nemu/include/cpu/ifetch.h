@@ -15,10 +15,10 @@
 
 #ifndef __CPU_IFETCH_H__
 #define MAX_INST_RING_BUF
-//struct iringbuf{
-	//int cur_len;
-	//uint64_t start_pc;
-//} inst_buf;
+struct iringbuf{
+	int cur_len;
+	uint64_t start_pc;
+} inst_ring_buf;
 #include <memory/vaddr.h>
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
