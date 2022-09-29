@@ -30,7 +30,7 @@ int sprintf(char *out, const char *fmt, ...) {
 		}
 		else if(*fmt=='s'){
 			char *str = va_arg(ap, char *);
-			int len = strlen(str);
+			size_t len = strlen(str);
 			strcpy(out,str);
 			out+=len;
 			fmt++;
