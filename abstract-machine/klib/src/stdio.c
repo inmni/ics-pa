@@ -35,9 +35,10 @@ int sprintf(char *out, const char *fmt, ...) {
 			out+=len;
 			fmt++;
 		}
-		else{panic("No found format");}
+		else{panic("No found format");return 0;}
 	}
-  panic("Not implemented");
+	va_end(ap);
+	return 1;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
