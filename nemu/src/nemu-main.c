@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	printf("no am\n");
   init_monitor(argc, argv);
 #endif
-#ifdef BBBBB
+#ifdef AAAAA
 	printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
 #endif
   /* Start engine. */
