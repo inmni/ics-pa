@@ -24,17 +24,25 @@
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
-
+#define MAX_NR_IRB 16
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+typedef struct inst_ring_buf{
+	int cur_len;
+	int st_index;
+	char *insts[MAX_NR_IRB];
+	uint64_t codes[MAX_NR_IRB];
+	uint64_t pc[MAX_NR_IRB];
+} IRB;
 typedef struct watchpoint{
-int NO;struct watchpoint *next;      
-char EXPR[32];int oldValue,targetValue;
+	int NO;struct watchpoint *next;      
+	char EXPR[32];int oldValue,targetValue;
 }WP;
+IRB iRingBuffer;
 WP* get_wp_head();
 word_t expr(char *e,bool *success);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
