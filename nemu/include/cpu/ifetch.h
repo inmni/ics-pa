@@ -17,12 +17,12 @@
 #define __CPU_IFETCH_H__
 #include <memory/vaddr.h>
 #include <trace.h>
-
+//IRB iRingBuffer;
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
   uint32_t inst = vaddr_ifetch(*pc, len);
-
+/*
 	char inst_str[SINGLE_INST_LEN]; uint8_t code[4];
 
 	disassemble(inst_str, SINGLE_INST_LEN, *pc, code, len);
@@ -41,7 +41,7 @@ static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
 		iRingBuffer.st_index ++;
 		iRingBuffer.st_index %= MAX_NR_IRB;
 	}
-
+*/
 	(*pc) += len;
   return inst;
 }
