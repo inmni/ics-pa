@@ -154,7 +154,7 @@ config ITRACE_RING
 
 config MTRACE
 	depends on TRACE
-	string "Enable memory tracer"
+	bool "Enable memory tracer"
 	default n
 
 config DIFFTEST
