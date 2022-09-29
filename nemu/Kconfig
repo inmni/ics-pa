@@ -145,12 +145,12 @@ config ITRACE
 
 config ITRACE_COND
   depends on ITRACE
-  string "Only trace instructions when the condition is true"
-  default "true"
+  bool "Only trace instructions when the condition is true"
+  default y
 config ITRACE_RING
 	depends on ITRACE
-	string "Only trace error instructions when the condition is true and ITRACE_COND is false"
-	default "false"
+	bool "Only trace error instructions when the condition is true and ITRACE_COND is false"
+	default n
 
 config MTRACE
 	depends on TRACE
