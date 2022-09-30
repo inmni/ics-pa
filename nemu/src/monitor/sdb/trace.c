@@ -72,6 +72,7 @@ void init_ftrace(const char *elf_file){
 					break;
 				}
 		}
+		while(!(*str_table)){str_table++;}
 		printf("str_table:%s, length:%ld\n", str_table, strlen(str_table));
 		free(sym_table);
 		free(str_table);
