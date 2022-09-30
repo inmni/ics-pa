@@ -27,7 +27,5 @@ typedef struct function_trace_buf{
 	
 } FTB;
 // TODO:Maybe adaptaion for 64 bits is needed
-Elf32_Sym *sym_table;
-char *str_table;
 void init_ftrace(const char *elf_file);
 #endif
