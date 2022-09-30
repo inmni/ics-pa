@@ -37,7 +37,7 @@ void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op){
 Elf32_Sym *sym_table;
 char *str_table;
 void init_ftrace(const char *elf_file){
-		FILE *file = fopen(elf_file+4, "r");
+		FILE *file = fopen(elf_file, "r");
 		assert(file!=NULL);
 		int fr_r;	
 		Elf32_Ehdr ehdr;
