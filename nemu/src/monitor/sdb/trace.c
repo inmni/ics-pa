@@ -34,8 +34,37 @@ void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op){
 
 }
 
+Elf32_Sym *sym_table;
+char *str_table;
 void init_ftrace(const char *elf_file){
 		FILE *file = fopen(elf_file, "r");
 		assert(file!=NULL);
+		int fr_r;	
+		Elf32_Ehdr ehdr;
+		Elf32_Shdr *shdrs;
+		//Read the ELF header
+		fr_r = fread(&ehdr, 1, sizeof(ehdr), file);
+		assert(fr_r);
 
+		//Read the section headers
+		shdrs = (Elf32_Shdr *)malloc(ehdr.e_shnum*sizeof(Elf32_Shdr));//TODO: to c style
+		fseek(file, ehdr.e_shoff, SEEK_SET);
+		fr_r = fread(shdrs, ehdr.e_shnum, sizeof(Elf32_Shdr), file);
+		
+		//Read the Symbol and String table
+		int s_idx = 0;
+		for(; s_idx < ehdr.e_shnum; s_idx++){
+				Elf32_Shdr *sh = &shdrs[s_idx];
+				if(sh->sh_type == SHT_SYMTAB){
+					sym_table = (Elf32_Sym *)malloc(sh->sh_size);
+					fseek(file, sh->sh_offset, SEEK_SET);
+					fr_r = fread(sym_table, sh->sh_size, 1, file);
+				}
+				else if(sh->sh_type == SHT_STRTAB){
+					str_table = (char *)malloc(sh->sh_size);
+					fseek(file, sh->sh_offset, SEEK_SET);
+					fr_r = fread(str_table, sh->sh_size, 1, file);
+				}
+		}
+		printf("%s\n", str_table);
 }
