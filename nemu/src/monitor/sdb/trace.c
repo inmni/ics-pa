@@ -1,4 +1,5 @@
 #include <trace.h>
+
 void buf_mem_op(M_RW_B *mrwb, uint32_t addr, int len, uint32_t data, int op){
 	if(mrwb->cur_len < MAX_NR_MRWB){
 			mrwb->buf[mrwb->cur_len] = (char *)malloc(SINGLE_BUF_LEN);
@@ -30,5 +31,11 @@ void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op){
 				case M_READ:  out += sprintf(out, " read  ");break;
 				default: assert(0);
 		}
+
+}
+
+void init_ftrace(const char *elf_file){
+		FILE *file = fopen(elf_file, "r");
+		assert(file!=NULL);
 
 }
