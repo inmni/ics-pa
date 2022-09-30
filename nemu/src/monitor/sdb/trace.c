@@ -43,13 +43,13 @@ void init_ftrace(const char *elf_file){
 		Elf32_Ehdr ehdr;
 		Elf32_Shdr *shdrs;
 		//Read the ELF header
-		fr_r = fread(&ehdr, 1, sizeof(ehdr), file);
+		fr_r = fread(&ehdr, sizeof(ehdr), 1, file);
 		assert(fr_r);
 
 		//Read the section headers
 		shdrs = (Elf32_Shdr *)malloc(ehdr.e_shnum*sizeof(Elf32_Shdr));//TODO: to c style
 		fseek(file, ehdr.e_shoff, SEEK_SET);
-		fr_r = fread(shdrs, ehdr.e_shnum, sizeof(Elf32_Shdr), file);
+		fr_r = fread(shdrs, sizeof(Elf32_Shdr), ehdr.e_shnum, file);
 		
 		//Read the Symbol and String table
 		int s_idx = 0;
