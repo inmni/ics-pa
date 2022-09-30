@@ -70,4 +70,8 @@ void init_ftrace(const char *elf_file){
 				}
 		}
 		printf("str_table:%s\n", str_table);
+		free(sym_table);
+		free(str_table);
+		free(shdrs);
+		fclose(file);
 }
