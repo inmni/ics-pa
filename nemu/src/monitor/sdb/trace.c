@@ -66,5 +66,5 @@ void init_ftrace(const char *elf_file){
 					fr_r = fread(str_table, sh->sh_size, 1, file);
 				}
 		}
-		printf("%s\n", str_table);
+		printf("str_table:%s\n", str_table);
 }
