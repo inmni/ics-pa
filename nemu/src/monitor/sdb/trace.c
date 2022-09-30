@@ -63,7 +63,7 @@ void init_ftrace(const char *elf_file){
 				}
 				else if(sh->sh_type == SHT_STRTAB){
 								printf("before malloc\n");
-					str_table = (char *)malloc(sh->sh_size);
+					str_table = (char *)malloc(2);
 								printf("after malloc\n");
 					fseek(file, sh->sh_offset, SEEK_SET);
 					fr_r = fread(str_table, 1, sh->sh_size, file);
