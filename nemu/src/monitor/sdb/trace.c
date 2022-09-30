@@ -65,7 +65,7 @@ void init_ftrace(const char *elf_file){
 					str_table = (char *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
 					fr_r = fread(str_table, sh->sh_size, 1, file);
-					printf("Get string table\n");
+					printf("Get string table, size:%d\n", sh->sh_size);
 					break;
 				}
 		}
