@@ -58,13 +58,13 @@ void init_ftrace(const char *elf_file){
 				if(sh->sh_type == SHT_SYMTAB){
 					sym_table = (Elf32_Sym *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
-					fr_r = fread(sym_table, sh->sh_size, 1, file);
+					fr_r = fread(sym_table, 1, sh->sh_size, file);
 					printf("Get symbol table result:%d, offset:%d, size:%d\n", fr_r, sh->sh_offset, sh->sh_size);
 				}
 				else if(sh->sh_type == SHT_STRTAB){
 					str_table = (char *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
-					fr_r = fread(str_table, sh->sh_size, 1, file);
+					fr_r = fread(str_table, 1, sh->sh_size, file);
 					printf("Get string table result:%d, offset:%d, size:%d\n", fr_r, sh->sh_offset, sh->sh_size);
 					break;
 				}
