@@ -39,6 +39,7 @@ char *str_table;
 void init_ftrace(const char *elf_file){
 		FILE *file = fopen(elf_file, "r");
 		assert(file!=NULL);
+		printf("File bytes:%ld", ftell(file));
 		int fr_r;	
 		Elf32_Ehdr ehdr;
 		Elf32_Shdr *shdrs;
