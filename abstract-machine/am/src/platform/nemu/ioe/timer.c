@@ -4,7 +4,9 @@
 static uint64_t boot_time = 0;
 
 static uint64_t read_time(){
-		return *(volatile uint64_t *)RTC_ADDR;
+		uint64_t hi = ((uint64_t)(*(volatile uint32_t *)(RTC_ADDR+4)))<<32;
+		uint64_t lo = *(volatile uint32_t *)RTC_ADDR;
+		return hi+lo;
 }
 
 void __am_timer_init() {
