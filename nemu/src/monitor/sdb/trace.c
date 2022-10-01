@@ -78,7 +78,7 @@ void init_ftrace(const char *elf_file){
 					
 					str_count = str_split(str_table, tmp_str, "\0", fr_r, 1);
 
-					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(char), sh->sh_offset, sh->sh_size);
+					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", str_count, sizeof(char), sh->sh_offset, sh->sh_size);
 					break;
 				}
 		}
