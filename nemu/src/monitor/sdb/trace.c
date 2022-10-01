@@ -82,6 +82,11 @@ void init_ftrace(const char *elf_file){
 					break;
 				}
 		}
+		for(int i=0;i<str_count;i++){
+				printf("%s\n",str_table[i]);
+		}
+		free(str_table);
+		free(sym_table);
 		free(shdrs);
 		fclose(file);
 }
