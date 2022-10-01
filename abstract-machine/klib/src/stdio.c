@@ -4,30 +4,28 @@
 #include <stdarg.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-void match(char *tmp, const char *fmt, va_list *ap, int *count){
-memset(tmp,0,256);
-putch(*fmt);
-if(*fmt!='%'){
-		*count = 1;
-		*tmp++=*fmt++;
-		*tmp=0;
-}
-else{
-	fmt++;
-	if(*fmt=='d'){
-			*count = itoa(va_arg(*ap, int), tmp, 10)-tmp;
-			fmt++;
-	}
-	else if(*fmt=='s'){
-			strcpy(tmp,va_arg(*ap, char *));
-			*count = strlen(tmp);
-			fmt++;
+int match(char *tmp, const char *fmt, va_list *ap){
+	memset(tmp,0,256);
+	if(*fmt!='%'){
+			*tmp++=*fmt++;
+			*tmp=0;
+			return 1;
 	}
 	else{
-			panic("No found format");
+		fmt++;
+		if(*fmt=='d'){
+				*count = itoa(va_arg(*ap, int), tmp, 10)-tmp;
+				fmt++;
+		}
+		else if(*fmt=='s'){
+				strcpy(tmp,va_arg(*ap, char *));
+				*count = strlen(tmp);
+				fmt++;
+		}
+		else{
+				panic("No found format");
+		}
 	}
-}
-
 }
 int printf(const char *fmt, ...) {
   panic("Not implemented");
@@ -43,10 +41,6 @@ int sprintf(char *out, const char *fmt, ...) {
 	int move=0;
 	char tmp[256]={0};
 	while(*fmt){
-		match(tmp, fmt, ap, &move);
-		strcpy(out, tmp);
-		out+=move;
-	continue;	
 		if(*fmt!='%'){
 			*out++ = *fmt++;
 			continue;
