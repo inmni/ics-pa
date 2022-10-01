@@ -79,7 +79,7 @@ void init_ftrace(const char *elf_file){
 		Elf32_Sym sym;
 		for(int i=0;i<sym_count;i++){
 				sym = sym_table[i];
-				printf("value:%08x, st_name:%d	",sym.st_value,sym.st_name);
+				printf("value:%08x, st_name:%d, st_info:%d	",sym.st_value,sym.st_name,sym.st_info);
 				if(sym.st_info!=STT_FUNC)continue;
 				printf("%s\n",str_table+sym.st_name);
 		}
