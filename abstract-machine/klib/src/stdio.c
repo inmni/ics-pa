@@ -18,7 +18,7 @@ else{
 			fmt++;
 	}
 	else if(*fmt=='s'){
-			tmp = va_arg(*ap, char *);
+			strcpy(tmp,va_arg(*ap, char *));
 			*count = strlen(tmp);
 			fmt++;
 			tmp++;
