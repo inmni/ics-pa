@@ -6,6 +6,7 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 void match(char *tmp, const char *fmt, va_list *ap, int *count){
 memset(tmp,0,256);
+putch(*fmt);
 if(*fmt!='%'){
 		*count = 1;
 		*tmp++=*fmt++;
@@ -21,7 +22,6 @@ else{
 			strcpy(tmp,va_arg(*ap, char *));
 			*count = strlen(tmp);
 			fmt++;
-			tmp++;
 	}
 	else{
 			panic("No found format");
