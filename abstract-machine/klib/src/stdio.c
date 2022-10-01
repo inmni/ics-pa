@@ -4,62 +4,65 @@
 #include <stdarg.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-int match(char *tmp, const char *fmt, va_list *ap){
-	memset(tmp,0,256);
-	if(*fmt!='%'){
-			*tmp++=*fmt++;
-			*tmp=0;
-			return 1;
-	}
-	else{
-		fmt++;
-		if(*fmt=='d'){
-				*count = itoa(va_arg(*ap, int), tmp, 10)-tmp;
-				fmt++;
+typedef int (*op2str)(char *str1, char *str2);
+typedef int (*op2ch)(char *str, char ch);
+static int ch_copy(char *dst, char ch){
+		*(dst+1)=ch;
+		return 1;
+}
+static int ch_putch(char *no_str, char ch){
+		putch(ch);
+		return 0;
+}
+static int str_copy(char *dst, char *src){
+		strcpy(dst,src);
+		return strlen(src);
+}
+static int str_putch(char *no_str, char *str){
+		int count = strlen(str);
+		for(int i=0;i<count;i++){
+				putch(str[i]);
+		}	
+		return 0;
+}
+int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list *ap){
+		char buf[16] = {0};
+		while(*fmt){
+				switch(*fmt){
+						case '%':fmt++;
+						case 'd':{
+									itoa(va_arg(*ap, int), buf, 10);
+									tmp+=op1(tmp, buf);
+									fmt++;
+									break;
+						}
+						case 's':{
+									char *arg = va_arg(*ap, char *);
+									tmp+=op1(tmp, arg);
+									fmt++;
+									break;
+						}
+						default: op2(tmp, *fmt); tmp++; fmt++;
+				}
 		}
-		else if(*fmt=='s'){
-				strcpy(tmp,va_arg(*ap, char *));
-				*count = strlen(tmp);
-				fmt++;
-		}
-		else{
-				panic("No found format");
-		}
-	}
+		return 1;
 }
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+	va_list ap;
+	va_start(ap, fmt);
+  format(NULL, str_putch, ch_putch, fmt, &ap);
+	va_end(ap);
+	return 1;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  panic("Not implemented");
+		return format(out, str_copy, ch_copy, fmt, &ap);
 }
 
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	int move=0;
-	char tmp[256]={0};
-	while(*fmt){
-		if(*fmt!='%'){
-			*out++ = *fmt++;
-			continue;
-		}
-		fmt++;
-		if(*fmt=='d'){
-			int d = va_arg(ap, int);
-			out = itoa(d, out, 10);
-			fmt++;
-		}
-		else if(*fmt=='s'){
-			char *str = va_arg(ap, char *);
-			size_t len = strlen(str);
-			strcpy(out,str);
-			out+=len;
-			fmt++;
-		}
-		else{panic("No found format");return 0;}
-	}
+	vsprintf(out, fmt, ap);
 	va_end(ap);
 	return 1;
 }
