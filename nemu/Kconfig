@@ -160,6 +160,15 @@ config FTRACE
 	depends on TRACE
 	bool "Enable function tracer"
 	default n
+config DTRACE
+	depends on TRACE
+	bool "Enable device tracer"
+	default n
+config DTRACE_DEVICE
+	depends on DTRACE
+	string "Choose which device to trace, * present all"
+	default "*"
+
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"

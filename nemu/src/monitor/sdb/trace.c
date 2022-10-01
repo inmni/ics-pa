@@ -136,3 +136,11 @@ void ret_to_ftrace(uint32_t src_pc){
 		}
 }
 
+
+void read_dtrace(uint32_t addr, int len, IOMap *map, uint32_t ret){
+		log_write("read device %s at 0x%08x %d bytes, the result is 0x%08x\n", map->name,addr,len,ret);
+}
+
+void write_dtrace(uint32_t addr, int len, uint32_t data, IOMap *map){
+		log_write("write device %s at 0x%08x %d bytes, the new value is 0x%08x\n", map->name,addr,len,data);
+}

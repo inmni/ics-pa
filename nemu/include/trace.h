@@ -3,6 +3,7 @@
 
 #include <common.h>
 #include <elf.h>
+#include <device/map.h>
 
 #define ST_FUNC 18
 #define MAX_NR_IRB 16
@@ -35,4 +36,7 @@ typedef struct function_trace_buf{
 void init_ftrace(const char *elf_file);
 void call_to_ftrace(uint32_t dst_pc);
 void ret_to_ftrace(uint32_t src_pc);
+
+void read_dtrace(uint32_t addr, int len, IOMap *map, uint32_t ret);
+void write_dtrace(uint32_t addr, int len, uint32_t data, IOMap *map);
 #endif
