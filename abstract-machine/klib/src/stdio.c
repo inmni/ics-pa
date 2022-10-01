@@ -17,7 +17,7 @@ static int ch_put(char *no_str, char ch){
 }
 static int str_copy(char *dst, char *src){
 		strcpy(dst,src);
-		putstr(src);
+		//putstr(src);
 		return strlen(src);
 }
 static int str_put(char *no_str, char *str){
@@ -64,8 +64,8 @@ int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
 	vsprintf(out, fmt, ap);
-	putstr(out);
-	putch('\n');
+	//putstr(out);
+	//putch('\n');
 	va_end(ap);
 	return 1;
 }
