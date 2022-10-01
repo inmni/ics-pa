@@ -10,34 +10,32 @@ static int ch_copy(char *dst, char ch){
 		*(dst+1)=ch;
 		return 1;
 }
-static int ch_putch(char *no_str, char ch){
+static int ch_put(char *no_str, char ch){
 		putch(ch);
 		return 0;
 }
 static int str_copy(char *dst, char *src){
 		strcpy(dst,src);
+		putstr(src);
 		return strlen(src);
 }
-static int str_putch(char *no_str, char *str){
-		int count = strlen(str);
-		for(int i=0;i<count;i++){
-				putch(str[i]);
-		}	
+static int str_put(char *no_str, char *str){
+		putstr(str);
 		return 0;
 }
-int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list *ap){
+int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 		char buf[16] = {0};
 		while(*fmt){
 				switch(*fmt){
 						case '%':fmt++;
 						case 'd':{
-									itoa(va_arg(*ap, int), buf, 10);
+									itoa(va_arg(ap, int), buf, 10);
 									tmp+=op1(tmp, buf);
 									fmt++;
 									break;
 						}
 						case 's':{
-									char *arg = va_arg(*ap, char *);
+									char *arg = va_arg(ap, char *);
 									tmp+=op1(tmp, arg);
 									fmt++;
 									break;
@@ -50,13 +48,13 @@ int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list *ap){
 int printf(const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-  format(NULL, str_putch, ch_putch, fmt, &ap);
+  format(NULL, str_put, ch_put, fmt, &ap);
 	va_end(ap);
 	return 1;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-		return format(out, str_copy, ch_copy, fmt, &ap);
+		return format(out, str_copy, ch_copy, fmt, ap);
 }
 
 int sprintf(char *out, const char *fmt, ...) {
