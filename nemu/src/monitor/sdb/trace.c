@@ -36,10 +36,7 @@ void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op){
 
 Elf32_Sym *sym_table;
 int sym_count;
-char **str_table;
-int str_count;
-
-int str_split(char **out, char *src, const char *sep, size_t len, int flag);
+char *str_table;
 
 void init_ftrace(const char *elf_file){
 		FILE *file = fopen(elf_file, "r");
@@ -50,7 +47,6 @@ void init_ftrace(const char *elf_file){
 		int fr_r;	
 		Elf32_Ehdr ehdr;
 		Elf32_Shdr *shdrs;
-		char *tmp_str=NULL;
 		//Read the ELF header
 		fr_r = fread(&ehdr, sizeof(ehdr), 1, file);
 		assert(fr_r);
@@ -68,17 +64,14 @@ void init_ftrace(const char *elf_file){
 					sym_table = (Elf32_Sym *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
 					sym_count = fread(sym_table, sizeof(Elf32_Sym), sh->sh_size/sizeof(Elf32_Sym), file);
-					str_table = (char **)malloc(fr_r*sizeof(char *));
 					printf("Get symbol table result:%d, %ld bytes per unit, offset:%d, size:%d\n", sym_count, sizeof(Elf32_Sym), sh->sh_offset, sh->sh_size);
 				}
 				else if(sh->sh_type == SHT_STRTAB){
-					tmp_str = (char *)malloc(sh->sh_size);
+					str_table = (char *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
-					fr_r = fread(tmp_str, sizeof(char), sh->sh_size/sizeof(char), file);
+					fr_r = fread(str_table, sizeof(char), sh->sh_size/sizeof(char), file);
 					
-					str_count = str_split(str_table, tmp_str, "\0", fr_r, 1);
-
-					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", str_count, sizeof(char), sh->sh_offset, sh->sh_size);
+					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(char), sh->sh_offset, sh->sh_size);
 					break;
 				}
 		}
@@ -86,12 +79,12 @@ void init_ftrace(const char *elf_file){
 		Elf32_Sym sym;
 		for(int i=0;i<sym_count;i++){
 				sym = sym_table[i];
-				printf("value:%08x, st_name:%d",sym.st_value,sym.st_name);
-				//if(sym.st_info!=STT_FUNC)continue;
-				printf("%s\n",tmp_str+sym.st_name);
+				printf("value:%08x, st_name:%d	",sym.st_value,sym.st_name);
+				if(sym.st_info!=STT_FUNC)continue;
+				printf("%s\n",str_table+sym.st_name);
 		}
-		free(str_table);
-		free(sym_table);
+		//free(str_table);
+		//free(sym_table);
 		free(shdrs);
 		fclose(file);
 }
@@ -103,7 +96,7 @@ void call_to_ftrace(uint32_t dst_pc){
 				sym = sym_table[idx];
 				if(sym.st_info!=STT_FUNC)continue;
 				if(dst_pc < sym.st_value || dst_pc >= sym.st_value+sym.st_size)continue;
-				
+					
 		}
 }
 
