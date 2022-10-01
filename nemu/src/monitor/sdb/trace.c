@@ -1,5 +1,7 @@
 #include <trace.h>
 
+FTB ftb;
+
 void buf_mem_op(M_RW_B *mrwb, uint32_t addr, int len, uint32_t data, int op){
 	if(mrwb->cur_len < MAX_NR_MRWB){
 			mrwb->buf[mrwb->cur_len] = (char *)malloc(SINGLE_BUF_LEN);
@@ -76,13 +78,13 @@ void init_ftrace(const char *elf_file){
 				}
 		}
 
-		Elf32_Sym sym;
-		for(int i=0;i<sym_count;i++){
-				sym = sym_table[i];
-				if(sym.st_info!=18)continue;
-				printf("value:%08x, st_name:%d, st_info:%d	",sym.st_value,sym.st_name,sym.st_info);
-				printf("%s\n",str_table+sym.st_name);
-		}
+		//Elf32_Sym sym;
+		//for(int i=0;i<sym_count;i++){
+			//	sym = sym_table[i];
+			//	if(sym.st_info!=ST_FUNC)continue;
+			//	printf("value:%08x, st_name:%d, st_info:%d	",sym.st_value,sym.st_name,sym.st_info);
+			//	printf("%s\n",str_table+sym.st_name);
+		//}
 		//free(str_table);
 		//free(sym_table);
 		free(shdrs);
@@ -94,13 +96,35 @@ void call_to_ftrace(uint32_t dst_pc){
 		Elf32_Sym sym;
 		for(; idx<sym_count; idx++){
 				sym = sym_table[idx];
-				if(sym.st_info!=STT_FUNC)continue;
+				if(sym.st_info!=ST_FUNC)continue;
 				if(dst_pc < sym.st_value || dst_pc >= sym.st_value+sym.st_size)continue;
-					
+				log_write("call %s\n", str_table+sym.st_name);
+				return;
+				if(ftb.cur_len<MAX_NR_FTB){
+						ftb.buf[ftb.cur_len] = (char *)malloc(128);
+						strcpy(ftb.buf[ftb.cur_len], "call ");
+						strcpy(ftb.buf[ftb.cur_len]+5, str_table+sym.st_name);
+						ftb.cur_len++;
+				}
+				else{
+						strcpy(ftb.buf[ftb.st_index], "call ");
+						strcpy(ftb.buf[ftb.st_index]+5, str_table+sym.st_name);
+						ftb.st_index++;
+						ftb.st_index%=MAX_NR_FTB;
+				}
+				break;
 		}
 }
 
 void ret_to_ftrace(uint32_t src_pc){
-
+		int idx = 0;
+		Elf32_Sym sym;
+		for(; idx<sym_count; idx++){
+				sym = sym_table[idx];
+				if(sym.st_info!=ST_FUNC)continue;
+				if(src_pc < sym.st_value || src_pc >= sym.st_value + sym.st_size)continue;
+				log_write("ret %s\n", str_table+sym.st_name);
+				return;
+		}
 }
 

@@ -4,6 +4,7 @@
 #include <common.h>
 #include <elf.h>
 
+#define ST_FUNC 18
 #define MAX_NR_IRB 16
 #define MAX_NR_MRWB 256
 #define MAX_NR_FTB 64
