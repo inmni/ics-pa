@@ -82,11 +82,31 @@ void init_ftrace(const char *elf_file){
 					break;
 				}
 		}
-		for(int i=0;i<str_count;i++){
-				printf("%s\n",str_table[i]);
+
+		Elf32_Sym sym;
+		for(int i=0;i<sym_count;i++){
+				sym = sym_table[i];
+				if(sym.st_info!=STT_FUNC)continue;
+				printf("%s\n",str_table[sym.st_name]);
 		}
 		free(str_table);
 		free(sym_table);
 		free(shdrs);
 		fclose(file);
 }
+
+void call_to_ftrace(uint32_t dst_pc){
+		int idx = 0;
+		Elf32_Sym sym;
+		for(; idx<sym_count; idx++){
+				sym = sym_table[idx];
+				if(sym.st_info!=STT_FUNC)continue;
+				if(dst_pc < sym.st_value || dst_pc >= sym.st_value+sym.st_size)continue;
+				
+		}
+}
+
+void ret_to_ftrace(uint32_t src_pc){
+
+}
+
