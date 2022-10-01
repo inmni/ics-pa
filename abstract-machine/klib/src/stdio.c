@@ -30,7 +30,7 @@ int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 				putch(*fmt);
 				putch('\n');
 				switch(*fmt){
-						case '%':fmt++;
+						case '%':fmt++;break;
 						case 'd':{
 									itoa(va_arg(ap, int), buf, 10);
 									tmp+=op1(tmp, buf);
