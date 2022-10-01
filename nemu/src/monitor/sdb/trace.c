@@ -87,7 +87,7 @@ void init_ftrace(const char *elf_file){
 		for(int i=0;i<sym_count;i++){
 				sym = sym_table[i];
 				//if(sym.st_info!=STT_FUNC)continue;
-				printf("%s\n",str_table[sym.st_name]);
+				printf("%d,%s\n",sym.st_name,str_table[sym.st_name]);
 		}
 		free(str_table);
 		free(sym_table);
