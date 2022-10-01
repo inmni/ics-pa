@@ -79,11 +79,13 @@ word_t paddr_read(paddr_t addr, int len) {
 #endif
 			return data;
 	}
-  IFDEF(CONFIG_DEVICE, data = mmio_read(addr, len),
+#ifdef CONFIG_DEVICE
+	  data = mmio_read(addr, len);
 #ifdef CONFIG_MTRACE
-									buf_mem_op(&mrwb, addr, len, data, M_READ),
+									buf_mem_op(&mrwb, addr, len, data, M_READ);
 #endif	
-									return data);
+		return data;
+#endif
   out_of_bound(addr);
   return 0;
 }
