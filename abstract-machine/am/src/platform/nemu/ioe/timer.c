@@ -4,10 +4,8 @@ static uint64_t boot_time = 0;
 // No include macro.h, so copy the BITS from it.
 #define BITS(x, hi, lo) (((x) >> (lo))&((1ull << ((hi) - (lo) + 1)) - 1))
 
-#define TIME_MMIO 0xa0000048	// The time mmio of client
-
 static uint64_t read_time(){
-		return *(volatile uint64_t *)TIME_MMIO;
+		return *(volatile uint64_t *)RTC_ADDR;
 }
 
 void __am_timer_init() {
