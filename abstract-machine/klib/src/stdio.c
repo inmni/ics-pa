@@ -28,6 +28,7 @@ int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 		char buf[16] = {0};
 		int flag = 0;
 		while(*fmt){
+						// TODO:Regex is better
 				//putch(*fmt);
 				//putch('\n');
 				switch(*fmt){
