@@ -51,7 +51,7 @@ int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 int printf(const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-  format(NULL, str_put, ch_put, fmt, &ap);
+  format(NULL, str_put, ch_put, fmt, ap);
 	va_end(ap);
 	return 1;
 }
