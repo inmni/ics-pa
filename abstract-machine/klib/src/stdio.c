@@ -4,30 +4,31 @@
 #include <stdarg.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-#define match(tmp, fmt, ap, count) ({\
-memset(tmp,0,256);\
-if(*fmt!='%'){\
-		count = 1;\
-		*tmp++=*fmt++;\
-		*tmp=0;\
-}\
-else{\
-	fmt++;\
-	if(*fmt=='d'){\
-			count = itoa(va_arg(ap, int), tmp, 10)-tmp;\
-			fmt++;\
-	}\
-	else if(*fmt=='s'){\
-			tmp = va_arg(ap, char *);\
-			count = strlen(tmp);\
-			tmp++;\
-	}\
-	else{\
-			panic("No found format");return 0;\
-	}\
-}\
-\
-})
+void match(char *tmp, const char *fmt, va_list *ap, int *count){
+memset(tmp,0,256);
+if(*fmt!='%'){
+		*count = 1;
+		*tmp++=*fmt++;
+		*tmp=0;
+}
+else{
+	fmt++;
+	if(*fmt=='d'){
+			*count = itoa(va_arg(*ap, int), tmp, 10)-tmp;
+			fmt++;
+	}
+	else if(*fmt=='s'){
+			tmp = va_arg(*ap, char *);
+			*count = strlen(tmp);
+			fmt++;
+			tmp++;
+	}
+	else{
+			panic("No found format");
+	}
+}
+
+}
 int printf(const char *fmt, ...) {
   panic("Not implemented");
 }
@@ -42,8 +43,7 @@ int sprintf(char *out, const char *fmt, ...) {
 	int move=0;
 	char tmp[256]={0};
 	while(*fmt){
-		char *head = tmp;
-		match(head, fmt, ap, move);
+		match(tmp, fmt, ap, &move);
 		strcpy(out, tmp);
 		out+=move;
 	continue;	
