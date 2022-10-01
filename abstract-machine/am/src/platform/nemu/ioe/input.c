@@ -8,5 +8,5 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   kbd->keycode = ((*(volatile uint32_t *)KBD_ADDR)<<1)>>1;
 	int tmp = *(volatile uint32_t *)KBD_ADDR;
 	if(tmp)
-	printf("all:%08x",tmp);
+	printf("all:%d",tmp);
 }
