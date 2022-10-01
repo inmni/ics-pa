@@ -50,7 +50,7 @@ void init_ftrace(const char *elf_file){
 		int fr_r;	
 		Elf32_Ehdr ehdr;
 		Elf32_Shdr *shdrs;
-		char *tmp_str;
+		char *tmp_str=NULL;
 		//Read the ELF header
 		fr_r = fread(&ehdr, sizeof(ehdr), 1, file);
 		assert(fr_r);
@@ -87,8 +87,8 @@ void init_ftrace(const char *elf_file){
 		for(int i=0;i<sym_count;i++){
 				sym = sym_table[i];
 				printf("value:%08x, st_name:%d\n",sym.st_value,sym.st_name);
-				//if(sym.st_info!=STT_FUNC)continue;
-				//printf("%d,%s\n",sym.st_name,str_table[sym.st_name]);
+				if(sym.st_info!=STT_FUNC)continue;
+				printf("%d,%s\n",sym.st_name,tmp_str+sym.st_name);
 		}
 		free(str_table);
 		free(sym_table);
