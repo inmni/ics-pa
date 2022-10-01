@@ -26,18 +26,21 @@ static int str_put(char *no_str, char *str){
 }
 int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 		char buf[16] = {0};
+		int flag = 0;
 		while(*fmt){
 				//putch(*fmt);
 				//putch('\n');
 				switch(*fmt){
-						case '%':++fmt;
-						case 'd':{
+						case '%':fmt++;flag=1;break;
+						case 'd':if(flag){
+									flag = 0;
 									itoa(va_arg(ap, int), buf, 10);
 									tmp+=op1(tmp, buf);
 									fmt++;
 									break;
 						}
-						case 's':{
+						case 's':if(flag){
+									flag = 0;
 									char *arg = va_arg(ap, char *);
 									tmp+=op1(tmp, arg);
 									fmt++;
