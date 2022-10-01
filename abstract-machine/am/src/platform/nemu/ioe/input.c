@@ -2,11 +2,11 @@
 #include <nemu.h>
 #include <stdio.h>
 #define KEYDOWN_MASK 0x8000
-
+#define KEYCODE_MASK 0x7FFF
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
-  kbd->keydown = (bool)((*(volatile uint8_t *)KBD_ADDR)>>7);
-  kbd->keycode = ((*(volatile uint32_t *)KBD_ADDR)<<1)>>1;
+  kbd->keydown = (bool)(((*(volatile uint32_t *)KBD_ADDR)&KEYDOWN_MASK)>>15);
+  kbd->keycode = ((*(volatile uint32_t *)KBD_ADDR)&KEYCODE_MASK);
 	int tmp = *(volatile uint32_t *)KBD_ADDR;
 	if(tmp)
-	printf("all:%d",tmp);
+	printf("all:%d\n",tmp);
 }
