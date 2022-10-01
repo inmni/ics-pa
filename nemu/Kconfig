@@ -168,7 +168,14 @@ config DTRACE_DEVICE
 	depends on DTRACE
 	string "Choose which device to trace, * present all"
 	default "*"
-
+config DTRACE_READ
+	depends on DTRACE
+	bool "Enable device read tracer"
+	default n
+config DTRACE_WRITE
+	depends on DTRACE
+	bool "Enable device write tracer"
+	default y
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"
