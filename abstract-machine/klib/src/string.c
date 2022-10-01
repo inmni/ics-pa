@@ -97,6 +97,11 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 }
 
 char *itoa(int num, char *str, int base){
+	if(num==0){
+		*str++='0';
+		*str = 0;
+		return str;
+	}
 	char tmp[10] = {0};
 	int i=0;
 	int tmp_num = num % 10;
