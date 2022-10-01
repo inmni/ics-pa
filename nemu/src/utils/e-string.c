@@ -17,18 +17,20 @@ void str_split(char **out, char *src, const char* sep, size_t len, int flag){
 				}while(token!=NULL);
 				return;
 		}
-
+		int tmp_len;
 		// if sep==0
 		for(; src_idx<len; src_idx++){
 				if(*(src+src_idx)==0){
 						continue;
 				}
+				tmp_len = strlen(src+src_idx);
 				printf("try to malloc\n");
 				if(flag){
-						*(out+out_idx) = (char *)malloc(strlen(src+src_idx)+1);
+						*(out+out_idx) = (char *)malloc(tmp_len+1);
 				}
 				printf("try to strcpy\n");
 				strcpy(*(out+out_idx), src+src_idx);
+				src_idx+=tmp_len;
 				out_idx++;
 		}
 }
