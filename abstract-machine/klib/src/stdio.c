@@ -37,6 +37,7 @@ int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 						}
 						case 's':{
 									char *arg = va_arg(ap, char *);
+									putstr("aaaaaaaaaaaaa\n");
 									tmp+=op1(tmp, arg);
 									fmt++;
 									break;
@@ -61,7 +62,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	putstr("aaaaaaaaaaa");
 	vsprintf(out, fmt, ap);
 	va_end(ap);
 	return 1;
