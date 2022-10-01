@@ -1,0 +1,31 @@
+#include <string.h>
+#include <stdlib.h>
+void str_split(char **out, char *src, const char* sep, size_t len, int flag){
+		
+		size_t out_idx = 0;
+		size_t src_idx = 0;
+		if(*sep!=0){
+				char *token = strtok(src, sep);
+				do{
+						if(flag){
+							*(out+out_idx) = (char *)malloc(strlen(token)+1);
+						}
+						strcpy(*(out+out_idx), token);
+						out_idx++;
+						token = strtok(NULL, sep);
+				}while(token!=NULL);
+				return;
+		}
+
+		// if sep==0
+		for(; src_idx<len; src_idx++){
+				if(*(src+src_idx)==0){
+						continue;
+				}
+				if(flag){
+						*(out+out_idx) = (char *)malloc(strlen(src+src_idx)+1);
+				}
+				strcpy(*(out+out_idx), src+src_idx);
+				out_idx++;
+		}
+}

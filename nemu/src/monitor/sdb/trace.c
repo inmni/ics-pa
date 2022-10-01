@@ -35,7 +35,10 @@ void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op){
 }
 
 Elf32_Sym *sym_table;
-char *str_table;
+char **str_table;
+
+void str_split(char **out, char *src, char sep, size_t len, int flag);
+
 void init_ftrace(const char *elf_file){
 		FILE *file = fopen(elf_file, "r");
 		assert(file!=NULL);
@@ -45,6 +48,7 @@ void init_ftrace(const char *elf_file){
 		int fr_r;	
 		Elf32_Ehdr ehdr;
 		Elf32_Shdr *shdrs;
+		char *tmp_str;
 		//Read the ELF header
 		fr_r = fread(&ehdr, sizeof(ehdr), 1, file);
 		assert(fr_r);
@@ -62,18 +66,23 @@ void init_ftrace(const char *elf_file){
 					sym_table = (Elf32_Sym *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
 					fr_r = fread(sym_table, sizeof(Elf32_Sym), sh->sh_size/sizeof(Elf32_Sym), file);
+					str_table = (char **)malloc(fr_r*sizeof(char *));
 					printf("Get symbol table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(Elf32_Sym), sh->sh_offset, sh->sh_size);
 				}
 				else if(sh->sh_type == SHT_STRTAB){
-					str_table = (char *)malloc(sh->sh_size);
+					tmp_str = (char *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
-					fr_r = fread(str_table, sizeof(char), sh->sh_size/sizeof(char), file);
+					fr_r = fread(tmp_str, sizeof(char), sh->sh_size/sizeof(char), file);
+					
+					str_split(str_table, tmp_str, 0, fr_r, 1);
+
 					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(char), sh->sh_offset, sh->sh_size);
 					break;
 				}
 		}
-		while(!(*str_table)){str_table++;}
-		printf("str_table:%s, length:%ld\n", str_table, strlen(str_table));
+		for(int i=0;i<41;i++){
+		printf("str_table:%s, length:%ld\n", *(str_table+i), strlen(*(str_table+i)));
+		}
 		free(sym_table);
 		free(str_table);
 		free(shdrs);
