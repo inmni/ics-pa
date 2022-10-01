@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 void str_split(char **out, char *src, const char* sep, size_t len, int flag){
 		
 		size_t out_idx = 0;
@@ -22,9 +23,11 @@ void str_split(char **out, char *src, const char* sep, size_t len, int flag){
 				if(*(src+src_idx)==0){
 						continue;
 				}
+				printf("try to malloc\n");
 				if(flag){
 						*(out+out_idx) = (char *)malloc(strlen(src+src_idx)+1);
 				}
+				printf("try to strcpy\n");
 				strcpy(*(out+out_idx), src+src_idx);
 				out_idx++;
 		}
