@@ -37,7 +37,7 @@ void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op){
 Elf32_Sym *sym_table;
 char **str_table;
 
-void str_split(char **out, char *src, char sep, size_t len, int flag);
+void str_split(char **out, char *src, const char *sep, size_t len, int flag);
 
 void init_ftrace(const char *elf_file){
 		FILE *file = fopen(elf_file, "r");
@@ -74,7 +74,7 @@ void init_ftrace(const char *elf_file){
 					fseek(file, sh->sh_offset, SEEK_SET);
 					fr_r = fread(tmp_str, sizeof(char), sh->sh_size/sizeof(char), file);
 					
-					str_split(str_table, tmp_str, 0, fr_r, 1);
+					str_split(str_table, tmp_str, "\0", fr_r, 1);
 
 					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(char), sh->sh_offset, sh->sh_size);
 					break;
