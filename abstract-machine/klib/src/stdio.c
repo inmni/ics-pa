@@ -61,6 +61,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
+	putstr("aaaaaaaaaaa");
 	vsprintf(out, fmt, ap);
 	va_end(ap);
 	return 1;
