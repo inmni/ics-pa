@@ -90,7 +90,7 @@ void init_ftrace(const char *elf_file){
 		free(shdrs);
 		fclose(file);
 }
-
+int count = 0;
 void call_to_ftrace(uint32_t dst_pc){
 		int idx = 0;
 		Elf32_Sym sym;
@@ -98,7 +98,11 @@ void call_to_ftrace(uint32_t dst_pc){
 				sym = sym_table[idx];
 				if(sym.st_info!=ST_FUNC)continue;
 				if(dst_pc < sym.st_value || dst_pc >= sym.st_value+sym.st_size)continue;
+				for(int temp = 0;temp<count;temp++){
+					log_write("    ");
+				}
 				log_write("call %s\n", str_table+sym.st_name);
+				count++;
 				return;
 				if(ftb.cur_len<MAX_NR_FTB){
 						ftb.buf[ftb.cur_len] = (char *)malloc(128);
@@ -123,6 +127,10 @@ void ret_to_ftrace(uint32_t src_pc){
 				sym = sym_table[idx];
 				if(sym.st_info!=ST_FUNC)continue;
 				if(src_pc < sym.st_value || src_pc >= sym.st_value + sym.st_size)continue;
+				count--;
+				for(int temp=0;temp<count;temp++){
+					log_write("    ");
+				}
 				log_write("ret %s\n", str_table+sym.st_name);
 				return;
 		}

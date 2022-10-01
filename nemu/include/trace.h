@@ -25,6 +25,7 @@ enum{M_WRITE, M_READ};
 void buf_mem_op(M_RW_B *mrwb, uint32_t addr, int len, uint32_t data, int op);
 void parse_mem_op(char *out, uint32_t addr, int len, uint32_t data, int op);
 
+//TODO:Unused, but prepared for function ring trace
 typedef struct function_trace_buf{
 	int cur_len;
 	int st_index;

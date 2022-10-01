@@ -90,7 +90,6 @@ static int decode_exec(Decode *s) {
 	INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , I, NEMUTRAP(s->pc, R(10))); //ok R(10) is $a0
 	INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, s->dnpc = (src1 + imm)&~1, R(dest) = s->pc + 4
 #ifdef CONFIG_FTRACE
-			,printf("aaaaaaaaaaaaaaaaaaaaaaaaa\n")
 			,ret_to_ftrace(R(dest))						
 #endif
 			);//y
