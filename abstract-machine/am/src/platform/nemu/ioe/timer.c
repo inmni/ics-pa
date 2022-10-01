@@ -1,8 +1,7 @@
 #include <am.h>
 #include <nemu.h>
+#include <stdio.h>
 static uint64_t boot_time = 0;
-// No include macro.h, so copy the BITS from it.
-#define BITS(x, hi, lo) (((x) >> (lo))&((1ull << ((hi) - (lo) + 1)) - 1))
 
 static uint64_t read_time(){
 		return *(volatile uint64_t *)RTC_ADDR;
@@ -14,6 +13,7 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
 	uptime->us = read_time() - boot_time;
+	printf("%ld\n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
