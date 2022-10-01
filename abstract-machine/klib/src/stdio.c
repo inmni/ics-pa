@@ -27,7 +27,8 @@ static int str_put(char *no_str, char *str){
 int format(char *tmp, op2str op1, op2ch op2, const char *fmt, va_list ap){
 		char buf[16] = {0};
 		while(*fmt){
-				putstr("begin aaaaaaaaaaaaaaaaa\n");
+				putch(*fmt);
+				putch('\n');
 				switch(*fmt){
 						case '%':fmt++;
 						case 'd':{
