@@ -8,6 +8,7 @@ typedef int (*op2str)(char *str1, char *str2);
 typedef int (*op2ch)(char *str, char ch);
 static int ch_copy(char *dst, char ch){
 		*(dst+1)=ch;
+		putch(ch);
 		return 1;
 }
 static int ch_put(char *no_str, char ch){
