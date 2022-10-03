@@ -7,6 +7,4 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
 	uint32_t scancode = *(volatile uint32_t *)KBD_ADDR;
   kbd->keydown = scancode & KEYDOWN_MASK ? true:false;
   kbd->keycode = scancode & KEYCODE_MASK;
-	if(scancode)
-	printf("keydown:%d,keycode:%d\n",kbd->keydown,kbd->keycode);
 }
