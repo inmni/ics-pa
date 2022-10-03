@@ -1,6 +1,10 @@
 #include <am.h>
 #include <nemu.h>
 
+
+#define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
+#define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
+
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 static int w = 400;
 static int h = 300;
