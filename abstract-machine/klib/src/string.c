@@ -5,12 +5,8 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
-	if(s==NULL)return 0;
 	size_t ans = 0;
-	while(*s){
-		ans++;
-		s++;
-	}
+	while(*s++)ans++;
 	return ans;
 }
 
@@ -22,7 +18,7 @@ char *strcpy(char *dst, const char *src) {
 
 char *strncpy(char *dst, const char *src, size_t n) {
 	size_t i;
-	for(i = 0; i < n && !src[i]; i++)*(dst+i) = *(src+i);
+	for(i = 0; i < n && !(*(src+i)); i++)*(dst+i) = *(src+i);
 	for(; i<n;i++)*(dst+i) = 0;
 	return dst;
 }
@@ -42,20 +38,15 @@ int strcmp(const char *s1, const char *s2) {
 			i++;
 	}
 	return *(unsigned char *)(s1+i)-*(unsigned char *)(s2+i);
-	if(s1==NULL)return s2?-1:0;
-	if(s2==NULL)return 1;
-	int ans = 0;
-	while(*s2 && !(ans = *(unsigned char*)s1++ - *(unsigned char*)s2++));
-	//if *s1 is zero, then ans < 0, break
-	//if *s2 is zero, break, last ans >=0, if last ans is not zero, break;
-	if(ans) return ans<0?-1:1;
-	return 0;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
 	size_t i = 0;
 	for(; i<n; i++){
-		if(*(s1+i)==*(s2+i))	continue;
+		if(*(s1+i)==*(s2+i)){
+			if(*(s1+i))continue;
+			return 0;
+		}
 		return *(s1+i) < *(s2+i) ? -1:1;
 	}
 	return 0;
