@@ -15,33 +15,24 @@ size_t strlen(const char *s) {
 }
 
 char *strcpy(char *dst, const char *src) {
-	if(src==NULL||dst==NULL)return dst;
 	char *head = dst;
 	while((*dst++=*src++));
 	return head;
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
-	if(src==NULL||dst==NULL)return dst;
 	size_t i;
-	for(i = 0; i < n && !src[i]; i++){
-		*(dst+i) = *(src+i);
-	}
-	for(; i<n;i++){
-		*(dst+i) = 0;
-	}
+	for(i = 0; i < n && !src[i]; i++)*(dst+i) = *(src+i);
+	for(; i<n;i++)*(dst+i) = 0;
 	return dst;
 }
 
 char *strcat(char *dst, const char *src) {
 	if(src==NULL||dst==NULL)return dst;
-	char *tmp = dst+strlen(dst);
-	while(*src){
-		*tmp = *src;
-		tmp++;src++;
-	}
-	*tmp = 0;
-	return dst;
+	char *head = dst;
+	while(*dst)dst++;
+	while((*dst++=*src++));
+	return head;
 }
 
 int strcmp(const char *s1, const char *s2) {
