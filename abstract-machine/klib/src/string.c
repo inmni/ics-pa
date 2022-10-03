@@ -16,12 +16,7 @@ size_t strlen(const char *s) {
 
 char *strcpy(char *dst, const char *src) {
 	if(src==NULL||dst==NULL)return dst;
-	size_t index = 0;
-	while(*(src+index)){
-		*(dst+index) = *(src+index);
-		index++;
-	}
-	*(dst+index) =  0;
+	while((*dst++=*src++));
 	return dst;
 }
 
