@@ -41,13 +41,12 @@ int strcmp(const char *s1, const char *s2) {
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
-	size_t i = 0;
-	for(; i<n; i++){
-		if(*(s1+i)==*(s2+i)){
-			if(*(s1+i))continue;
-			return 0;
-		}
-		return *(s1+i) < *(s2+i) ? -1:1;
+	while(n-->0){
+			if(*s1==*s2){
+					if(*s1==0)return 0;
+					s1++;s2++;continue;
+			}
+			return *s1<*s2?-1:1;
 	}
 	return 0;
 }
@@ -74,8 +73,8 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 	if(s2==NULL)return 1;
 	size_t i = 0;
 	for(; i<n; i++){
-		if(*(char *)(s1+i)==*(char *)(s2+i))continue;
-		return *(char *)(s1+i) <*(char *)(s2+i) ? -1:1;
+		if(*(unsigned char *)(s1+i)==*(unsigned char *)(s2+i))continue;
+		return *(unsigned char *)(s1+i) <*(unsigned char *)(s2+i) ? -1:1;
 	}
 	return 0;
 }
