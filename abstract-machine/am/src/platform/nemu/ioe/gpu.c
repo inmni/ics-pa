@@ -1,9 +1,13 @@
 #include <am.h>
 #include <nemu.h>
 
-
-#define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
-#define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
+#ifdef CONFIG_VGA_SIZE_800x600
+	#define SCREEN_W 800
+	#define SCREEN_H 600
+#else
+	#define SCREEN_W 400
+	#define SCREEN_H 300
+#endif
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 static int w = 400;
@@ -31,7 +35,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	uint32_t *pixels = ctl->pixels;
 	for(row = 0; row < ctl->h; row++){
 			for(col = 0; col < ctl->w; col++){
-					*(fb+w*(row+ctl->y)+col+ctl->x)=*(pixels+row*ctl->w+col);
+					*(fb+SCREEN_W*(row+ctl->y)+col+ctl->x)=*(pixels+row*ctl->w+col);
 			}
 	}
   if (ctl->sync) {
