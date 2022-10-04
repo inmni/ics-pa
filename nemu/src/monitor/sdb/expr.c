@@ -64,7 +64,7 @@ static struct rule {
    */
 	{"\\$0", TK_A},
 	{"\\$", TK_REG},
-	{"\\b[a-z][a-z0-9][0-9]\\b",TK_A},
+	{"\\b[a-z][a-z0-9][0-9]?\\b",TK_A},
 	{"&&",TK_AND},
 	{"\\|\\|",TK_OR},
 	{"!=",TK_NEQ},
