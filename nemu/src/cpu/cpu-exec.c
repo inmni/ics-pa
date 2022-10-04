@@ -17,7 +17,9 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
-
+#ifdef CONFIG_WATCHPOINT
+#include <watchpoint.h>
+#endif
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -31,12 +33,6 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
-typedef struct watchpoint{
-int NO;struct watchpoint *next;      
-char EXPR[32];int oldValue,targetValue;
-}WP;
-WP* get_wp_head();
-word_t expr(char *e,bool *success);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
