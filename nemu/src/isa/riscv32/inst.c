@@ -94,7 +94,7 @@ static int decode_exec(Decode *s) {
 			,ret_to_ftrace(R(dest))						
 #endif
 			);//y
-	INSTPAT(00000000000000000001000000010011, slli	 , IS, imm = imm&63;if(imm<=31)R(dest) = src1<<imm );//y
+	INSTPAT(00000000000000000001000000010011, slli	 , I, imm = imm&63;if(imm<=31)R(dest) = src1<<imm );//y
 	INSTPAT(00000000000000000101000000010011, srli	 , IS, imm = imm&63;if(imm<=31)R(dest) = src1>>imm );//y
 	INSTPAT(01000000000000000101000000010011, srai   , IS, imm = imm&63;if(imm<=31)R(dest) = ((int)src1)>>imm);//y
 		INSTPAT(00000000000000000000000000000011, lb		 , I, R(dest) = Mr(src1 + imm, 1); if(R(dest)&0x80)R(dest)|=0xFFFFFFF0);
