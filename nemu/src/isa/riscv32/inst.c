@@ -6,7 +6,7 @@
 * You may obtain a copy of Mulan PSL v2 at:
 *          http://license.coscl.org.cn/MulanPSL2
 *
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* THIS SOFTWARE IS PROVIDED ON AN AS IS BASIS, WITHOUT WARRANTIES OF ANY KIND,
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 *
@@ -48,7 +48,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
 		case TYPE_B: src1R(); src2R(); immB(); break;
 		case TYPE_J: 									 immJ(); break;
   }
-	//printf("dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
+	//printf(dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n,*dest,*src1,*src2,*imm,type);
 }
 
 static int decode_exec(Decode *s) {
@@ -57,67 +57,67 @@ static int decode_exec(Decode *s) {
   s->dnpc = s->snpc;
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */ ) { \
-	/*printf("pc:0x%08x	Execute inst: %s	\n",s->pc,str(name));*/\
+	/*printf(pc:0x%08x	Execute inst: %s	\n,s->pc,str(name));*/\
 	decode_operand(s, &dest, &src1, &src2, &imm, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
 	/*isa_reg_display();*/\
 }
 
   INSTPAT_START();
-  INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = imm);//y
-	INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = imm + s->pc);//y
-	INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add		 , R, R(dest) = src1 + src2);//y
-	INSTPAT("0100000 ????? ????? 000 ????? 01100 11", sub		 , R, R(dest) = src1 - src2);//y
-	INSTPAT("0000000 ????? ????? 001 ????? 01100 11", sll		 , R, R(dest) = src1 << (src2&31));//y
-	INSTPAT("0000000 ????? ????? 010 ????? 01100 11", slt		 , R, R(dest) = ((int)src1 < (int)src2));
-	INSTPAT("0000000 ????? ????? 011 ????? 01100 11", sltu	 , R, R(dest) = (src1 < src2));//y
-	INSTPAT("0000000 ????? ????? 100 ????? 01100 11", xor		 , R, R(dest) = src1 ^ src2);//y
-	INSTPAT("0000000 ????? ????? 101 ????? 01100 11", srl		 , R, R(dest) = src1 >> (src2&31));//y
-	INSTPAT("0100000 ????? ????? 101 ????? 01100 11", sra		 , R, R(dest) = ((int)src1 >> (src2&31)));//y
-	INSTPAT("0000000 ????? ????? 110 ????? 01100 11", or 		 , R, R(dest) = src1 | src2);//y
-	INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and		 , R, R(dest) = src1 & src2);
-	INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul		 , R, R(dest) = src1 * src2);
-	INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh	 , R, R(dest) = (uint32_t)(((int64_t)(int)src1*(int64_t)(int)src2)>>32));//y
-	INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu	 , R, R(dest) = (uint32_t)(((uint64_t)src1*(uint64_t)src2)>>32));
-	INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div		 , R, R(dest) = ((int)src1 / (int)src2));//y
-	INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(dest) = src1 / src2);
-	INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem		 , R, R(dest) = ((int)src1) % ((int)src2));//y
-	INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu	 , R, R(dest) = src1 % src2);
-	INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(dest) = src1 + imm);//y
-	INSTPAT("??????? ????? ????? 011 ????? 00100 11", sltiu	 , I, R(dest) = src1 < imm);//y
-	INSTPAT("??????? ????? ????? 100 ????? 00100 11", xori	 , I, R(dest) = src1 ^ imm);//y
-	INSTPAT("??????? ????? ????? 110 ????? 00100 11", ori		 , I, R(dest) = src1 | imm);
-	INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi   , I, R(dest) = src1 & imm);
-	INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , I, NEMUTRAP(s->pc, R(10))); //ok R(10) is $a0
-	INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, s->dnpc = (src1 + imm)&~1, R(dest) = s->pc + 4
+  INSTPAT(00000000000000000000000000110111, lui    , U, R(dest) = imm);//y
+	INSTPAT(00000000000000000000000000010111, auipc  , U, R(dest) = imm + s->pc);//y
+	INSTPAT(00000000000000000000000000110011, add		 , R, R(dest) = src1 + src2);//y
+	INSTPAT(01000000000000000000000000110011, sub		 , R, R(dest) = src1 - src2);//y
+	INSTPAT(00000000000000000001000000110011, sll		 , R, R(dest) = src1 << (src2&31));//y
+	INSTPAT(00000000000000000010000000110011, slt		 , R, R(dest) = ((int)src1 < (int)src2));
+	INSTPAT(00000000000000000011000000110011, sltu	 , R, R(dest) = (src1 < src2));//y
+	INSTPAT(00000000000000000100000000110011, xor		 , R, R(dest) = src1 ^ src2);//y
+	INSTPAT(00000000000000000101000000110011, srl		 , R, R(dest) = src1 >> (src2&31));//y
+	INSTPAT(01000000000000000101000000110011, sra		 , R, R(dest) = ((int)src1 >> (src2&31)));//y
+	INSTPAT(00000000000000000110000000110011, or 		 , R, R(dest) = src1 | src2);//y
+	INSTPAT(00000000000000000111000000110011, and		 , R, R(dest) = src1 & src2);
+	INSTPAT(00000010000000000000000000110011, mul		 , R, R(dest) = src1 * src2);
+	INSTPAT(00000010000000000001000000110011, mulh	 , R, R(dest) = (uint32_t)(((int64_t)(int)src1*(int64_t)(int)src2)>>32));//y
+	INSTPAT(00000010000000000011000000110011, mulhu	 , R, R(dest) = (uint32_t)(((uint64_t)src1*(uint64_t)src2)>>32));
+	INSTPAT(00000010000000000100000000110011, div		 , R, R(dest) = ((int)src1 / (int)src2));//y
+	INSTPAT(00000010000000000101000000110011, divu   , R, R(dest) = src1 / src2);
+	INSTPAT(00000010000000000110000000110011, rem		 , R, R(dest) = ((int)src1) % ((int)src2));//y
+	INSTPAT(00000010000000000111000000110011, remu	 , R, R(dest) = src1 % src2);
+	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
+	INSTPAT(00000000000000000011000000010011, sltiu	 , I, R(dest) = src1 < imm);//y
+	INSTPAT(00000000000000000100000000010011, xori	 , I, R(dest) = src1 ^ imm);//y
+	INSTPAT(00000000000000000110000000010011, ori		 , I, R(dest) = src1 | imm);
+	INSTPAT(00000000000000000111000000010011, andi   , I, R(dest) = src1 & imm);
+	INSTPAT(00000000000100000000000001110011, ebreak , I, NEMUTRAP(s->pc, R(10))); //ok R(10) is $a0
+	INSTPAT(00000000000000000000000001100111, jalr   , I, s->dnpc = (src1 + imm)&~1, R(dest) = s->pc + 4
 #ifdef CONFIG_FTRACE
 			,ret_to_ftrace(R(dest))						
 #endif
 			);//y
-	INSTPAT("0000000 ????? ????? 001 ????? 00100 11", slli	 , I, imm = imm&63;if(imm<=31)R(dest) = src1<<imm );//y
-	INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli	 , I, imm = imm&63;if(imm<=31)R(dest) = src1>>imm );//y
-	INSTPAT("0100000 ????? ????? 101 ????? 00100 11", srai   , I, imm = imm&63;if(imm<=31)R(dest) = ((int)src1)>>imm);//y
-		INSTPAT("??????? ????? ????? 000 ????? 00000 11", lb		 , I, R(dest) = Mr(src1 + imm, 1); if(R(dest)&0x80)R(dest)|=0xFFFFFFF0);
-		INSTPAT("??????? ????? ????? 001 ????? 00000 11", lh		 , I, R(dest) = Mr(src1 + imm, 2); if(R(dest)&0x8000)R(dest)|=0xFFFF0000);//y
-  	INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, R(dest) = Mr(src1 + imm, 4));//y
-		INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu		 , I, R(dest) = Mr(src1 + imm, 1));//y
-		INSTPAT("??????? ????? ????? 101 ????? 00000 11", lhu		 , I, R(dest) = Mr(src1 + imm, 2));//y
-		INSTPAT("??????? ????? ????? 010 ????? 00100 11", slti	 , I, R(dest) = (int)src1<(int)imm);
-		INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb		 , S, Mw(src1 + imm, 1, src2&0xFF));//y
-  	INSTPAT("??????? ????? ????? 001 ????? 01000 11", sh		 , S, Mw(src1 + imm, 2, src2&0xFFFF));//y
-		INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));//y
-	INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq		 , B, if(src1==src2)s->dnpc = s->pc+imm);//y
-	INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne		 , B, if(src1!=src2)s->dnpc = s->pc+imm);//y
-	INSTPAT("??????? ????? ????? 100 ????? 11000 11", blt		 , B, if((int)src1<(int)src2)s->dnpc =s->pc+imm);//y
-  	INSTPAT("??????? ????? ????? 101 ????? 11000 11", bge		 , B, if((int)src1>=(int)src2)s->dnpc = s->pc+imm);//y
-		INSTPAT("??????? ????? ????? 110 ????? 11000 11", bltu	 , B, if(src1<src2)s->dnpc = s->pc+imm);//y
-		INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu	 , B, if(src1>=src2)s->dnpc = s->pc+imm);
-		INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4, s->dnpc = s->pc + imm
+	INSTPAT(00000000000000000001000000010011, slli	 , I, imm = imm&63;if(imm<=31)R(dest) = src1<<imm );//y
+	INSTPAT(00000000000000000101000000010011, srli	 , I, imm = imm&63;if(imm<=31)R(dest) = src1>>imm );//y
+	INSTPAT(01000000000000000101000000010011, srai   , I, imm = imm&63;if(imm<=31)R(dest) = ((int)src1)>>imm);//y
+		INSTPAT(00000000000000000000000000000011, lb		 , I, R(dest) = Mr(src1 + imm, 1); if(R(dest)&0x80)R(dest)|=0xFFFFFFF0);
+		INSTPAT(00000000000000000001000000000011, lh		 , I, R(dest) = Mr(src1 + imm, 2); if(R(dest)&0x8000)R(dest)|=0xFFFF0000);//y
+  	INSTPAT(00000000000000000010000000000011, lw     , I, R(dest) = Mr(src1 + imm, 4));//y
+		INSTPAT(00000000000000000100000000000011, lbu		 , I, R(dest) = Mr(src1 + imm, 1));//y
+		INSTPAT(00000000000000000101000000000011, lhu		 , I, R(dest) = Mr(src1 + imm, 2));//y
+		INSTPAT(00000000000000000010000000010011, slti	 , I, R(dest) = (int)src1<(int)imm);
+		INSTPAT(00000000000000000000000000100011, sb		 , S, Mw(src1 + imm, 1, src2&0xFF));//y
+  	INSTPAT(00000000000000000001000000100011, sh		 , S, Mw(src1 + imm, 2, src2&0xFFFF));//y
+		INSTPAT(00000000000000000010000000100011, sw     , S, Mw(src1 + imm, 4, src2));//y
+	INSTPAT(00000000000000000000000001100011, beq		 , B, if(src1==src2)s->dnpc = s->pc+imm);//y
+	INSTPAT(00000000000000000001000001100011, bne		 , B, if(src1!=src2)s->dnpc = s->pc+imm);//y
+	INSTPAT(00000000000000000100000001100011, blt		 , B, if((int)src1<(int)src2)s->dnpc =s->pc+imm);//y
+  	INSTPAT(00000000000000000101000001100011, bge		 , B, if((int)src1>=(int)src2)s->dnpc = s->pc+imm);//y
+		INSTPAT(00000000000000000110000001100011, bltu	 , B, if(src1<src2)s->dnpc = s->pc+imm);//y
+		INSTPAT(00000000000000000111000001100011, bgeu	 , B, if(src1>=src2)s->dnpc = s->pc+imm);
+		INSTPAT(00000000000000000000000001101111, jal    , J, R(dest) = s->pc + 4, s->dnpc = s->pc + imm
 #ifdef CONFIG_FTRACE
 			,call_to_ftrace(s->dnpc)							
 #endif
 			);//y
-  INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));//y
+  INSTPAT(00000000000000000000000000000000, inv    , N, INV(s->pc));//y
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
