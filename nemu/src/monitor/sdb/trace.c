@@ -67,29 +67,23 @@ void init_ftrace(const char *elf_file){
 					fseek(file, sh->sh_offset, SEEK_SET);
 					sym_count = fread(sym_table, sizeof(Elf32_Sym), sh->sh_size/sizeof(Elf32_Sym), file);
 					printf("Get symbol table result:%d, %ld bytes per unit, offset:%d, size:%d\n", sym_count, sizeof(Elf32_Sym), sh->sh_offset, sh->sh_size);
-				}
-				else if(sh->sh_type == SHT_STRTAB){
+	 			}
+	 			else if(sh->sh_type == SHT_STRTAB){
 					str_table = (char *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
 					fr_r = fread(str_table, sizeof(char), sh->sh_size/sizeof(char), file);
-					
+					for(int aa = 0;aa<sh->sh_size;aa++){
+							printf("%c",str_table[aa]);
+					}		
+					printf("\n");	
 					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(char), sh->sh_offset, sh->sh_size);
 					break;
 				}
-		}
+	 	}
 
-		//Elf32_Sym sym;
-		//for(int i=0;i<sym_count;i++){
-			//	sym = sym_table[i];
-			//	if(sym.st_info!=ST_FUNC)continue;
-			//	printf("value:%08x, st_name:%d, st_info:%d	",sym.st_value,sym.st_name,sym.st_info);
-			//	printf("%s\n",str_table+sym.st_name);
-		//}
-		//free(str_table);
-		//free(sym_table);
 		free(shdrs);
 		fclose(file);
-}
+} 
 int count = 0;
 void call_to_ftrace(uint32_t dst_pc){
 		int idx = 0;
