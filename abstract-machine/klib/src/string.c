@@ -94,29 +94,27 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 	}
 	return 0;
 }
-
 char *itoa(int num, char *str, int base){
-	if(num==0){
-		*str++='0';
-		*str = 0;
-		return str;
+	int n = num<0?-num:num;
+	int i=0;int tmp=0;
+	while(n){
+		tmp = n%base;
+		if(tmp>=10){
+			str[i++] = 55+tmp;
+		}
+		else{
+			str[i++] = 48+tmp;
+		}
+		n/=base;
 	}
-	char tmp[10] = {0};
-	int i=0;
-	int tmp_num = num % 10;
-	int flag = num<0?1:0;
-	while(num>0){
-		tmp[i++] = tmp_num+'0';
-		num = num/10;
-		tmp_num = num%10;
+	if(i==0)str[i++] = '0';
+	str[i] = 0;
+	tmp=0;i--;
+	char t;
+	while(tmp<i){
+			t=str[tmp];str[tmp]=str[i];str[i]=t;
+			tmp++;i--;
 	}
-	i--;
-	if(flag){*str++='-';}
-	while(i>=0){
-		*str++=tmp[i];
-		i--;
-	}
-	*str=0;
 	return str;
 }
 #endif
