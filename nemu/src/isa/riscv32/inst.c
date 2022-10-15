@@ -96,7 +96,7 @@ static int decode_exec(Decode *s) {
 			);//y
 	INSTPAT(00000000000000000001000000010011, slli	 , IS, imm = imm&63;if(imm<=31)R(dest) = src1<<imm );//y
 	INSTPAT(00000000000000000101000000010011, srli	 , IS, imm = imm&63;if(imm<=31)R(dest) = src1>>imm );//y
-	INSTPAT(01000000000000000101000000010011, srai   , IS, imm = imm&63;if(imm<=31)R(dest) = ((int)src1)>>imm,printf("srai\n"));//y
+	INSTPAT(01000000000000000101000000010011, srai   , IS, imm = imm&63;if(imm<=31)R(dest) = ((int)src1)>>imm);//y
 		INSTPAT(00000000000000000000000000000011, lb		 , I, R(dest) = Mr(src1 + imm, 1); if(R(dest)&0x80)R(dest)|=0xFFFFFFF0);
 		INSTPAT(00000000000000000001000000000011, lh		 , I, R(dest) = Mr(src1 + imm, 2); if(R(dest)&0x8000)R(dest)|=0xFFFF0000);//y
   	INSTPAT(00000000000000000010000000000011, lw     , I, R(dest) = Mr(src1 + imm, 4));//y
