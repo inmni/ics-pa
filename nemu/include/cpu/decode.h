@@ -94,6 +94,7 @@ finish:
 
 #define NEWINSTPAT(name, type, key, mask, ...) do{ \
 	if((INSTPAT_INST(s) & mask)==key){ \
+		printf(#name); \
 		INSTPAT_MATCH(s, name, type, ##__VA_ARGS__); \
 		goto *(__instpat_end); \
 	} \
