@@ -33,12 +33,10 @@ static bool g_print_step = false;
 IRB iRB;
 
 void device_update();
-typedef struct watchpoint{
-	int NO;struct watchpoint *next;      
-	char EXPR[32];int oldValue,targetValue;
-}WP;
-WP* get_wp_head();
+#ifdef CONFIG_WATCHPOINT
+#include <watchpoint.h>
 word_t expr(char *e,bool *success);
+#endif
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   log_write("%s\n", _this->logbuf);
