@@ -37,9 +37,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 			col = ctl->w;
 			tmp1 = fb;
 			tmp2 = pixels;
-			while(col--){
-				*tmp1++ = *tmp2++;
-			}
+			while(col--)*tmp1++ = *tmp2++;
 			fb+=SCREEN_W; pixels+=ctl->w;
 	}
   if (ctl->sync) {
