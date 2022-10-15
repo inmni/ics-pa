@@ -93,6 +93,7 @@ void init_ftrace(const char *elf_file){
 int count = 0;
 void call_to_ftrace(uint32_t dst_pc){
 		int idx = 0;
+		printf("%d\n",dst_pc);
 		Elf32_Sym sym;
 		for(; idx<sym_count; idx++){
 				sym = sym_table[idx];
