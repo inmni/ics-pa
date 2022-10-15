@@ -52,9 +52,7 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 
 void *memset(void *s, int c, size_t n) {
 	char* pb = (char*)s;
-	while(n-->0){
-		*pb = c; pb++;
-	}
+	while(n-->0)*pb++=c;
 	return s;
 }
 
