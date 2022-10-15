@@ -98,9 +98,9 @@ void call_to_ftrace(uint32_t dst_pc){
 				sym = sym_table[idx];
 				if(sym.st_info!=ST_FUNC)continue;
 				if(dst_pc < sym.st_value || dst_pc >= sym.st_value+sym.st_size)continue;
-				for(int temp = 0;temp<count;temp++){
+		/*		for(int temp = 0;temp<count;temp++){
 					log_write("    ");
-				}
+				}*/
 				log_write("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
@@ -121,6 +121,7 @@ void call_to_ftrace(uint32_t dst_pc){
 }
 
 void ret_to_ftrace(uint32_t src_pc){
+		return;
 		int idx = 0;
 		Elf32_Sym sym;
 		for(; idx<sym_count; idx++){
