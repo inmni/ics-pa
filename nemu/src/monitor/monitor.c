@@ -52,6 +52,7 @@ static long load_img() {
   }
 
   FILE *fp = fopen(img_file, "rb");
+	assert(fp);
 	printf("%s\n",img_file);
   Assert(fp, "Can not open '%s'", img_file);
 
