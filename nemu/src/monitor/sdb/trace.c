@@ -72,10 +72,10 @@ void init_ftrace(const char *elf_file){
 					str_table = (char *)malloc(sh->sh_size);
 					fseek(file, sh->sh_offset, SEEK_SET);
 					fr_r = fread(str_table, sizeof(char), sh->sh_size/sizeof(char), file);
-					for(int aa = 0;aa<sh->sh_size;aa++){
+					/*for(int aa = 0;aa<sh->sh_size;aa++){
 							printf("%c",str_table[aa]);
 					}		
-					printf("\n");	
+					printf("\n");	*/
 					printf("Get string table result:%d, %ld bytes per unit, offset:%d, size:%d\n", fr_r, sizeof(char), sh->sh_offset, sh->sh_size);
 					break;
 				}
@@ -87,7 +87,6 @@ void init_ftrace(const char *elf_file){
 int count = 0;
 void call_to_ftrace(uint32_t dst_pc){
 		int idx = 0;
-		printf("%d\n",dst_pc);
 		Elf32_Sym sym;
 		for(; idx<sym_count; idx++){
 				sym = sym_table[idx];
@@ -96,6 +95,7 @@ void call_to_ftrace(uint32_t dst_pc){
 		/*		for(int temp = 0;temp<count;temp++){
 					log_write("    ");
 				}*/
+				printf("%s\n", str_table+sym.st_name);
 				log_write("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
