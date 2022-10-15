@@ -29,13 +29,13 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	int row,col;
-	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
 	uint32_t *pixels = ctl->pixels;
-	uint32_t *tmp1 = fb, *tmp2 = pixels;
-	for(row = 0; row < ctl->h; row++){
+	uint32_t *tmp1, *tmp2;
+	for(row = 0; row < ctl->h; fb+=SCREEN_W,pixels+=ctl->w){
 			col = ctl->w;
-			tmp1 = fb+SCREEN_W*(row+ctl->y)+ctl->x;
-			tmp2 = pixels+row*ctl->w;
+			tmp1 = fb;
+			tmp2 = pixels;
 			while(col--){
 				*tmp1++ = *tmp2++;
 			}
