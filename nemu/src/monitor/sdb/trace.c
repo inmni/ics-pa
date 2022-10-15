@@ -95,7 +95,6 @@ void call_to_ftrace(uint32_t dst_pc){
 		/*		for(int temp = 0;temp<count;temp++){
 					log_write("    ");
 				}*/
-				printf("%s\n", str_table+sym.st_name);
 				log_write("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
