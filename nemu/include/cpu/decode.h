@@ -94,7 +94,6 @@ finish:
 
 #define NEWINSTPAT(name, type, key, mask, ...) do{ \
 	if((INSTPAT_INST(s) & mask)==key){ \
-		printf(#name); printf("\n");\
 		INSTPAT_MATCH(s, name, type, ##__VA_ARGS__); \
 		goto *(__instpat_end); \
 	} \
@@ -107,7 +106,7 @@ finish:
 #define MASK_U 00000000000000000000000001111111
 #define MASK_J 00000000000000000000000001111111
 #define MASK_N 00000000000000000000000000000000
-
+#define MASK_IS 11111110000000000111000001111111
 #define __GENMASK(mask) 0b##mask
 #define _GENMASK(mask) __GENMASK(mask)
 #define GENMASK(type) _GENMASK(MASK_##type)
