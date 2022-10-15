@@ -28,20 +28,16 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-	int row,col,w;
-	w = ctl->w;
+	int row,col;
 	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
 	uint32_t *pixels = ctl->pixels;
-	uint32_t *tmp1 = fb, *tmp2 = pixels;
 	row = ctl->h;
 	while(row--){
-			col = w;
-			tmp1 = fb;
-			tmp2 = pixels;
+			col = ctl->w;
 			while(col--){
-				*tmp1++ = *tmp2++;
+				*fb++ = *pixels++;
 			}
-			fb+=SCREEN_W; pixels+=w;
+			fb+=SCREEN_W-ctl->w;
 	}
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
