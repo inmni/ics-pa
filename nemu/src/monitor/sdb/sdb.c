@@ -124,14 +124,16 @@ static int cmd_x(char *args){
 	char *arg2 = strtok(NULL," ");
 	if(!arg2){
 		printf("Wrong argument2!\n");
+		return 0;
 	}
 	bool success;
 	word_t expr_val = expr(arg2,&success);
 	if(!success){
 		printf("Failed to convert %s to %d",arg2,expr_val);
+		return 0;
 	}
 	for(;N>0;N--){
-		printf("address:0X%08X	value:0X%08X\n",expr_val,paddr_read(expr_val,4));
+		printf("address:0x%08x	value:0x%08x\n",expr_val,paddr_read(expr_val,4));
 		expr_val+=4;
 	}
 	return 0;
@@ -140,6 +142,7 @@ static int cmd_p(char *args){
 	char *arg = strtok(NULL, "");
 	if(arg==NULL){
 		printf("No argument!\n");
+		return 0;
 	}
 	bool success = false;
 	printf("%i\n",expr(arg,&success));
@@ -148,6 +151,7 @@ static int cmd_p(char *args){
 static int cmd_w(char *args){
 	if(args==NULL){
 		printf("No arguments!\n");
+		return 0;
 	}
 	new_wp(args);
 
@@ -157,6 +161,7 @@ static int cmd_d(char *args){
 	char *arg = strtok(NULL," ");
 	if(arg==NULL){
 		printf("No argument!\n");
+		return 0;
 	}
 	int n = atoi(arg);
 	WP* wp_to_free = find_wp(n);

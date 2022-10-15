@@ -19,6 +19,7 @@
 #include <locale.h>
 #ifdef CONFIG_WATCHPOINT
 #include <watchpoint.h>
+uint32_t expr(char *str, bool *success);
 #endif
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
