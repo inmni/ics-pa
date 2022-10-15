@@ -31,13 +31,16 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	int row,col;
 	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
 	uint32_t *pixels = ctl->pixels;
+	uint32_t *tmp1 = fb, *tmp2 = pixels;
 	row = ctl->h;
 	while(row--){
 			col = ctl->w;
+			tmp1 = fb;
+			tmp2 = pixels;
 			while(col--){
-				*fb++ = *pixels++;
+				*tmp1++ = *tmp2++;
 			}
-			fb+=SCREEN_W-ctl->w;
+			fb+=SCREEN_W; pixels+=ctl->w;
 	}
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
