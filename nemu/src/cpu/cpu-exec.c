@@ -122,12 +122,13 @@ static void execute(uint64_t n) {
   	if(cpu.pc>=0x80000720 && cpu.pc<=0x800007b0){
   		gettimeofday(&tv,NULL);
   		lastTime = tv.tv_usec;
-  		lastPC=cpu.pc;
+  		lastPC	 = cpu.pc;
     		exec_once(&s, cpu.pc);
+    		
     		gettimeofday(&tv,NULL);
     		timecount[(lastPC-0x80000720)>>2]+=tv.tv_usec-lastTime;
-  		lastTime = tv.tv_usec;
-  		if(cpu.pc == 0x800007b0||cpu.pc==0x800007a0){
+    		
+  		if(lastPC == 0x800007b0||lastPC == 0x800007a0){
   			for(int i=0;i<36;i++){
   				printf("0x%08x takes %ld us\n", 0x80000720+(i<<2), timecount[i]);
   			}
