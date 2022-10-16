@@ -18,6 +18,7 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 #include <trace.h>
+#include <sys/time.h>
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -109,7 +110,15 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
 static void execute(uint64_t n) {
   Decode s;
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  long lastTime = tv.tv_usec;
   for (;n > 0; n --) {
+  	if(cpu.pc==0x80000720){
+  		gettimeofday(&tv,NULL);
+  		printf("%ld us\n", tv.tv_usec-lastTime);
+  		lastTime = tv.tv_usec;
+  	}
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
