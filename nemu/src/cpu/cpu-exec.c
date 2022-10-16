@@ -114,12 +114,14 @@ static void execute(uint64_t n) {
   gettimeofday(&tv,NULL);
   long lastTime = tv.tv_usec;
   for (;n > 0; n --) {
-  	if(cpu.pc==0x80000720){
+  	if(cpu.pc>=0x80000720 && cpu.pc<=0x800007b0){
   		gettimeofday(&tv,NULL);
-  		printf("%ld us\n", tv.tv_usec-lastTime);
   		lastTime = tv.tv_usec;
-  	}
-    exec_once(&s, cpu.pc);
+    		exec_once(&s, cpu.pc);
+    		gettimeofday(&tv,NULL);
+  		printf("0x%08x takes %ld us\n", s.pc, tv.tv_usec-lastTime);
+  		lastTime = tv.tv_usec;
+    	}else{exec_once(&s, cpu.pc);}
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
