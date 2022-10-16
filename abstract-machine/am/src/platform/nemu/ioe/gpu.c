@@ -29,7 +29,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	int row,col;
-	uint64_t *fb = (uint64_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
+	uint64_t *fb = (uint64_t *)(uintptr_t)FB_ADDR+(SCREEN_W>>1)*ctl->y+(ctl->x>>1);
 	uint64_t *pixels = (uint64_t *)ctl->pixels;
 	uint64_t *tmp1 = fb, *tmp2 = pixels;
 	row = ctl->h;
