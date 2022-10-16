@@ -111,8 +111,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 static void execute(uint64_t n) {
   Decode s;
   struct timeval tv;
-  gettimeofday(&tv,NULL);
-  long lastTime = tv.tv_usec;
+  long lastTime;
   long timecount[67];
   uint32_t lastPC = 0;
   bool once = false;
