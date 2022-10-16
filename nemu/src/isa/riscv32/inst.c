@@ -65,6 +65,7 @@ static int decode_exec(Decode *s) {
 }
 
   INSTPAT_START();
+	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
   INSTPAT(00000000000000000000000000110111, lui    , U, R(dest) = imm);//y
 	INSTPAT(00000000000000000000000000010111, auipc  , U, R(dest) = imm + s->pc);//y
 	INSTPAT(00000000000000000000000000110011, add		 , R, R(dest) = src1 + src2);//y
@@ -84,7 +85,6 @@ static int decode_exec(Decode *s) {
 	INSTPAT(00000010000000000101000000110011, divu   , R, R(dest) = src1 / src2);
 	INSTPAT(00000010000000000110000000110011, rem		 , R, R(dest) = ((int)src1) % ((int)src2));//y
 	INSTPAT(00000010000000000111000000110011, remu	 , R, R(dest) = src1 % src2);
-	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
 	INSTPAT(00000000000000000011000000010011, sltiu	 , I, R(dest) = src1 < imm);//y
 	INSTPAT(00000000000000000100000000010011, xori	 , I, R(dest) = src1 ^ imm);//y
 	INSTPAT(00000000000000000110000000010011, ori		 , I, R(dest) = src1 | imm);
