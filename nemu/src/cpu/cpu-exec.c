@@ -113,26 +113,26 @@ static void execute(uint64_t n) {
   struct timeval tv;
   gettimeofday(&tv,NULL);
   long lastTime = tv.tv_usec;
-  long timecount[36];
+  long timecount[67];
   uint32_t lastPC = 0;
   bool once = false;
   for (;n > 0; n --) {
-  	if(cpu.pc==0x80000720 && !once){
-  		for(int i=0;i<36;i++)timecount[i]=0;
+  	if(cpu.pc==0x80000728 && !once){
+  		for(int i=0;i<67;i++)timecount[i]=0;
   	}
-  	if(cpu.pc>=0x80000720 && cpu.pc<=0x800007b0 && !once){
+  	if(cpu.pc>=0x80000728 && cpu.pc<=0x80000834 && !once){
   		gettimeofday(&tv,NULL);
   		lastTime = tv.tv_usec;
   		lastPC	 = cpu.pc;
     		exec_once(&s, cpu.pc);
     		
     		gettimeofday(&tv,NULL);
-    		timecount[(lastPC-0x80000720)>>2]+=tv.tv_usec-lastTime;
+    		timecount[(lastPC-0x80000728)>>2]+=tv.tv_usec-lastTime;
     		
-  		if(lastPC == 0x800007b0||lastPC == 0x800007a0){
-  			for(int i=0;i<36;i++){
+  		if(lastPC == 0x800007bc||lastPC == 0x80000834){
+  			for(int i=0;i<67;i++){
   			once = true;
-  				printf("0x%08x takes %ld us\n", 0x80000720+(i<<2), timecount[i]);
+  				printf("0x%08x takes %ld us\n", 0x80000728+(i<<2), timecount[i]);
   			}
   		}
     	}else{exec_once(&s, cpu.pc);}
