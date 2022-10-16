@@ -123,7 +123,7 @@ static void execute(uint64_t n) {
   		lastTime = tv.tv_usec;
     		exec_once(&s, cpu.pc);
     		gettimeofday(&tv,NULL);
-    		timecount[(cpu.pc-0x80000720)>>2]+=tv.tv_usec-lastTime;
+    		timecount[(cpu.pc-0x80000724)>>2]+=tv.tv_usec-lastTime;
   		lastTime = tv.tv_usec;
   		if(cpu.pc == 0x800007b0||cpu.pc==0x800007a0){
   			for(int i=0;i<144;i++){
