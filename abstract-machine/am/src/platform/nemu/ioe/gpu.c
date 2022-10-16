@@ -29,16 +29,26 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	int row,col;
-	uint64_t *fb = (uint64_t *)(uintptr_t)FB_ADDR+(SCREEN_W>>1)*ctl->y+(ctl->x>>1);
-	uint64_t *pixels = (uint64_t *)ctl->pixels;
-	uint64_t *tmp1 = fb, *tmp2 = pixels;
+	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
+	uint32_t *pixels = (uint32_t *)ctl->pixels;
+	uint64_t *tmp1, *tmp2;
 	row = ctl->h;
-	while(row--){
+	if(ctl->w & 1){
+		while(row--){
 			col = ctl->w>>1;
-			tmp1 = fb;
-			tmp2 = pixels;
+			tmp1 = (uint64_t *)(fb+1); tmp2 = (uint64_t *)(pixels+1);
+			*fb = *pixels;
 			while(col--)*tmp1++ = *tmp2++;
-			fb+=SCREEN_W>>1; pixels+=ctl->w>>1;
+			fb+=SCREEN_W; pixels+=ctl->w;
+		}
+	}
+	else{
+		while(row--){
+			col = ctl->w>>1;
+			tmp1 = (uint64_t *)fb; tmp2 = (uint64_t *)pixels;
+			while(col--)*tmp1++ = *tmp2++;
+			fb+=SCREEN_W; pixels+=ctl->w;
+		}
 	}
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
