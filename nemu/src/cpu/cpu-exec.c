@@ -115,11 +115,12 @@ static void execute(uint64_t n) {
   long lastTime = tv.tv_usec;
   long timecount[36];
   uint32_t lastPC = 0;
+  bool once = false;
   for (;n > 0; n --) {
-  	if(cpu.pc==0x80000720){
+  	if(cpu.pc==0x80000720 && !once){
   		for(int i=0;i<36;i++)timecount[i]=0;
   	}
-  	if(cpu.pc>=0x80000720 && cpu.pc<=0x800007b0){
+  	if(cpu.pc>=0x80000720 && cpu.pc<=0x800007b0 && !once){
   		gettimeofday(&tv,NULL);
   		lastTime = tv.tv_usec;
   		lastPC	 = cpu.pc;
@@ -130,6 +131,7 @@ static void execute(uint64_t n) {
     		
   		if(lastPC == 0x800007b0||lastPC == 0x800007a0){
   			for(int i=0;i<36;i++){
+  			once = true;
   				printf("0x%08x takes %ld us\n", 0x80000720+(i<<2), timecount[i]);
   			}
   		}
