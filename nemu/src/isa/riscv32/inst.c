@@ -30,6 +30,7 @@ enum {
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
+#define immIS() do { *imm = SEXT(BITS(i, 24, 20), 5); } while(0)
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
 #define immB() do { *imm = SEXT((BITS(i, 31, 31)<<11)|(BITS(i, 7, 7)<<10)|(BITS(i, 30, 25)<<4)|BITS(i, 11, 8), 12)<<1; } while(0)
@@ -42,7 +43,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   *dest = rd;
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
-    case TYPE_IS: src1R();          immI(); break;
+    case TYPE_IS: src1R();          immIS(); break;
     case TYPE_U:                   immU(); break;
     case TYPE_S: src1R(); src2R(); immS(); break;
 		case TYPE_R: src1R(); src2R(); 			 ; break;
@@ -65,7 +66,6 @@ static int decode_exec(Decode *s) {
 }
 
   INSTPAT_START();
-	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
   INSTPAT(00000000000000000000000000110111, lui    , U, R(dest) = imm);//y
 	INSTPAT(00000000000000000000000000010111, auipc  , U, R(dest) = imm + s->pc);//y
 	INSTPAT(00000000000000000000000000110011, add		 , R, R(dest) = src1 + src2);//y
@@ -85,6 +85,7 @@ static int decode_exec(Decode *s) {
 	INSTPAT(00000010000000000101000000110011, divu   , R, R(dest) = src1 / src2);
 	INSTPAT(00000010000000000110000000110011, rem		 , R, R(dest) = ((int)src1) % ((int)src2));//y
 	INSTPAT(00000010000000000111000000110011, remu	 , R, R(dest) = src1 % src2);
+	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
 	INSTPAT(00000000000000000011000000010011, sltiu	 , I, R(dest) = src1 < imm);//y
 	INSTPAT(00000000000000000100000000010011, xori	 , I, R(dest) = src1 ^ imm);//y
 	INSTPAT(00000000000000000110000000010011, ori		 , I, R(dest) = src1 | imm);
@@ -96,9 +97,9 @@ static int decode_exec(Decode *s) {
 #endif
 			);//y
 	//I type Special 
-	INSTPAT(00000000000000000001000000010011, slli	 , IS, imm = imm&63;if(imm<=31)R(dest) = src1<<imm );//y
-	INSTPAT(00000000000000000101000000010011, srli	 , IS, imm = imm&63;if(imm<=31)R(dest) = src1>>imm );//y
-	INSTPAT(01000000000000000101000000010011, srai   , IS, imm = imm&63;if(imm<=31)R(dest) = ((int)src1)>>imm);//y
+	INSTPAT(00000000000000000001000000010011, slli	 , IS, R(dest) = src1<<imm );//y
+	INSTPAT(00000000000000000101000000010011, srli	 , IS, R(dest) = src1>>imm );//y
+	INSTPAT(01000000000000000101000000010011, srai   , IS, R(dest) = ((int)src1)>>imm);//y
 		INSTPAT(00000000000000000000000000000011, lb		 , I, R(dest) = Mr(src1 + imm, 1); if(R(dest)&0x80)R(dest)|=0xFFFFFFF0);
 		INSTPAT(00000000000000000001000000000011, lh		 , I, R(dest) = Mr(src1 + imm, 2); if(R(dest)&0x8000)R(dest)|=0xFFFF0000);//y
   	INSTPAT(00000000000000000010000000000011, lw     , I, R(dest) = Mr(src1 + imm, 4));//y
