@@ -113,7 +113,8 @@ static void execute(uint64_t n) {
   struct timeval tv;
   gettimeofday(&tv,NULL);
   long lastTime = tv.tv_usec;
-  long timecount[144] = {0};
+  long timecount[144];
+  uint32_t lastPC = 0;
   for (;n > 0; n --) {
   	if(cpu.pc==0x80000720){
   		for(int i=0;i<144;i++)timecount[i]=0;
@@ -121,9 +122,10 @@ static void execute(uint64_t n) {
   	if(cpu.pc>=0x80000720 && cpu.pc<=0x800007b0){
   		gettimeofday(&tv,NULL);
   		lastTime = tv.tv_usec;
+  		lastPC=cpu.pc;
     		exec_once(&s, cpu.pc);
     		gettimeofday(&tv,NULL);
-    		timecount[(cpu.pc-0x80000724)>>2]+=tv.tv_usec-lastTime;
+    		timecount[(lastPC-0x80000720)>>2]+=tv.tv_usec-lastTime;
   		lastTime = tv.tv_usec;
   		if(cpu.pc == 0x800007b0||cpu.pc==0x800007a0){
   			for(int i=0;i<144;i++){
