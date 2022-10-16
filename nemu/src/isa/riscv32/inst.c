@@ -26,7 +26,8 @@ enum {
   TYPE_I, TYPE_IS, TYPE_U, TYPE_S,	TYPE_R,	TYPE_B,	TYPE_J,
   TYPE_N, // none
 };
-
+#define Rsrc1 R(src1)
+#define Rsrc2 R(src2)
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
@@ -42,13 +43,22 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   int rs2 = BITS(i, 24, 20);
   *dest = rd;
   switch (type) {
-    case TYPE_I: src1R();          immI(); break;
-    case TYPE_IS: src1R();          immIS(); break;
-    case TYPE_U:                   immU(); break;
-    case TYPE_S: src1R(); src2R(); immS(); break;
-		case TYPE_R: src1R(); src2R(); 			 ; break;
-		case TYPE_B: src1R(); src2R(); immB(); break;
-		case TYPE_J: 									 immJ(); break;
+  /*
+  	case TYPE_I:           immI(); break;
+    	case TYPE_IS:         immIS(); break;
+    	case TYPE_U:                   immU(); break;
+    	case TYPE_S:  immS(); break;
+	case TYPE_R: 	      break;
+	case TYPE_B:  immB(); break;
+	case TYPE_J: 		       immJ(); break;*/
+  
+    	case TYPE_I: src1R();          immI(); break;
+    	case TYPE_IS:src1R();         immIS(); break;
+    	case TYPE_U:                   immU(); break;
+    	case TYPE_S: src1R(); src2R(); immS(); break;
+	case TYPE_R: src1R(); src2R(); 	     ; break;
+	case TYPE_B: src1R(); src2R(); immB(); break;
+	case TYPE_J: 		       immJ(); break;
   }
 	//printf(dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n,*dest,*src1,*src2,*imm,type);
 }
@@ -85,7 +95,7 @@ static int decode_exec(Decode *s) {
 	INSTPAT(00000010000000000101000000110011, divu   , R, R(dest) = src1 / src2);
 	INSTPAT(00000010000000000110000000110011, rem	 , R, R(dest) = ((int)src1) % ((int)src2));//y
 	INSTPAT(00000010000000000111000000110011, remu	 , R, R(dest) = src1 % src2);
-	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
+	INSTPAT(00000000000000000000000000010011, addi   , I, if(R(dest)==src1){R(dest) +=imm;}else{R(dest) = src1+imm;});//y
 	INSTPAT(00000000000000000011000000010011, sltiu	 , I, R(dest) = src1 < imm);//y
 	INSTPAT(00000000000000000100000000010011, xori	 , I, R(dest) = src1 ^ imm);//y
 	INSTPAT(00000000000000000110000000010011, ori	 , I, R(dest) = src1 | imm);
