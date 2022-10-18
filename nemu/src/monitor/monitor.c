@@ -53,7 +53,7 @@ static long load_img() {
 
   FILE *fp = fopen(img_file, "rb");
 	assert(fp);
-	printf("%s\n",img_file);
+	printf("Try to load image: %s\n",img_file);
   Assert(fp, "Can not open '%s'", img_file);
 
   fseek(fp, 0, SEEK_END);
