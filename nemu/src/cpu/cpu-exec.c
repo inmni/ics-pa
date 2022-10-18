@@ -113,7 +113,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #include <unistd.h>
 #include <stdlib.h>
 //struct timespec time_start = {0,0},time_end={0,0};
-uint64_t tsc1,tsc2;
+uint64_t tsc1,tsc2,tsc_start,tsc_end;
 static inline unsigned long rdtscp_start(void) {
   unsigned long var;
   unsigned int hi, lo;
@@ -144,12 +144,14 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     //clock_gettime(CLOCK_REALTIME, &time_start);
     //clock_gettime(CLOCK_REALTIME, &time_end);
-		tsc1 = rdtscp_start();
+		tsc1 = rdtscp_start();tsc2 = rdtscp_end();
+		tsc_start = (tsc1+tsc2)>>1;
 		exec_once(&s, cpu.pc);
-		tsc2 = rdtscp_end();
+		tsc1 = rdtscp_start();tsc2 = rdtscp_end();
+		tsc_end = (tsc1+tsc2)>>1;
 		//if(time_end.tv_nsec-time_start.tv_nsec>0){
 		if(tsc2-tsc1>0){
-			printf("Time spent on pc = 0x%08x is %lu ns\n", s.pc,tsc2-tsc1);
+			printf("Time spent on pc = 0x%08x is %lu ticks\n", s.pc,tsc2-tsc1);
 		}
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
