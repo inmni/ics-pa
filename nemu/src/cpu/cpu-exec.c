@@ -117,7 +117,7 @@ static void execute(uint64_t n) {
     clock_gettime(CLOCK_REALTIME, &time_start);
 		exec_once(&s, cpu.pc);
 		clock_gettime(CLOCK_REALTIME, &time_end);
-		if(time_end.tv_nsec-time_start.tv_nsec>1000){
+		if(time_end.tv_nsec-time_start.tv_nsec>1500){
 			printf("Time spent on pc = 0x%08x is %lu ns\n", s.pc,time_end.tv_nsec-time_start.tv_nsec);
 		}
     g_nr_guest_inst ++;
