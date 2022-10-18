@@ -110,14 +110,14 @@ static void exec_once(Decode *s, vaddr_t pc) {
 }
 #include <time.h>
 #include <sys/time.h>
-//struct timespec time_start = {0,0},time_end={0,0};
+struct timespec time_start = {0,0},time_end={0,0};
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
-    //clock_gettime(CLOCK_REALTIME, &time_start);
+    clock_gettime(CLOCK_REALTIME, &time_start);
 		exec_once(&s, cpu.pc);
-		//clock_gettime(CLOCK_REALTIME, &time_end);
-		//printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
+		clock_gettime(CLOCK_REALTIME, &time_end);
+		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec-900);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
