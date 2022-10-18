@@ -95,8 +95,8 @@ static int decode_exec(Decode *s) {
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */ ) { \
 	/*printf("pc:0x%08x	Execute inst: %s	\n",s->pc,str(name));*/\
-	tsc1 = rdtscp_start();tsc2 = rdtscp_end();tsc_start = (tsc1+tsc2)>>1;\
 	decode_operand(s, &dest, &src1, &src2, &imm, concat(TYPE_, type)); \
+	tsc1 = rdtscp_start();tsc2 = rdtscp_end();tsc_start = (tsc1+tsc2)>>1;\
   	__VA_ARGS__ ; \
 	tsc1 = rdtscp_start();tsc2 = rdtscp_end();tsc_end = (tsc1+tsc2)>>1;printf("Time spent is %lu ticks\n", tsc_end-tsc_start);\
 	/*isa_reg_display();*/\
