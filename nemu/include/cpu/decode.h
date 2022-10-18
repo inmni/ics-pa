@@ -98,7 +98,7 @@ finish:
 
 #define NEWINSTPAT(name, type, key, mask, ...) \
 	case key:{ \
-		INSTPAT_MATCH(s, name, type, __VA_ARGS__)\
+		INSTPAT_MATCH(s, name, type, ##__VA_ARGS__)\
 		break;\
 	}
 
