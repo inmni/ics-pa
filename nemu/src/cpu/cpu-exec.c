@@ -150,8 +150,8 @@ static void execute(uint64_t n) {
 		tsc1 = rdtscp_start();tsc2 = rdtscp_end();
 		tsc_end = (tsc1+tsc2)>>1;
 		//if(time_end.tv_nsec-time_start.tv_nsec>0){
-		if(tsc_start-tsc_end>0){
-			printf("Time spent on pc = 0x%08x is %lu ticks\n", s.pc,tsc_start-tsc_end);
+		if(tsc_end-tsc_start>0){
+			printf("Time spent on pc = 0x%08x is %lu ticks\n", s.pc,tsc_end-tsc_start);
 		}
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
