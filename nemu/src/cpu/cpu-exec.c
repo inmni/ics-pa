@@ -110,7 +110,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 }
 #include <time.h>
 #include <sys/time.h>
-struct timespec time_start = {0,0},time_end={0,0};
+//struct timespec time_start = {0,0},time_end={0,0};
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
