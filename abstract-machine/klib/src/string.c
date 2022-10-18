@@ -75,7 +75,7 @@ void *memmove(void *dst, const void *src, size_t n) {
 }
 
 void *memcpy(void *out, const void *in, size_t n) {
-  if(n>=4){
+  /*if(n>=4){
 			uint32_t *ui_dst = (uint32_t *)out;
 			uint32_t *ui_src = (uint32_t *)in;
 			do{*ui_dst++ = *ui_src++;n-=4;}while(n >= 4);
@@ -83,7 +83,8 @@ void *memcpy(void *out, const void *in, size_t n) {
 			char *bs_src = (char *)ui_src;
 			while(n--){*bs_dst++ = *bs_src++;}
 			return out;
-	}
+	}*/
+	printf("copy %d bytes\n",(uint32_t)n);
 	char *bs_dst = (char *)out;
 	char *bs_src = (char *)in;
 	while(n--){
