@@ -61,11 +61,14 @@ static int decode_exec(Decode *s) {
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */ ) { \
 	/*printf("pc:0x%08x	Execute inst: %s	\n",s->pc,str(name));*/\
+	clock_gettime(CLOCK_REALTIME, &time_start);\
 	decode_operand(s, &dest, &src1, &src2, &imm, concat(TYPE_, type)); \
+	clock_gettime(CLOCK_REALTIME, &time_end);\
+		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);\
   __VA_ARGS__ ; \
 	/*isa_reg_display();*/\
 }
-clock_gettime(CLOCK_REALTIME, &time_start);
+
   INSTPAT_START();
   INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = imm);//y
 	INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = imm + s->pc);//y
@@ -122,8 +125,7 @@ clock_gettime(CLOCK_REALTIME, &time_start);
 			);//y
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));//y
   INSTPAT_END();
-clock_gettime(CLOCK_REALTIME, &time_end);
-		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
+
   R(0) = 0; // reset $zero to 0
   return 0;
 }
