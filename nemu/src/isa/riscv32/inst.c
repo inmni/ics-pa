@@ -98,7 +98,7 @@ static int decode_exec(Decode *s) {
 	decode_operand(s, &dest, &src1, &src2, &imm, concat(TYPE_, type)); \
 	tsc1 = rdtscp_start();tsc2 = rdtscp_end();tsc_start = (tsc1+tsc2)>>1;\
   	__VA_ARGS__ ; \
-	tsc1 = rdtscp_start();tsc2 = rdtscp_end();tsc_end = (tsc1+tsc2)>>1;printf("Time spent is %lu ticks\n", tsc_end-tsc_start-288);\
+	tsc1 = rdtscp_start();tsc2 = rdtscp_end();tsc_end = (tsc1+tsc2)>>1;if(tsc_end-tsc_start-288>64)printf("Time spent on %s is %lu ticks\n", str(name), tsc_end-tsc_start-288);\
 	/*isa_reg_display();*/\
 }
 
