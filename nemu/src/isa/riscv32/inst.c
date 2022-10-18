@@ -37,14 +37,13 @@ enum {
 #define immB() do { *imm = SEXT((BITS(i, 31, 31)<<11)|(BITS(i, 7, 7)<<10)|(BITS(i, 30, 25)<<4)|BITS(i, 11, 8), 12)<<1; } while(0)
 #define immJ() do { *imm = SEXT((BITS(i, 31, 31)<<19)|(BITS(i, 19, 12)<<11)|(BITS(i, 20, 20)<<10)|BITS(i, 30, 21),20)<<1; } while(0)
 static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, word_t *imm, int type) {
-  clock_gettime(CLOCK_REALTIME, &time_start);
+
   uint32_t i = s->isa.inst.val;
   int rd  = BITS(i, 11, 7);
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
   *dest = rd;
-  	clock_gettime(CLOCK_REALTIME, &time_end);
-		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
+  	  clock_gettime(CLOCK_REALTIME, &time_start);
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
     case TYPE_U:                   immU(); break;
@@ -53,6 +52,8 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
 		case TYPE_B: src1R(); src2R(); immB(); break;
 		case TYPE_J: 									 immJ(); break;
   }
+  clock_gettime(CLOCK_REALTIME, &time_end);
+		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
 	//printf("dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
 }
 
