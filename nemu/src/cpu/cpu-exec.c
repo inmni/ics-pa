@@ -18,8 +18,7 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 #include <trace.h>
-#include <time.h>
-#include <sys/time.h>
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -109,14 +108,16 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif
 #endif
 }
+#include <time.h>
+#include <sys/time.h>
 struct timespec time_start = {0,0},time_end={0,0};
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
-    clock_gettime(CLOCK_REALTIME, &time_start);
+    //clock_gettime(CLOCK_REALTIME, &time_start);
 		exec_once(&s, cpu.pc);
-		clock_gettime(CLOCK_REALTIME, &time_end);
-		printf("Time spent for 0x%08x is %lu ns\n", s.pc, time_end.tv_nsec-time_start.tv_nsec);
+		//clock_gettime(CLOCK_REALTIME, &time_end);
+		//printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;

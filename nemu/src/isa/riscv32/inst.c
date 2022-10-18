@@ -50,8 +50,11 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 	//printf("dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
 }
-
+#include <time.h>
+#include <sys/time.h>
+struct timespec time_start = {0,0},time_end={0,0};
 static int decode_exec(Decode *s) {
+
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
   s->dnpc = s->snpc;
@@ -62,7 +65,7 @@ static int decode_exec(Decode *s) {
   __VA_ARGS__ ; \
 	/*isa_reg_display();*/\
 }
-
+clock_gettime(CLOCK_REALTIME, &time_start);
   INSTPAT_START();
   INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = imm);//y
 	INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = imm + s->pc);//y
@@ -119,7 +122,8 @@ static int decode_exec(Decode *s) {
 			);//y
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));//y
   INSTPAT_END();
-
+clock_gettime(CLOCK_REALTIME, &time_end);
+		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
   R(0) = 0; // reset $zero to 0
   return 0;
 }
