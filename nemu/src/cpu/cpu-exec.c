@@ -115,10 +115,11 @@ static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     clock_gettime(CLOCK_REALTIME, &time_start);
-		exec_once(&s, cpu.pc);
-		clock_gettime(CLOCK_REALTIME, &time_end);
-		if(time_end.tv_nsec-time_start.tv_nsec>1500){
+    clock_gettime(CLOCK_REALTIME, &time_end);
+		if(time_end.tv_nsec-time_start.tv_nsec>0){
 			printf("Time spent on pc = 0x%08x is %lu ns\n", s.pc,time_end.tv_nsec-time_start.tv_nsec);
+		exec_once(&s, cpu.pc);
+		
 		}
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
