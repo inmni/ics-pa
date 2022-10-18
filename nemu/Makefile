@@ -48,7 +48,6 @@ CFLAGS_BUILD += $(if $(CONFIG_CC_ASAN),-fsanitize=address,)
 CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(CONFIG_ITRACE_COND)),true)
 CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) $(CONFIG_TARGET_AM) -D__GUEST_ISA__=$(GUEST_ISA)
 LDFLAGS += $(CFLAGS_BUILD)
-CPPFLAGS += $(CONFIG_TARGET_AM)
 # Include rules for menuconfig
 include $(NEMU_HOME)/scripts/config.mk
 
