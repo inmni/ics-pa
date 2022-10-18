@@ -17,7 +17,9 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
-
+#include <time.h>
+#include <sys/time.h>
+struct timespec time_start = {0,0},time_end={0,0};
 #define R(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
@@ -35,11 +37,14 @@ enum {
 #define immB() do { *imm = SEXT((BITS(i, 31, 31)<<11)|(BITS(i, 7, 7)<<10)|(BITS(i, 30, 25)<<4)|BITS(i, 11, 8), 12)<<1; } while(0)
 #define immJ() do { *imm = SEXT((BITS(i, 31, 31)<<19)|(BITS(i, 19, 12)<<11)|(BITS(i, 20, 20)<<10)|BITS(i, 30, 21),20)<<1; } while(0)
 static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, word_t *imm, int type) {
+  clock_gettime(CLOCK_REALTIME, &time_start);
   uint32_t i = s->isa.inst.val;
   int rd  = BITS(i, 11, 7);
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
   *dest = rd;
+  	clock_gettime(CLOCK_REALTIME, &time_end);
+		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
     case TYPE_U:                   immU(); break;
@@ -50,9 +55,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 	//printf("dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
 }
-#include <time.h>
-#include <sys/time.h>
-struct timespec time_start = {0,0},time_end={0,0};
+
 static int decode_exec(Decode *s) {
 
   int dest = 0;
@@ -61,11 +64,8 @@ static int decode_exec(Decode *s) {
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */ ) { \
 	/*printf("pc:0x%08x	Execute inst: %s	\n",s->pc,str(name));*/\
-	clock_gettime(CLOCK_REALTIME, &time_start);\
 	decode_operand(s, &dest, &src1, &src2, &imm, concat(TYPE_, type)); \
-	clock_gettime(CLOCK_REALTIME, &time_end);\
-		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);\
-  __VA_ARGS__ ; \
+  	__VA_ARGS__ ; \
 	/*isa_reg_display();*/\
 }
 
