@@ -44,6 +44,8 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   int rs2 = BITS(i, 24, 20);
   *dest = rd;
   	  clock_gettime(CLOCK_REALTIME, &time_start);
+  	    clock_gettime(CLOCK_REALTIME, &time_end);
+		printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
     case TYPE_U:                   immU(); break;
@@ -52,8 +54,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
 		case TYPE_B: src1R(); src2R(); immB(); break;
 		case TYPE_J: 									 immJ(); break;
   }
-  clock_gettime(CLOCK_REALTIME, &time_end);
-		//printf("Time spent %lu ns\n", time_end.tv_nsec-time_start.tv_nsec);
+
 	//printf("dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
 }
 
