@@ -110,31 +110,8 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
 static void execute(uint64_t n) {
   Decode s;
-  struct timeval tv;
-  long lastTime;
-  long timecount[67];
-  uint32_t lastPC = 0;
-  bool once = false;
   for (;n > 0; n --) {
-  	if(cpu.pc==0x80000720 && !once){
-  		for(int i=0;i<67;i++)timecount[i]=0;
-  	}
-  	if(cpu.pc>=0x80000720 && cpu.pc<=0x8000082c && !once){
-  		gettimeofday(&tv,NULL);
-  		lastTime = tv.tv_usec;
-  		lastPC	 = cpu.pc;
-    		exec_once(&s, cpu.pc);
-    		
-    		gettimeofday(&tv,NULL);
-    		timecount[(lastPC-0x80000720)>>2]+=tv.tv_usec-lastTime;
-    		
-  		if(lastPC == 0x800007b4||lastPC == 0x8000082c){
-  			for(int i=0;i<67;i++){
-  			once = true;
-  				printf("0x%08x takes %ld us\n", 0x80000720+(i<<2), timecount[i]);
-  			}
-  		}
-    	}else{exec_once(&s, cpu.pc);}
+    exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
