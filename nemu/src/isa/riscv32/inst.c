@@ -101,6 +101,9 @@ static int decode_exec(Decode *s) {
 }
 tsc1 = rdtscp_start();tsc2 = rdtscp_end();
 		tsc_start = (tsc1+tsc2)>>1;
+		tsc1 = rdtscp_start();tsc2 = rdtscp_end();
+		tsc_end = (tsc1+tsc2)>>1;
+			printf("Time spent is %lu ticks\n", tsc_end-tsc_start);
   INSTPAT_START();
   INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = imm);//y
 	INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = imm + s->pc);//y
@@ -157,10 +160,7 @@ tsc1 = rdtscp_start();tsc2 = rdtscp_end();
 			);//y
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));//y
   INSTPAT_END();
-tsc1 = rdtscp_start();tsc2 = rdtscp_end();
-		tsc_end = (tsc1+tsc2)>>1;
-		//if(time_end.tv_nsec-time_start.tv_nsec>0){
-			printf("Time spent is %lu ticks\n", tsc_end-tsc_start);
+
   R(0) = 0; // reset $zero to 0
   return 0;
 }
