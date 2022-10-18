@@ -19,6 +19,34 @@
 #include <cpu/decode.h>
 #include <time.h>
 #include <sys/time.h>
+#include <unistd.h>
+uint64_t tsc1,tsc2,tsc_start,tsc_end;
+static inline unsigned long rdtscp_start(void) {
+  unsigned long var;
+  unsigned int hi, lo;
+
+  __asm volatile ("cpuid\n\t"
+          "rdtsc\n\t" : "=a" (lo), "=d" (hi)
+          :: "%rbx", "%rcx");
+
+  var = ((unsigned long)hi << 32) | lo;
+  return (var);
+}
+
+static inline unsigned long rdtscp_end(void) {
+  unsigned long var;
+  unsigned int hi, lo;
+
+  __asm volatile ("rdtscp\n\t"
+          "mov %%edx, %1\n\t"
+          "mov %%eax, %0\n\t"
+          "cpuid\n\t"  : "=r" (lo), "=r" (hi)
+          :: "%rax", "%rbx", "%rcx", "%rdx");
+
+  var = ((unsigned long)hi << 32) | lo;
+  return (var);
+  }
+
 //struct timespec time_start = {0,0},time_end={0,0};
 #define R(i) gpr(i)
 #define Mr vaddr_read
@@ -71,7 +99,8 @@ static int decode_exec(Decode *s) {
   	__VA_ARGS__ ; \
 	/*isa_reg_display();*/\
 }
-
+tsc1 = rdtscp_start();tsc2 = rdtscp_end();
+		tsc_start = (tsc1+tsc2)>>1;
   INSTPAT_START();
   INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = imm);//y
 	INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = imm + s->pc);//y
@@ -128,7 +157,10 @@ static int decode_exec(Decode *s) {
 			);//y
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));//y
   INSTPAT_END();
-
+tsc1 = rdtscp_start();tsc2 = rdtscp_end();
+		tsc_end = (tsc1+tsc2)>>1;
+		//if(time_end.tv_nsec-time_start.tv_nsec>0){
+			printf("Time spent is %lu ticks\n", tsc_end-tsc_start);
   R(0) = 0; // reset $zero to 0
   return 0;
 }

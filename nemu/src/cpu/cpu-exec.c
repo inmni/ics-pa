@@ -110,49 +110,18 @@ static void exec_once(Decode *s, vaddr_t pc) {
 }
 #include <time.h>
 #include <sys/time.h>
-#include <unistd.h>
+
 #include <stdlib.h>
 //struct timespec time_start = {0,0},time_end={0,0};
-uint64_t tsc1,tsc2,tsc_start,tsc_end;
-static inline unsigned long rdtscp_start(void) {
-  unsigned long var;
-  unsigned int hi, lo;
 
-  __asm volatile ("cpuid\n\t"
-          "rdtsc\n\t" : "=a" (lo), "=d" (hi)
-          :: "%rbx", "%rcx");
-
-  var = ((unsigned long)hi << 32) | lo;
-  return (var);
-}
-
-static inline unsigned long rdtscp_end(void) {
-  unsigned long var;
-  unsigned int hi, lo;
-
-  __asm volatile ("rdtscp\n\t"
-          "mov %%edx, %1\n\t"
-          "mov %%eax, %0\n\t"
-          "cpuid\n\t"  : "=r" (lo), "=r" (hi)
-          :: "%rax", "%rbx", "%rcx", "%rdx");
-
-  var = ((unsigned long)hi << 32) | lo;
-  return (var);
-  }
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     //clock_gettime(CLOCK_REALTIME, &time_start);
     //clock_gettime(CLOCK_REALTIME, &time_end);
-		tsc1 = rdtscp_start();tsc2 = rdtscp_end();
-		tsc_start = (tsc1+tsc2)>>1;
+		
 		exec_once(&s, cpu.pc);
-		tsc1 = rdtscp_start();tsc2 = rdtscp_end();
-		tsc_end = (tsc1+tsc2)>>1;
-		//if(time_end.tv_nsec-time_start.tv_nsec>0){
-		if(tsc_end-tsc_start>336){
-			printf("Time spent on pc = 0x%08x is %lu ticks\n", s.pc,tsc_end-tsc_start-336);
-		}
+		
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
