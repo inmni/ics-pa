@@ -87,30 +87,16 @@ finish:
 
 
 // --- pattern matching wrappers for decode ---
+#define INSTPAT(pattern, ...) do { \
+  uint64_t key, mask, shift; \
+  pattern_decode(pattern, STRLEN(pattern), &key, &mask, &shift); \
+  if (((INSTPAT_INST(s) >> shift) & mask) == key) { \
+    INSTPAT_MATCH(s, ##__VA_ARGS__); \
+    goto *(__instpat_end); \
+  } \
+} while (0)
 
 #define INSTPAT_START(name) { const void ** __instpat_end = &&concat(__instpat_end_, name);
 #define INSTPAT_END(name)  concat(__instpat_end_, name): ; }
 
-
-#define NEWINSTPAT(name, type, key, mask, ...) do{ \
-	if((INSTPAT_INST(s) & mask)==key){ \
-		INSTPAT_MATCH(s, name, type, ##__VA_ARGS__); \
-		goto *(__instpat_end); \
-	} \
-} while(0) \
-
-#define MASK_R 11111110000000000111000001111111
-#define MASK_I 00000000000000000111000001111111
-#define MASK_S 00000000000000000111000001111111
-#define MASK_B 00000000000000000111000001111111
-#define MASK_U 00000000000000000000000001111111
-#define MASK_J 00000000000000000000000001111111
-#define MASK_N 00000000000000000000000000000000
-#define MASK_IS 11111110000000000111000001111111
-#define __GENMASK(mask) 0b##mask
-#define _GENMASK(mask) __GENMASK(mask)
-#define GENMASK(type) _GENMASK(MASK_##type)
-#define GENKEY(key) 0b##key
-
-#define INSTPAT(key, name, type, ...) NEWINSTPAT(name, type, GENKEY(key),GENMASK(type),##__VA_ARGS__)
 #endif
