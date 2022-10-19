@@ -74,7 +74,7 @@ static int decode_exec(Decode *s) {
   __VA_ARGS__ ; \
 	/*isa_reg_display();*/\
 }
-
+INSTPAT_START();
 NEWINSTPAT_START_1()
 	INSTPAT(00000000000000000000000000110011, add	 , R, R(dest) = src1 + src2);//y
 	INSTPAT(01000000000000000000000000110011, sub	 , R, R(dest) = src1 - src2);//y
@@ -137,7 +137,7 @@ NEWINSTPAT_END()
 NEWINSTPAT_START_4()
   	INSTPAT(00000000000000000000000000000000, inv    , N, INV(s->pc),printf("NONE\n"));//y
 NEWINSTPAT_END()
-
+INSTPAT_END()
   R(0) = 0; // reset $zero to 0
   return 0;
 }

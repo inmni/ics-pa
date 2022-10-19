@@ -102,7 +102,7 @@ finish:
 	case key:{ \
 		decode_operand(s, &dest, &src1, &src2, &imm, concat(TYPE_, type)); \
   		__VA_ARGS__ ; \
-		break;\
+		goto *(__instpat_end); \
 	}
 #define MASK_A 11111111111111111111111111111111
 #define MASK_R 11111110000000000111000001111111
