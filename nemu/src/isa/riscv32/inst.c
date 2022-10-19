@@ -97,6 +97,14 @@ NEWINSTPAT_START_1()
 	INSTPAT(00000010000000000101000000110011, divu   , R, R(dest) = src1 / src2);
 	INSTPAT(00000010000000000110000000110011, rem	 , R, R(dest) = ((int)src1) % ((int)src2));//y
 	INSTPAT(00000010000000000111000000110011, remu	 , R, R(dest) = src1 % src2);
+	INSTPAT(00000000000000000001000000010011, slli	 , IS, R(dest) = src1<<imm );//y
+	INSTPAT(00000000000000000101000000010011, srli	 , IS, R(dest) = src1>>imm );//y
+	INSTPAT(01000000000000000101000000010011, srai   , IS, R(dest) = ((int)src1)>>imm);//y
+	INSTPAT(00000000000000000000000001101111, jal    , J, R(dest) = s->pc + 4, s->dnpc = s->pc + imm
+#ifdef CONFIG_FTRACE
+			,call_to_ftrace(s->dnpc)							
+#endif
+			);//y
 NEWINSTPAT_END()
 NEWINSTPAT_START_2()
 	INSTPAT(00000000000000000000000000010011, addi   , I, R(dest) = src1 + imm);//y
@@ -110,14 +118,6 @@ NEWINSTPAT_START_2()
 			,ret_to_ftrace(R(dest))						
 #endif
 			);//y
-NEWINSTPAT_END()
-NEWINSTPAT_START_1()
-	//I type Special 
-	INSTPAT(00000000000000000001000000010011, slli	 , IS, R(dest) = src1<<imm );//y
-	INSTPAT(00000000000000000101000000010011, srli	 , IS, R(dest) = src1>>imm );//y
-	INSTPAT(01000000000000000101000000010011, srai   , IS, R(dest) = ((int)src1)>>imm);//y
-NEWINSTPAT_END()
-NEWINSTPAT_START_2()
 	INSTPAT(00000000000000000000000000000011, lb	 , I, R(dest) = Mr(src1 + imm, 1); if(R(dest)&0x80)R(dest)|=0xFFFFFFF0);
 	INSTPAT(00000000000000000001000000000011, lh	 , I, R(dest) = Mr(src1 + imm, 2); if(R(dest)&0x8000)R(dest)|=0xFFFF0000);//y
   	INSTPAT(00000000000000000010000000000011, lw     , I, R(dest) = Mr(src1 + imm, 4));//y
@@ -134,14 +134,9 @@ NEWINSTPAT_START_2()
 	INSTPAT(00000000000000000110000001100011, bltu	 , B, if(src1<src2)s->dnpc = s->pc+imm);//y
 	INSTPAT(00000000000000000111000001100011, bgeu	 , B, if(src1>=src2)s->dnpc = s->pc+imm);
 NEWINSTPAT_END()
-NEWINSTPAT_START_1()
-	INSTPAT(00000000000000000000000001101111, jal    , J, R(dest) = s->pc + 4, s->dnpc = s->pc + imm
-#ifdef CONFIG_FTRACE
-			,call_to_ftrace(s->dnpc)							
-#endif
-			);//y
+NEWINSTPAT_START_4()
   	INSTPAT(00000000000000000000000000000000, inv    , N, INV(s->pc));//y
-  NEWINSTPAT_END()
+NEWINSTPAT_END()
 
   R(0) = 0; // reset $zero to 0
   return 0;
