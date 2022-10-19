@@ -109,7 +109,7 @@ NEWINSTPAT_START_2()
 	INSTPAT(00000000000000000110000000010011, ori	 , I, R(dest) = src1 | imm);
 	INSTPAT(00000000000000000111000000010011, andi   , I, R(dest) = src1 & imm);
 	INSTPAT(00000000000000000000000001110011, ebreak , I, NEMUTRAP(s->pc, R(10))); //ok R(10) is $a0
-	INSTPAT(00000000000000000000000001100111, jalr   , I, printf("jalr imm: %d\n",imm),s->dnpc = (src1 + imm)&~1, R(dest) = s->pc + 4
+	INSTPAT(00000000000000000000000001100111, jalr   , I, printf("jalr 0x%08x, imm: %d\n",s->isa.inst.val,imm),s->dnpc = (src1 + imm)&~1, R(dest) = s->pc + 4
 #ifdef CONFIG_FTRACE
 			,ret_to_ftrace(R(dest))						
 #endif
