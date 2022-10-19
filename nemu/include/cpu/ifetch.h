@@ -20,7 +20,7 @@
 //IRB iRingBuffer;
 //void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
-static uint32_t inst_fetch(vaddr_t *pc, int len) {
+inline uint32_t inst_fetch(vaddr_t *pc, int len) {
   uint32_t inst = vaddr_ifetch(*pc, len);
 	(*pc) += len;
   return inst;
