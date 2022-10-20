@@ -30,9 +30,10 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 			ramdisk_read(&phdr, offset, sizeof(Elf_Phdr));
 
 			if(phdr.p_type != PT_LOAD)continue;
-			
+			ramdisk_read((void *)(phdr.p_vaddr + phdr.p_filesz), offset, phdr.p_filesz);
+			memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
 	}
-	return 0x830000b4;
+	return ehdr.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
