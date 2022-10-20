@@ -28,7 +28,7 @@ endif
 -include $(NANOS_HOME)/include/config/auto.conf
 -include $(NANOS_HOME)/include/config/auto.conf.cmd
 
-
+CFLAGS	+= -DCONFIG_STRACE
 # Include rules for menuconfig
 include $(NANOS_HOME)/scripts/config.mk
 update:
