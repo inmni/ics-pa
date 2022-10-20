@@ -6,6 +6,7 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context *c) {
 	printf("CONTEXT, mepc:%d, mcause: %d, mstatus: %d\nREGS:\n",c->mepc,c->mcause,c->mstatus);
+	printf("-1 test:%d\n",-1);
 	int i;
 	int line_count = 1;
 	for(i=0;i<32;i++,line_count++){
