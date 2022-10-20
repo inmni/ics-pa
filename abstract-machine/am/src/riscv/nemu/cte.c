@@ -14,7 +14,7 @@ Context* __am_irq_handle(Context *c) {
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-
+	printf("CONTEXT, mepc:%d, mcause: %d\n",c->mepc,c->mcause);
   return c;
 }
 
