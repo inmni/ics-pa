@@ -21,7 +21,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	fr_r = ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
 	printf("%d\n", *(uint32_t *)ehdr.e_ident);	
 	assert(fr_r==sizeof(Elf_Ehdr));
-	assert(*(uint32_t *)ehdr.e_ident == 1/*To complete*/);
+	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
 	assert(ehdr.e_phoff!=0);
 	
 	offset = ehdr.e_phoff;
