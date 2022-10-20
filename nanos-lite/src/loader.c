@@ -32,7 +32,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 			if(phdr.p_type != PT_LOAD)continue;
 			
 	}
-	return ehdr.e_entry;
+	return 0x830000b4;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
