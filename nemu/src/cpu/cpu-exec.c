@@ -139,9 +139,9 @@ static void statistic() {
 }
 void itrace_write(){
 	int tmp = iRB.st_index;
-	log_write("=======latest instructions=======");
+	Log("=======latest instructions=======");
 	do{
-					log_write("%s\n", iRB.buf[tmp]);
+					Log("%s", iRB.buf[tmp]);
 					tmp++; tmp%=MAX_NR_IRB;
 		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
 	Log("Latest instructions have been stored in nemu-log");
