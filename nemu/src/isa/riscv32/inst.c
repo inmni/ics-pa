@@ -51,7 +51,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 	//printf("dest:%d,src1:%08x,src2;%08x,imm:%d,type:%d\n",*dest,*src1,*src2,*imm,type);
 }
-void itrace_write();
+void isa_reg_display();
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
@@ -89,7 +89,7 @@ static int decode_exec(Decode *s) {
 	INSTPAT("??????? ????? ????? 100 ????? 00100 11", xori	 , I, R(dest) = src1 ^ imm);//y
 	INSTPAT("??????? ????? ????? 110 ????? 00100 11", ori		 , I, R(dest) = src1 | imm);
 	INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi   , I, R(dest) = src1 & imm);
-	INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall	 , I, s->dnpc=isa_raise_intr(1, s->pc));// TODO():The NO and pc.
+	INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall	 , I, isa_reg_display();s->dnpc=isa_raise_intr(1, s->pc));// TODO():The NO and pc.
 	INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , I, NEMUTRAP(s->pc, R(10))); //ok R(10) is $a0
 	INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, s->dnpc = (src1 + imm)&~1, R(dest) = s->pc + 4
 #ifdef CONFIG_FTRACE
