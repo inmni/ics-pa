@@ -22,6 +22,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
 	printf("Start raise. mepc:0x%08x, mcause: %d, mtvec:0x%08x\n",sr(MEPC),sr(MCAUSE),sr(MTVEC));
+	nemu_state.state = 1;
 	return sr(MTVEC);
 }
 
