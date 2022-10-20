@@ -12,11 +12,14 @@ void do_syscall(Context *c) {
 	a[2] = c->GPR3;
 	a[3] = c->GPR4;
 #ifdef CONFIG_STRACE
-	Log("SYScall trace: %s(%d %d %d)",syscall_table[a[0]],a[1],a[2],a[3]);
+	print("SYScall trace: %s(%d %d %d)",syscall_table[a[0]],a[1],a[2],a[3]);
 #endif
   switch (a[0]) {
 		case SYS_exit:	halt(a[1]);						break;
 		case SYS_yield:	yield();		c->GPRx=0;break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
+#ifdef CONFIG_STRACE
+	printf(" ret %d\n",c->GPRx);
+#endif
 }

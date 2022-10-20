@@ -182,7 +182,7 @@ config ETRACE
 	default n
 config STRACE
 	depends on TRACE
-	bool "Enable syscall tracer"
+	bool "To nanos-lite enable exception tracer"
 	default n
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
