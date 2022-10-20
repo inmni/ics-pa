@@ -22,7 +22,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
 #ifdef CONFIG_ETRACE
-	log_write("Exception Trace: PC=0x%08x status: %d cause: %d", epc, sr(MSTATUS),sr(MCAUSE));
+	printf("Exception Trace: PC=0x%08x status: %d cause: %d", epc, sr(MSTATUS),sr(MCAUSE));
 #endif
 	//printf("Start raise. mepc:0x%08x, mcause: %d, mtvec:0x%08x\n",sr(MEPC),sr(MCAUSE),sr(MTVEC));
 	//isa_reg_display();
