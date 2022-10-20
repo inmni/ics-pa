@@ -9,7 +9,7 @@ Context* __am_irq_handle(Context *c) {
 	int i;
 	int line_count = 1;
 	for(i=0;i<32;i++,line_count++){
-		printf("%s	%d	", c->gpr[i]);
+		printf("%d	", c->gpr[i]);
 		if(line_count==4){
 			line_count = 0;
 			printf("\n");
