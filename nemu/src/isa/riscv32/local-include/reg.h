@@ -34,5 +34,13 @@ static inline const char* reg_name(int idx, int width) {
   extern const char* regs[];
   return regs[check_reg_idx(idx)];
 }
-
+//	SYSTEM REGS
+#define MCAUSE						0x342
+#define MEPC							0x341
+#define MTVEC							0x305
+#define MSTATUS						0x300
+//	EVENT
+#define EVENT_NULL				0
+#define EVENT_YIELD				1
+#define EVENT_SYSCALL			2
 #endif
