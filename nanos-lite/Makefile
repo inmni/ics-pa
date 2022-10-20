@@ -20,9 +20,9 @@ files = $(RAMDISK_FILE) src/files.h src/syscall.h
 $(foreach f,$(files),$(if $(wildcard $f),, $(shell touch $f)))
 else
 
-#ifeq ($(wildcard $(NAVY_HOME)/libs/libos/src/syscall.h),)
-#  $(error $$NAVY_HOME must be a Navy-apps repo)
-#endif
+ifeq ($(wildcard $(NAVY_HOME)/libs/libos/src/syscall.h),)
+  $(error $$NAVY_HOME must be a Navy-apps repo)
+endif
 
 update:
 	$(MAKE) -s -C $(NAVY_HOME) ISA=$(ISA) ramdisk
