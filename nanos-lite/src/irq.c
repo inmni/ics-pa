@@ -2,7 +2,7 @@
 
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
-    	case EVENT_YIELD:	Log("yield");	break;
+    	case EVENT_YIELD:	Log("yield on %d",c->mepc);	break;
 			default: panic("Unhandled event ID = %d", e.event);
   }
 
