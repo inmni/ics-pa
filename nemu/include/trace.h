@@ -6,7 +6,7 @@
 #include <device/map.h>
 
 #define ST_FUNC 18
-#define MAX_NR_IRB 128
+#define MAX_NR_IRB 23
 #define MAX_NR_MRWB 256
 #define MAX_NR_FTB 64
 #define MAX_NR_ETB 64
