@@ -23,7 +23,10 @@ typedef struct {
   vaddr_t pc;
 	word_t sr[4096];
 } riscv32_CPU_state;
-
+#define MCAUSE 		0x342
+#define MEPC			0x341
+#define MTVEC 		0x305
+#define MSTATUS 	0x300
 // decode
 typedef struct {
   union {
