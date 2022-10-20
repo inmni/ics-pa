@@ -137,16 +137,18 @@ static void statistic() {
   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
-
+void itrace_write(){
+	int tmp = iRB.st_index;
+	log_write("=======latest instructions=======");
+	do{
+					log_write("%s\n", iRB.buf[tmp]);
+					tmp++; tmp%=MAX_NR_IRB;
+		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
+	Log("Latest instructions have been stored in nemu-log");
+}
 void assert_fail_msg() {
 #ifdef CONFIG_ITRACE_RING
-	int tmp=iRB.st_index;
-	do{
-		log_write("%s\n", iRB.buf[tmp]);
-		tmp++;
-		tmp%=MAX_NR_IRB;
-	}while(tmp!=iRB.st_index &&tmp<iRB.cur_len);
-	printf("Latest instructions have been stored in nemu-log\n");
+	itrace_write();
 #endif
 	isa_reg_display();
   statistic();
