@@ -14,6 +14,7 @@
 ***************************************************************************************/
 #include <isa.h>
 #include "../local-include/reg.h"
+void isa_reg_display();
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
@@ -21,6 +22,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
 	printf("Start raise. mepc:0x%08x, mcause: %d, mtvec:0x%08x\n",sr(MEPC),sr(MCAUSE),sr(MTVEC));
+	isa_reg_display();
 	return sr(MTVEC);
 }
 
