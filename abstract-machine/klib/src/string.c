@@ -116,6 +116,7 @@ char *itoa(int num, char *str, int base){
 		n/=base;
 	}
 	if(i==0)str[i++] = '0';
+	if(num<0&&base==10)str[i++] = '-';
 	str[i] = 0;
 	tmp=0;i--;
 	char t;
