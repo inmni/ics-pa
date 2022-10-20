@@ -176,6 +176,10 @@ config DTRACE_WRITE
 	depends on DTRACE
 	bool "Enable device write tracer"
 	default y
+config ETRACE
+	depends on TRACE
+	bool "Enable exception tracer"
+	default n
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"

@@ -9,8 +9,13 @@
 #define MAX_NR_IRB 16
 #define MAX_NR_MRWB 256
 #define MAX_NR_FTB 64
+#define MAX_NR_ETB 64
 #define SINGLE_BUF_LEN 128
 #define MAX_ADD_DISPLAY_LEN 18
+typedef struct trace_buf{
+	int cur_len; int st_index;
+	char *buf[256];
+} tr_buf;
 typedef struct inst_ring_buf{
 	int cur_len;
 	int st_index;
