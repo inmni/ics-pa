@@ -9,7 +9,7 @@ unsigned long NDL_GetTicks();
 #else
 #include <sys/time.h>
 static struct timeval tv;
-#define getTime() gettimeofday(&tv,NULL); (tv.tv_usec/1000+tv.tv_sec*1000)
+#define getTime() gettimeofday(&tv,NULL),(tv.tv_usec/1000+tv.tv_sec*1000)
 #endif
 int main() {
 	unsigned long lastTime = getTime();
