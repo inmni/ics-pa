@@ -129,9 +129,9 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 		//putstr("\nStart print num\n");
 		if( base==16 ){ func('0',out); func('x',out);
 				switch(l_count){
-						case 0: num &= 0x7FFFFFFF;												break;
-						case 1:	num &= ~(-1l);														break;
-						default:num &= ~(-1ll);														break;
+						case 0: num &= 0xFFFFFFFF;												break;
+						case 1:	num &= ~(0l);															break;
+						default:num &= ~(0ll);														break;
 				}
 		}
 		else if( (!unsigned_flag) && base==10){
