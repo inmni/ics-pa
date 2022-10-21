@@ -32,19 +32,11 @@ void do_syscall(Context *c) {
 										printf("Read %s from file: %s\n", (char *)a[2], fs_name(a[1]));
 #endif
 																										break;
-		case SYS_write: {
-				if(a[1]==1||a[1]==2){
-						for(temp = 0;temp<a[3];temp++)putch(*((char *)a[2]+temp));								
-						c->GPRx = a[3];
-				}
-				else{
-						c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
+		case SYS_write: c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
 #ifdef CONFIG_STRACE
 										printf("Write %s to file: %s\n", (char *)a[2], fs_name(a[1]));
 #endif
-				}
 																										break;
-		}
 		case SYS_close: c->GPRx = fs_close(a[1]);				
 #ifdef CONFIG_STRACE
 										printf("Close file: %s\n", fs_name(a[1]));
