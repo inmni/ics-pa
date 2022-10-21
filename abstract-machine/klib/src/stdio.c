@@ -147,7 +147,7 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 		}
 		while(width-- > n) func('0', out);
 		putstr("\nStart get div num\n");
-		div_num = 1;
+		div_num = 1; width = n-1;
 		switch(base){
 				case 2:	while(width){div_num<<=1;width--;}						break;
 				case 8:	while(width){div_num<<=3;width--;}						break;
