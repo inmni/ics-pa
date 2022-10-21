@@ -105,7 +105,7 @@ rematch:
 												if(!(tmp = va_arg(ap, char *))){
 															tmp = "(NULL STRING)";
 												}
-												while(*tmp){func(*tmp++, out);}				break;
+												while(*tmp++){func(*tmp, out);}				break;
 								case 'd':// base-10 32bits number
 											rnum:
 												print_num(get_num(&ap, l_count), 10, l_count, unsigned_flag, width, out, func);															break;
