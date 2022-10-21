@@ -5,7 +5,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-#define EVTDEV "/dev/events"
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
@@ -17,10 +16,7 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  	int fd = open(EVTDEV, 0, 0);
-		assert(fd);
-		printf("%d\n",read(fd,buf,len));
-		return read(fd, buf, len)>0;
+		return read(evtdev, buf, len)>0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -66,7 +62,8 @@ int NDL_Init(uint32_t flags) {
   }
 	gettimeofday(&tv, NULL);
 	startTime = tv.tv_sec*1000-tv.tv_usec/1000;
-  return 0;
+ 	evtdev = open("/dev/events", 0, 0);
+ 	return 0;
 }
 
 void NDL_Quit() {
