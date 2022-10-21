@@ -1,5 +1,6 @@
 #include <common.h>
 #include "syscall.h"
+#include <fs.h>
 #define CONFIG_STRACE
 #ifdef CONFIG_STRACE
 static const char *syscall_table[] = {
@@ -21,6 +22,10 @@ void do_syscall(Context *c) {
   switch (a[0]) {
 		case SYS_exit:	halt(a[1]);											break;
 		case SYS_yield:	yield();		c->GPRx=0;					break;
+		case SYS_open:	c->GPRx = fs_open((char *)a[1], a[2], a[3]);
+																										break;
+		case SYS_read:	c->GPRx = fs_read(a[1], (void *)a[2], a[3]);
+																										break;
 		case SYS_write: {
 				if(a[1]==1||a[1]==2){
 						for(temp = 0;temp<a[3];temp++)putch(*((char *)a[2]+temp));								
