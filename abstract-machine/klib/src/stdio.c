@@ -126,6 +126,7 @@ rematch:
 }
 const char* hex_num = "0123456789abcdef";
 static inline void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func) {
+		putstr("\nStart print num\n");
 		if( base==16 ){ func('0',out); func('x',out);}
 		else if( (!unsigned_flag) && base==10){
 				switch(l_count) {
