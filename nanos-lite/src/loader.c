@@ -24,7 +24,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	printf("filename:%s, e_ident:%d\n", filename, *(uint32_t *)ehdr.e_ident);	
 	printf("ALL:\n");
 	for(i = 0;i<sizeof(Elf_Ehdr);i++){
-		printf("%s", ((char *)&ehdr)+i);
+		printf("%d ", (int)(*(((char *)&ehdr)+i)));
 	}
 	assert(fr_r==sizeof(Elf_Ehdr));
 	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
