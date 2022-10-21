@@ -165,19 +165,19 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 				case 8:
 								while(n--){
 												if(num<div_num)func('0',out);
-												else{k = num/div_num;func((char)k-'0',out);}
+												else{k = num/div_num;num-=k*div_num;func((char)k-'0',out);}
 												div_num>>=3;
 								}																							break;
 				case 10:
 								while(n--){
 												if(num<div_num)func('0',out);
-												else{k = num/div_num;func((char)k-'0',out);}
+												else{k = num/div_num;num-=k*div_num;func((char)k-'0',out);}
 												div_num/=10;
 								}																							break;
 				case 16:
 								while(n--){
 												if(num<div_num)func('0',out);
-												else{k = num/div_num;putstr("\nk:");putch((char)k);putch('\n');func(hex_num[k],out);}
+												else{k = num/div_num;num-=k*div_num;func(hex_num[k],out);}
 												div_num>>=4;
 								}																							break;
 		}
