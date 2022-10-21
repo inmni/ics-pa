@@ -21,8 +21,8 @@ void do_syscall(Context *c) {
 		case SYS_yield:	yield();		c->GPRx=0;break;
 		case SYS_write: {
 				if(a[1]==1||a[1]==2){
-						putstr((char *)a[2]);
-						//for(temp = 0;temp<a[3];temp++)putch(*((char *)a[2]+temp));
+						//putstr((char *)a[2]);
+						for(temp = 0;temp<13;temp++)putch(*((char *)a[2]+temp));
 						c->GPRx = 0;									break;
 				}
 		}
