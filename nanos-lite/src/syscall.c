@@ -21,10 +21,9 @@ void do_syscall(Context *c) {
 		case SYS_yield:	yield();		c->GPRx=0;break;
 		case SYS_write: {
 				if(a[1]==1||a[1]==2){
-						for(temp = 0;temp<a[3];temp++)putch(*((char *)a[1]+temp));
+						for(temp = 0;temp<a[3];temp++)putch(*((char *)a[2]+temp));
 						c->GPRx = 0;									break;
 				}
-				printf("%d\n",a[1]);
 		}
 		default: panic("Unhandled syscall ID = %d", a[0]);
   }
