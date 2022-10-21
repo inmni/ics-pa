@@ -3,12 +3,13 @@
 #error can not support ISA=native
 #endif
 
-#if 1
+#if 0
 unsigned long NDL_GetTicks();
 #define getTime() NDL_GetTicks()
 #else
-static timeval tv;
-#define getTime() {gettimeofday(&tv,NULL); tv;}
+#include <sys/time.h>
+static struct timeval tv;
+#define getTime() gettimeofday(&tv,NULL); tv
 #endif
 int main() {
 	unsigned long lastTime = getTime();
