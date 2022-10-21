@@ -67,9 +67,9 @@ size_t fs_##opt(int fd, void *buf, size_t len) { \
 		return ramdisk_##opt(buf, file(fd).open_offset, len); \
 }
 
-def_fs_operate(write);
-def_fs_operate(read);
-/* 
+//def_fs_operate(write);
+//def_fs_operate(read);
+ 
 size_t fs_read(int fd, void *buf, size_t len) {
 		// If the file has its own read function
 		if( file(fd).read ){
@@ -99,9 +99,9 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 		}
 
 		file(fd).open_offset += len;
-		return ramdisk_write(buf, file(fd).write_offset, len);
+		return ramdisk_write(buf, file(fd).open_offset, len);
 }
-*/
+
 size_t fs_lseek(int fd, size_t offset, int whence){
 		size_t new_offset;
 		switch(whence){
