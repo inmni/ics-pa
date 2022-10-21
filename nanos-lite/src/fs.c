@@ -89,9 +89,9 @@ size_t fs_read(int fd, void *buf, size_t len) {
 		if( file(fd).open_offset + len - file(fd).disk_offset > file(fd).size ){
 				len = file(fd).size - ( file(fd).open_offset - file(fd).disk_offset );
 		}
-		
+		ramdisk_read(buf, file(fd).open_offset, len);
 		file(fd).open_offset += len;
-		return ramdisk_read(buf, file(fd).open_offset, len);
+		return len;
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
@@ -105,9 +105,9 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 		if( file(fd).open_offset + len - file(fd).disk_offset > file(fd).size ){
 				len = file(fd).size - ( file(fd).open_offset - file(fd).disk_offset );
 		}
-
+		ramdisk_write(buf, file(fd).open_offset, len);
 		file(fd).open_offset += len;
-		return ramdisk_write(buf, file(fd).open_offset, len);
+		return len;
 }
 
 size_t fs_lseek(int fd, size_t offset, int whence){
