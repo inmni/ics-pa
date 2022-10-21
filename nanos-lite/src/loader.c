@@ -17,13 +17,12 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	Elf_Ehdr ehdr; Elf_Phdr phdr;
 	
 	int fd = fs_open(filename, 0, 0);
-	fs_info(fd);
 	assert(fd!=-1);
 	fs_lseek(fd, 0, SEEK_SET);
-	fs_info(fd);
+	
 	fr_r = fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
-	fs_info(fd);
 	printf("filename:%s, e_ident:%d\n", filename, *(uint32_t *)ehdr.e_ident);	
+	printf("ALL:\n%s\n", (char *)&ehdr);
 	assert(fr_r==sizeof(Elf_Ehdr));
 	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
 	assert(ehdr.e_phoff!=0);
