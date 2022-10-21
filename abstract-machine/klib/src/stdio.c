@@ -105,7 +105,7 @@ rematch:
 												if(!(tmp = va_arg(ap, char *))){
 															tmp = "(NULL STRING)";
 												}
-												putstr(tmp);putch('\n');
+												putch('\n');putstr(tmp);putch('\n');
 												while(*tmp){func(*tmp, out);tmp++;}		break;
 								case 'd':// base-10 32bits number
 											rnum:
