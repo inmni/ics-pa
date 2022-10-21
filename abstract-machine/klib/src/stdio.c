@@ -127,13 +127,18 @@ rematch:
 const char* hex_num = "0123456789abcdef";
 static inline void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func) {
 		//putstr("\nStart print num\n");
-		if( base==16 ){ func('0',out); func('x',out);}
+		if( base==16 ){ func('0',out); func('x',out);
+				switch(l_count){
+						case 0: num &= 0x7FFFFFFF;												break;
+						case 1:	num &= ~(-1l);														break;
+						default:num &= ~(-1ll);														break;
+				}
+		}
 		else if( (!unsigned_flag) && base==10){
 				switch(l_count) {
 						case 0:	if((int32_t)num < 0){ func('-', out); num &= 0x7FFFFFFF; }																											break;
 						case 1: if((long)num < 0){ func('-', out); num &= ~(-1l); }																															break;
-						default:if((int64_t)num < 0){ func('-', out); num &= ~(-1ll); }																													break;
-		
+						default:if((int64_t)num < 0){ func('-', out); num &= ~(-1ll); }																													break;	
 				}
 		}
 		//putstr("\nStart get max width\n");
