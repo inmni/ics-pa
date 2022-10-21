@@ -177,7 +177,7 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 				case 16:
 								while(n--){
 												if(num<div_num)func('0',out);
-												else{k = num/div_num;putch((char)k);func(hex_num[k],out);}
+												else{k = num/div_num;putstr("\nk:");putch((char)k);putch('\n');func(hex_num[k],out);}
 												div_num>>=4;
 								}																							break;
 		}
