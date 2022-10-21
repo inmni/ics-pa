@@ -100,12 +100,13 @@ rematch:
 					// Check postfix(types)
 								case 'c':// char
 												 // 'char' will be promoted to 'int' through '...'
-												func((char)va_arg(ap, int), out);					break;
+												func((char)va_arg(ap, int), out);			break;
 								case 's':// string
 												if(!(tmp = va_arg(ap, char *))){
 															tmp = "(NULL STRING)";
 												}
-												while(*tmp++){func(*tmp, out);}				break;
+												putstr(tmp);putch('\n');
+												while(*tmp){func(*tmp, out);tmp++;}		break;
 								case 'd':// base-10 32bits number
 											rnum:
 												print_num(get_num(&ap, l_count), 10, l_count, unsigned_flag, width, out, func);															break;
