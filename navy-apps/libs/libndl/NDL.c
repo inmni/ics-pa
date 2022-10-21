@@ -1,20 +1,25 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#define EVTDEV "/dev/events"
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
-static timeval tv;
+static struct timeval tv;
+static uint64_t startTime = 0;
 uint32_t NDL_GetTicks() {
   	gettimeofday(&tv, NULL);
-		return tv.tv_usec/1000;
+		return tv.tv_usec/1000+tv.tv_sec*1000-startTime;
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  return 0;
+  	int fd = open(EVTDEV, 0, 0);
+		assert(fd);
+		return read(fd, buf, len)>0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -58,6 +63,8 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+	gettimeofday(&tv, NULL);
+	startTime = tv.tv_sec*1000-tv.tv_usec/1000;
   return 0;
 }
 
