@@ -1,6 +1,6 @@
 #include <common.h>
 #include "syscall.h"
-//#define CONFIG_STRACE
+#define CONFIG_STRACE
 #ifdef CONFIG_STRACE
 static const char *syscall_table[] = {
 "SYS_exit", "SYS_yield", "SYS_open", "SYS_read", "SYS_write",/*Others need implement*/
