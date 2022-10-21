@@ -20,8 +20,9 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	fs_info(fd);
 	assert(fd!=-1);
 	fs_lseek(fd, 0, SEEK_SET);
-
+	fs_info(fd);
 	fr_r = fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
+	fs_info(fd);
 	printf("filename:%s, e_ident:%d\n", filename, *(uint32_t *)ehdr.e_ident);	
 	assert(fr_r==sizeof(Elf_Ehdr));
 	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
