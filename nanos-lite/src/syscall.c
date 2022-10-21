@@ -1,14 +1,22 @@
 #include <common.h>
 #include "syscall.h"
 #include <fs.h>
-#define CONFIG_STRACE
+#include <sys/time.h>
+//#define CONFIG_STRACE
 #ifdef CONFIG_STRACE
 static const char *syscall_table[] = {
-"SYS_exit", "SYS_yield", "SYS_open", "SYS_read", "SYS_write", "SYS_kill", "SYS_getpid", "SYS_close", "SYS_lseek", "SYS_brk",/*Others need implement*/
+"SYS_exit", "SYS_yield", "SYS_open", "SYS_read", 
+"SYS_write", "SYS_kill", "SYS_getpid", "SYS_close", 
+"SYS_lseek", "SYS_brk", "SYS_fstat", "SYS_time",
+"SYS_signal", "SYS_execve", "SYS_fork", "SYS_link",
+"SYS_unlink", "SYS_wait", "SYS_times", "SYS_gettimeofday",
 };
 #endif
 uint32_t temp;
 extern char end;
+
+static inline int syscall_gettimeofday(struct timeval *tv, struct timezone *tz);
+
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -48,9 +56,24 @@ void do_syscall(Context *c) {
 #endif
 																										break;
 		case SYS_brk:								c->GPRx=0;					break;
+		case SYS_gettimeofday:	c->GPRx = syscall_gettimeofday((struct timeval *)a[1], (struct timezone *)a[2]);
+																										break;
 		default: panic("Unhandled syscall ID = %d", a[0]);
   }
 #ifdef CONFIG_STRACE
 	printf("================syscall trace end================\n");
 #endif
+}
+
+static inline int syscall_gettimeofday(struct timeval *tv, struct timezone *tz){
+		assert(tv);
+		uint64_t uptime = io_read(AM_TIMER_UPTIME).us;
+		tv->tv_sec = uptime/1000000;
+		tv->tv_usec = uptime%1000000;
+		if(tz){
+				// TODO: use correct timezone
+				tz->tz_minuteswest = 0;
+				tz->tz_dsttime = 0;
+		}
+		return 0;
 }

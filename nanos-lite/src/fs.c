@@ -1,5 +1,5 @@
 #include <fs.h>
-
+#include <device.h>
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
 
@@ -29,8 +29,8 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
 #define NR_FILES (sizeof(file_table)/sizeof(Finfo))
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, invalid_read, invalid_write},
-  [FD_STDOUT] = {"stdout", 0, 0, invalid_read, invalid_write},
-  [FD_STDERR] = {"stderr", 0, 0, invalid_read, invalid_write},
+  [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
+  [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
 #include "files.h"
 };
 #define file(i) file_table[(i)]
@@ -57,26 +57,6 @@ int fs_open(const char *filename, int flags, int mode){
 		}
 		return -1;
 }
-#define FILEOPT(f, opt) f.opt
-
-#define def_fs_operate(opt) \
-size_t fs_##opt(int fd, void *buf, size_t len) { \
-		/* If the file has its own function*/ \
-		if( FILEOPT(file(fd), opt) ){ \
-				len = FILEOPT(file(fd), opt)(buf, file(fd).open_offset, len); \
-				file(fd).open_offset += len; \
-		} \
-		/* Consider overflow*/ \
-		if( file(fd).open_offset + len - file(fd).disk_offset > file(fd).size ){ \
-				len = file(fd).size - ( file(fd).open_offset - file(fd).disk_offset ); \
-		} \
-\
-		file(fd).open_offset += len; \
-		return ramdisk_##opt(buf, file(fd).open_offset, len); \
-}
-
-//def_fs_operate(write);
-//def_fs_operate(read);
  
 size_t fs_read(int fd, void *buf, size_t len) {
 		// If the file has its own read function
@@ -111,6 +91,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 }
 
 size_t fs_lseek(int fd, size_t offset, int whence){
+		assert(!(file(fd).read || file(fd).write)); 
 		size_t new_offset;
 		switch(whence){
 				case SEEK_SET:
