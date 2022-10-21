@@ -51,7 +51,7 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 }
 
 void *memset(void *s, int c, size_t n) {
-	printf("Set %d bytes\n",(uint32_t)n);
+//	printf("Set %d bytes\n",(uint32_t)n);
 	char* pb = (char*)s;
 	while(n-->0)*pb++=c;
 	return s;
@@ -85,7 +85,7 @@ void *memcpy(void *out, const void *in, size_t n) {
 			while(n--){*bs_dst++ = *bs_src++;}
 			return out;
 	}*/
-	printf("copy %d bytes\n",(uint32_t)n);
+	//printf("copy %d bytes\n",(uint32_t)n);
 	char *bs_dst = (char *)out;
 	char *bs_src = (char *)in;
 	while(n--){
