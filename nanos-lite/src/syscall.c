@@ -23,6 +23,7 @@ void do_syscall(Context *c) {
 						for(temp = a[3];temp>0;temp--)putch(*((char *)a[2]+temp));
 						c->GPRx = 0;									break;
 				}
+				break;
 		}
 		default: panic("Unhandled syscall ID = %d", a[0]);
   }
