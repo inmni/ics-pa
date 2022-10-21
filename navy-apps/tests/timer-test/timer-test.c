@@ -1,18 +1,25 @@
-#include <sys/time.h>
 #include <stdio.h>
 #ifdef __ISA_NATIVE__
 #error can not support ISA=native
 #endif
+
+#if 1
+unsigned long NDL_GetTicks();
+#define getTime() NDL_GetTicks()
+#else
+static timeval tv;
+#define getTime() {gettimeofday(&tv,NULL); tv;}
+#endif
 int main() {
-	struct timeval tv;
-	unsigned long long lastTime = 0;
+	unsigned long lastTime = getTime();
+	unsigned long currTime = getTime();
 	int count = 20;
 	while(count){
-			gettimeofday(&tv, NULL);
-			if( tv.tv_usec+tv.tv_sec*1000000 - lastTime >= 500000){
+			currTime = getTime();
+			if( currTime - lastTime >= 500){
 					printf("Timer-test!\n");
 					count--;
-					lastTime = tv.tv_usec + tv.tv_sec*1000000;
+					lastTime = getTime();
 			}
 	}
   return 0;
