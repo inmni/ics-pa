@@ -9,11 +9,11 @@ int main() {
 	int count = 20;
 	while(count){
 			gettimeofday(&tv, NULL);
-			if( tv.tv_usec+tv.tv_sec*1000000 - lastTime >= 500000){
+			//if( tv.tv_usec+tv.tv_sec*1000000 - lastTime >= 500000){
 					printf("Timer-test!\n");
 					count--;
 					lastTime = tv.tv_usec + tv.tv_sec*1000000;
-			}
+			//}
 	}
   return 0;
 }
