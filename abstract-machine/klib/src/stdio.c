@@ -78,9 +78,9 @@ void format(op func, void *out, const char *fmt, va_list ap) {
 		const char *tmp;
 		while(1) {
 				// Common string
-				while(*fmt++ != '%'){
+				while(*fmt != '%'){
 						if(*fmt == 0)	return;
-						func(*fmt, out);
+						func(*fmt, out);	fmt++;
 				}
 				// Now *(fmt-1)='%', check the nearest
 				int l_count = 0; int unsigned_flag = 0; int width = -1;
@@ -105,7 +105,6 @@ rematch:
 												if(!(tmp = va_arg(ap, char *))){
 															tmp = "(NULL STRING)";
 												}
-												putch('\n');putstr(tmp);putch('\n');
 												while(*tmp){func(*tmp, out);tmp++;}		break;
 								case 'd':// base-10 32bits number
 											rnum:
