@@ -5,7 +5,7 @@
 #endif
 int main() {
 	struct timeval tv;
-	unsigned long long lastTime;
+	unsigned long long lastTime = 0;
 	int count = 20;
 	while(count){
 			gettimeofday(&tv, NULL);
