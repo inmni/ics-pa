@@ -37,7 +37,7 @@ static Finfo file_table[] __attribute__((used)) = {
 void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
-
+char *fs_name(int fd) {	return file(fd).name;}
 void fs_info(int fd) {
 		Finfo info = file(fd);
 		printf("========%s Info========\n",info.name);

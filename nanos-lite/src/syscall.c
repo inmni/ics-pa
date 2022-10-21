@@ -17,14 +17,20 @@ void do_syscall(Context *c) {
 	a[3] = c->GPR4;
 #ifdef CONFIG_STRACE
 	printf("===============syscall trace start================\n");
-	printf("\nsyscall trace: %s(%d %d %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
+	printf("syscall trace: %s(%d %d %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
 #endif
   switch (a[0]) {
 		case SYS_exit:	halt(a[1]);											break;
 		case SYS_yield:	yield();		c->GPRx=0;					break;
 		case SYS_open:	c->GPRx = fs_open((char *)a[1], a[2], a[3]);
+#ifdef CONFIG_STRACE
+										printf("Open file: %s\n", fs_name(c->GPRx));
+#endif
 																										break;
 		case SYS_read:	c->GPRx = fs_read(a[1], (void *)a[2], a[3]);
+#ifdef CONFIG_STRACE
+										printf("Read %s from file: %s\n", (char *)a[2], fs_name(a[1]));
+#endif
 																										break;
 		case SYS_write: {
 				if(a[1]==1||a[1]==2){
@@ -33,16 +39,26 @@ void do_syscall(Context *c) {
 				}
 				else{
 						c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
-				}																						break;
+#ifdef CONFIG_STRACE
+										printf("Write %s to file: %s\n", (char *)a[2], fs_name(a[1]));
+#endif
+				}
+																										break;
 		}
-		case SYS_close: c->GPRx = fs_close(a[1]);				break;
+		case SYS_close: c->GPRx = fs_close(a[1]);				
+#ifdef CONFIG_STRACE
+										printf("Close file: %s\n", fs_name(a[1]));
+#endif
+																										break;
 		case SYS_lseek:	c->GPRx = fs_lseek(a[1], a[2], a[3]);
+#ifdef CONFIG_STRACE
+										printf("Set offset %d in file: %s\n", a[2], fs_name(a[1]));
+#endif
 																										break;
 		case SYS_brk:								c->GPRx=0;					break;
 		default: panic("Unhandled syscall ID = %d", a[0]);
   }
 #ifdef CONFIG_STRACE
-	printf("\nsyscall trace: %s -> %d\n", syscall_table[a[0]],c->GPRx);
 	printf("================syscall trace end================\n");
 #endif
 }
