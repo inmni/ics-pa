@@ -38,6 +38,14 @@ void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
 
+void fs_info(int fd) {
+		Finfo info = file(fd);
+		printf("========%s Info========\n",info.name);
+		printf("Size:		%d Bytes\n", (int)info.size);
+		printf("Start:	%d Bytes\n", (int)info.disk_offset);
+		printf("CurrIdx:%d Bytes\n", (int)info.open_offset);
+		return;
+}
 int fs_open(const char *filename, int flags, int mode){
 		// flags and mode are ignored
 		int idx = NR_OCCUPIED;
