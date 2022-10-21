@@ -30,6 +30,9 @@ void do_syscall(Context *c) {
 				if(a[1]==1||a[1]==2){
 						for(temp = 0;temp<a[3];temp++)putch(*((char *)a[2]+temp));								
 						c->GPRx = a[3];
+				}
+				else{
+						c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
 				}																						break;
 		}
 		case SYS_lseek:	c->GPRx = fs_lseek(a[1], a[2], a[3]);
