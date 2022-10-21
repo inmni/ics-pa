@@ -136,6 +136,7 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 		
 				}
 		}
+		putstr("\nStart get max width\n");
 		// Now only need to deal with unsigned num.
 		register uint64_t div_num = num;	int n = 0; uint64_t k;
 		switch(base){
@@ -145,6 +146,7 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 				case 16:while(div_num){div_num>>=4;n++;}							break;
 		}
 		while(width-- > n) func('0', out);
+		putstr("\nStart get div num\n");
 		div_num = 1;
 		switch(base){
 				case 2:	while(width){div_num<<=1;width--;}						break;
