@@ -43,7 +43,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 		if(offset + len > fs_size(4)){
 				len = fs_size(4) - offset;
 		}
-		printf("0x%08x, %d, 0x%08x\n", (uintptr_t)buf, offset, (uint32_t)len);	
+		printf("%08x, %d, %08x\n", (uintptr_t)buf, offset, (uint32_t)len);	
 		AM_GPU_MEMCPY_T gpu_memcpy;
 		
 		gpu_memcpy.dest = offset;
