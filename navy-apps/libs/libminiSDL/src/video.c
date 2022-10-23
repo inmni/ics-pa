@@ -4,15 +4,82 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* width and height in srcrect determine the size to copy. 
+ * Only the position is used in the dstrect (the width and height are ignored). 
+ * Blits with negative dstrect coordinates will be cutted properly.
+ *
+ * If srcrect == NULL, copy all from src. If dstrect == NULL, copy to base on (0, 0).
+ *
+ * The final blit rectangle is saved in dstrect after all clipping is performed (srcrect is not modified).
+ */
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+	assert(dst->format->BitsPerPixel == 8 || dst->format->BitsPerPixel == 32);
+	// src should not be modified !!
+	
+	SDL_Rect tmp1; SDL_Rect tmp2;
+	if(!srcrect){
+			srcrect = &tmp1;
+			srcrect->w = src->w; srcrect->h = src->h;
+			srcrect->x = 0;			 srcrect->y = 0;
+	}
+	if(!dstrect){
+			dstrect = &tmp2;
+			dstrect->x = 0;						dstrect->y = 0;
+	}
+	if(dstrect->x < 0) dstrect->x = 0;
+	if(dstrect->y < 0) dstrect->y = 0;
+	dstrect->w = srcrect->w; dstrect->h = srcrect->h;
+	int shift = src->format->BitsPerPixel==8? 0: 2;
+	uintptr_t src_pixels = (uintptr_t)src->pixels + (srcrect->y * srcrect->w << shift) + (srcrect->x << shift);
+	uintptr_t dst_pixels = (uintptr_t)dst->pixels + (dstrect->y * dstrect->w << shift) + (dstrect->x << shift);
+	int i = srcrect->h;
+	while(i--){
+			memcpy((void *)dst_pixels, (void *)src_pixels, srcrect->w << shift);
+			src_pixels += src->w << shift;
+			dst_pixels += dst->w << shift;
+	}
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+		assert(dst->format->BitsPerPixel == 8 || dst->format->BitsPerPixel == 32);
+		SDL_Rect tmp;
+		if(!dstrect){
+				dstrect = &tmp;
+				dstrect->w = dst->w; dstrect->h = dst->h;
+				dstrect->x = 0; dstrect->y = 0;
+		}
+		// Maybe uint32_t and uint8_t .
+		uint32_t *dst_pixels = (uint32_t *)dst->pixels + dstrect->y*dst->w + dstrect->x;
+		int i, j;
+		for(i = 0; i < dstrect->h; i++){
+				for(j = 0; j < dstrect->w; j++){
+						*dst_pixels++ = color;
+				}
+				dst_pixels-=dstrect->w; dst_pixels+=dst->w;
+		}
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
+		assert(s->format->BitsPerPixel==8 || s->format->BitsPerPixel==32);
+		// If x, y, w and h are all 0, update the entire screen
+		if(!(x||y||w||h)){
+				w = s->w; h = s->h;
+		}
+		uint32_t *pixels = (uint32_t *)s->pixels;
+		if(s->format->BitsPerPixel == 8){
+				uint32_t *new_pixels = (uint32_t *)malloc(s->w * s->h << 2);
+				SDL_Color *colors = s->format->palette->colors;
+				for(int i = 0; i<s->w*s->h; i++){
+						new_pixels[i] = (colors[pixels[i]].a<<24)|(colors[pixels[i]].r<<16)|(colors[pixels[i]].g<<8)|(colors[pixels[i]].b);
+				}
+				pixels = new_pixels;
+		}
+		NDL_DrawRect(pixels, x, y, w, h);
+		if(s->format->BitsPerPixel == 8){
+				free(pixels);
+		}
 }
 
 // APIs below are already implemented.
