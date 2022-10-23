@@ -74,13 +74,6 @@ void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		// This will modify the GPU_MEMCPY input.
 		uintptr_t dest = FB_ADDR;
 		uintptr_t src = (uintptr_t)(mcpy->src);
-		printf("size:%d\n",mcpy->size);
-		char *dst1 = (char *)(uintptr_t)FB_ADDR;
-		char *src1 = (char *)(mcpy->src);
-		while(mcpy->size >= 1){
-				*dst1++ = *src1++;
-				mcpy->size--;
-		}
 		//gpu_memcpy(32);
 		//gpu_memcpy(8);
 		//gpu_memcpy(4);
