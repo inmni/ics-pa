@@ -30,23 +30,19 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 #include <stdio.h>
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-	/*int row,col;
+	int row,col;
 	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
 	uint32_t *pixels = (uint32_t *)ctl->pixels;
 	uint64_t *tmp1, *tmp2;
 	row = ctl->h;
-	printf("%08x, %08x\n", (uintptr_t)fb, (uintptr_t)FB_ADDR + (SCREEN_W*ctl->y<<2) + (ctl->x<<2));	
-	*/
+	/*
 	uintptr_t fb = (uintptr_t)FB_ADDR + (SCREEN_W*ctl->y<<2) + (ctl->x<<2);
 	uintptr_t pixels = (uintptr_t)ctl->pixels;
-	if(pixels + (ctl->w<<2) != (uintptr_t)((uint32_t *)ctl->pixels+ctl->w)){
-			printf("AAAAAAAAAAAA\n");
-	}
 	while(ctl->h--){
 			memcpy((void *)fb, (void *)pixels, ctl->w << 2);
 			fb += SCREEN_W<<2; pixels += ctl->w << 2;
 	}
-	return;/*
+	return;*/
 	if(ctl->w & 1){
 		while(row--){
 			col = ctl->w>>1;
@@ -63,7 +59,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 			while(col--)*tmp1++ = *tmp2++;
 			fb+=SCREEN_W; pixels+=ctl->w;
 		}
-	}*/
+	}
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }
