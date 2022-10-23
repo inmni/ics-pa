@@ -90,7 +90,7 @@ def_unit(128,512);
 		}	\
 }	while(0)	
 void *memcpy(void *out, const void *in, size_t n) {
-	printf("copy %d bytes\n",n);
+	//printf("copy %d bytes\n",n);
 	void *tmp = out;
 	fcpy(512);
 	fcpy(128);
