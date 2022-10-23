@@ -1,6 +1,6 @@
 #include <common.h>
 #include <device.h>
-
+#include <fs.h>
 #if defined(MULTIPROGRAM) && !defined(TIME_SHARING)
 # define MULTIPROGRAM_YIELD() yield()
 #else
@@ -40,7 +40,19 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+		if(offset + len > fs_size(4)){
+				len = fs_size(4) - offset;
+		}
+		
+		AM_GPU_MEMCPY_T gpu_memcpy;
+		
+		gpu_memcpy.dest = offset;
+		gpu_memcpy.src = buf;
+		gpu_memcpy.size = len;
+
+		io_write(AM_GPU_MEMCPY, (uintptr_t)(&gpu_memcpy));
+		
+		return len;
 }
 
 void init_device() {

@@ -38,9 +38,12 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 #define file(i) file_table[(i)]
 void init_fs() {
-  // TODO: initialize the size of /dev/fb
+		AM_GPU_CONFIG_T gpu_config = io_read(AM_GPU_CONFIG);
+		
+		file(FD_FB).size = gpu_config.width * gpu_config.height << 2;
 }
 char *fs_name(int fd) {	return file(fd).name;}
+size_t fs_size(int fd){	return file(fd).size;}
 void fs_info(int fd) {
 		Finfo info = file(fd);
 		printf("========%s Info========\n",info.name);
