@@ -8,6 +8,7 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
+static int canvas_w = 0, canvas_h = 0;
 static struct timeval tv;
 static uint64_t startTime = 0;
 uint32_t NDL_GetTicks() {
@@ -37,6 +38,13 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+	if(*w > screen_w || *h> screen_h){
+		printf("Error canvas size\n");
+	}
+	if(*w==0 && *h==0){
+		*w = screen_w; *h = screen_h;
+	}
+	canvas_w = *w;	canvas_h = *h;
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
@@ -62,7 +70,9 @@ int NDL_Init(uint32_t flags) {
   }
 	gettimeofday(&tv, NULL);
 	startTime = tv.tv_sec*1000-tv.tv_usec/1000;
- 	evtdev = open("/dev/events", 0, 0);
+ 	
+	evtdev = open("/dev/events", 0, 0);
+	fbdev = open("/dev/fb", 0, 0);
  	return 0;
 }
 
