@@ -1,6 +1,6 @@
 #include <am.h>
 #include <nemu.h>
-
+#include <string.h>
 #ifdef CONFIG_VGA_SIZE_800x600
 	#define SCREEN_W 800
 	#define SCREEN_H 600
@@ -57,27 +57,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   }
 }
 
-typedef struct {
-	uint64_t u1; uint64_t u2; uint64_t u3; uint64_t u4;
-}								 			__32UNIT;
-typedef uint64_t 			__8UNIT;
-typedef uint32_t 			__4UNIT;
-typedef char					__1UNIT;
-#include <stdio.h>
-#define gpu_memcpy(len)	do{	\
-		while(mcpy->size >= len){	\
-				*(volatile __##len##UNIT *)(mcpy->dest) = *(__##len##UNIT *)src;	\
-				mcpy->dest+=len;	src+=len;	mcpy->size-=len;	\
-		}	\
-}	while(0)
 void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		// This will modify the GPU_MEMCPY input.
-		uintptr_t src = (uintptr_t)(mcpy->src);
-		mcpy->dest += FB_ADDR;
-		gpu_memcpy(32);
-		gpu_memcpy(8);
-		gpu_memcpy(4);
-		gpu_memcpy(1);
+		memcpy((void *)(mcpy->dest+FB_ADDR), mcpy->src, mcpy->size);
 		outl(SYNC_ADDR,1);
 }
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
