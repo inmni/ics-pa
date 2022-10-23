@@ -66,7 +66,7 @@ typedef char					__1UNIT;
 #include <stdio.h>
 #define gpu_memcpy(len)	do{	\
 		while(mcpy->size >= len){	\
-				*((__##len##UNIT *)dest) = *((__##len##UNIT *)src);	\
+				*((volatile __##len##UNIT *)dest) = *((__##len##UNIT *)src);	\
 				dest+=len;	src+=len;	mcpy->size-=len;	\
 		}	\
 }	while(0)
