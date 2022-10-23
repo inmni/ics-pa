@@ -80,6 +80,9 @@ typedef uint64_t		__8UNIT;
 typedef struct{
 uint64_t u1;uint64_t u2;uint64_t u3;uint64_t u4;
 }										__32UNIT;
+#define def_unit(k,m)	typedef struct{__##k##UNIT u1;__##k##UNIT u2;__##k##UNIT u3;__##k##UNIT u4;}__##m##UNIT
+def_unit(32,128);
+def_unit(128,512);
 #define fcpy(len)	do{	\
 		while(n >= len){	\
 				*(__##len##UNIT *)out	= *(__##len##UNIT *)in;	\
@@ -89,17 +92,13 @@ uint64_t u1;uint64_t u2;uint64_t u3;uint64_t u4;
 void *memcpy(void *out, const void *in, size_t n) {
 	void *tmp = out;
 	printf("copy %d bytes\n", n);
+	fcpy(512);
+	fcpy(128);
 	fcpy(32);
 	fcpy(8);
 	fcpy(4);
 	fcpy(1);
 	return tmp;
-	char *bs_dst = (char *)out;
-	char *bs_src = (char *)in;
-	while(n--){
-		*bs_dst++ = *bs_src++;
-	}
-	return out;
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
