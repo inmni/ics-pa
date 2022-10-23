@@ -63,8 +63,10 @@ typedef struct {
 typedef uint64_t 			__8UNIT;
 typedef uint32_t 			__4UNIT;
 typedef char					__1UNIT;
+#include <stdio.h>
 #define gpu_memcpy(len)	do{	\
 		while(mcpy->size > len){	\
+				printf("Copy %d bytes in gpu\n", len);	\
 				*((__##len##UNIT *)dest) = *((__##len##UNIT *)src);	\
 				dest+=len;	src+=len;	mcpy->size-=len;	\
 		}	\
