@@ -37,6 +37,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+	printf("Start set canvas size\n");
 	if(*w > screen_w || *h> screen_h){
 		printf("Error canvas size\n");
 	}
@@ -96,7 +97,6 @@ int NDL_Init(uint32_t flags) {
 	if(strcmp(key2, "WIDTH")==0){screen_w = atoi(val2);}
 	else if(strcmp(key2, "HEIGHT")==0){screen_h = atoi(val2);}
 	else{printf("valid /proc/dispinfo file\n"); return 1;}
- 	printf("%d %d",screen_h,screen_w);	
 	
 	return 0;
 }
