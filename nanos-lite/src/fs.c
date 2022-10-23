@@ -97,7 +97,6 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 }
 
 size_t fs_lseek(int fd, size_t offset, int whence){
-		assert(!(file(fd).read || file(fd).write)); 
 		size_t new_offset;
 		switch(whence){
 				case SEEK_SET:
