@@ -39,8 +39,10 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	*/
 	uintptr_t fb = (uintptr_t)FB_ADDR + (SCREEN_W*ctl->y<<2) + (ctl->x<<2);
 	uintptr_t pixels = (uintptr_t)ctl->pixels;
-	int row = ctl->h;
-	while(row--){
+	if(pixels + (ctl->w<<2) != (uintptr_t)((uint32_t *)ctl->pixels+ctl->w)){
+			printf("AAAAAAAAAAAA\n");
+	}
+	while(ctl->h--){
 			memcpy((void *)fb, (void *)pixels, ctl->w << 2);
 			fb += SCREEN_W<<2; pixels += ctl->w << 2;
 	}
