@@ -65,7 +65,7 @@ typedef uint32_t 			__4UNIT;
 typedef char					__1UNIT;
 #include <stdio.h>
 #define gpu_memcpy(len)	do{	\
-		while(mcpy->size > len){	\
+		while(mcpy->size >= len){	\
 				*((__##len##UNIT *)dest) = *((__##len##UNIT *)src);	\
 				dest+=len;	src+=len;	mcpy->size-=len;	\
 		}	\
@@ -74,11 +74,11 @@ void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		// This will modify the GPU_MEMCPY input.
 		uintptr_t dest = FB_ADDR;
 		uintptr_t src = (uintptr_t)(mcpy->src);
+		printf("size:%d\n",mcpy->size);
 		//gpu_memcpy(32);
 		//gpu_memcpy(8);
 		//gpu_memcpy(4);
 		gpu_memcpy(1);
-		printf("size:%d\n", mcpy->size);
 }
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
   status->ready = true;
