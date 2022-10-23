@@ -88,6 +88,7 @@ uint64_t u1;uint64_t u2;uint64_t u3;uint64_t u4;
 }	while(0)	
 void *memcpy(void *out, const void *in, size_t n) {
 	void *tmp = out;
+	printf("copy %d bytes\n", n);
 	fcpy(32);
 	fcpy(8);
 	fcpy(4);
