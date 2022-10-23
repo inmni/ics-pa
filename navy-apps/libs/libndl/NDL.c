@@ -72,7 +72,25 @@ int NDL_Init(uint32_t flags) {
  	
 	evtdev = open("/dev/events", 0, 0);
 	fbdev = open("/dev/fb", 0, 0);
- 	return 0;
+
+	int fd = open("/proc/dispinfo", 0, 0);
+	char buf[64];
+	
+	read(fd, buf, 64);
+	char *key1 = strtok(buf, ":");
+	char *val1 = strtok(NULL, "\n");
+	char *key2 = strtok(NULL, ":");
+	char *val2 = strtok(NULL, "\n");
+	if(strcmp(key1, "WIDTH")==0){screen_w = atoi(val1);}
+	else if(strcmp(key1, "HEIGHT")==0){screen_h = atoi(val1);}
+	else{printf("valid /proc/dispinfo file\n"); return 1;}
+
+	if(strcmp(key2, "WIDTH")==0){screen_w = atoi(val2);}
+	else if(strcmp(key2, "HEIGHT")==0){screen_h = atoi(val2);}
+	else{printf("valid /proc/dispinfo file\n"); return 1;}
+ 	
+	
+	return 0;
 }
 
 void NDL_Quit() {
