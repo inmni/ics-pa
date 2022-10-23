@@ -35,7 +35,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	uint32_t *pixels = (uint32_t *)ctl->pixels;
 	uint64_t *tmp1, *tmp2;
 	row = ctl->h;
-				/*
+	printf("%08x, %08x\n", (uintptr_t)fb, (uintptr_t)FB_ADDR + (SCREEN_W*ctl->y<<2) + (ctl->x<<2));	
+	/*
 	uintptr_t fb = (uintptr_t)FB_ADDR + (SCREEN_W*ctl->y<<2) + (ctl->x<<2);
 	uintptr_t pixels = (uintptr_t)ctl->pixels;
 	while(ctl->h--){
@@ -43,7 +44,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 			fb += SCREEN_W<<2; pixels += ctl->w << 2;
 	}
 	return;*/
-printf("%d\n",ctl->w);	
 	if(ctl->w & 1){
 		while(row--){
 			col = ctl->w>>1;
