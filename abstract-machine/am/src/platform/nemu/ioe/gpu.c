@@ -78,6 +78,9 @@ void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		//gpu_memcpy(8);
 		//gpu_memcpy(4);
 		gpu_memcpy(1);
+		while(mcpy->size--){
+				outb(FB_ADDR+mcpy->size+mcpy->dest, *((char *)(mcpy->src)+mcpy->size));
+		}
 		outl(SYNC_ADDR,1);
 }
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
