@@ -84,7 +84,6 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 		// If the file has its own write function
 		if( file(fd).write ){
 				len = file(fd).write(buf, file(fd).open_offset, len);
-				file(fd).open_offset += len;
 				return len;
 		}
 		// Consider overflow
