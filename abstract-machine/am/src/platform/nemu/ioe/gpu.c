@@ -66,22 +66,18 @@ typedef char					__1UNIT;
 #include <stdio.h>
 #define gpu_memcpy(len)	do{	\
 		while(mcpy->size >= len){	\
-						printf("copy %d bytes\n", len); \
-				*(volatile __##len##UNIT *)dest = *(__##len##UNIT *)src;	\
-				dest+=len;	src+=len;	mcpy->size-=len;	\
+				*(volatile __##len##UNIT *)(mcpy->dest) = *(__##len##UNIT *)src;	\
+				mcpy->dest+=len;	src+=len;	mcpy->size-=len;	\
 		}	\
 }	while(0)
 void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		// This will modify the GPU_MEMCPY input.
-		uintptr_t dest = FB_ADDR + mcpy->dest;
 		uintptr_t src = (uintptr_t)(mcpy->src);
+		mcpy->dest += FB_ADDR;
 		gpu_memcpy(32);
 		gpu_memcpy(8);
 		gpu_memcpy(4);
 		gpu_memcpy(1);
-		while(mcpy->size--){
-				outb(FB_ADDR+mcpy->size+mcpy->dest, *((char *)(mcpy->src)+mcpy->size));
-		}
 		outl(SYNC_ADDR,1);
 }
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
