@@ -78,7 +78,7 @@ void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		//gpu_memcpy(8);
 		//gpu_memcpy(4);
 		gpu_memcpy(1);
-		//printf("size:%d\n", mcpy->size);
+		printf("size:%d\n", mcpy->size);
 }
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
   status->ready = true;
