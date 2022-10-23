@@ -73,7 +73,7 @@ typedef char					__1UNIT;
 }	while(0)
 void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
 		// This will modify the GPU_MEMCPY input.
-		uintptr_t dest = FB_ADDR;
+		uintptr_t dest = FB_ADDR + mcpy->dest;
 		uintptr_t src = (uintptr_t)(mcpy->src);
 		gpu_memcpy(32);
 		gpu_memcpy(8);
