@@ -30,11 +30,19 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-	int row,col;
+	/*int row,col;
 	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
 	uint32_t *pixels = (uint32_t *)ctl->pixels;
 	uint64_t *tmp1, *tmp2;
-	row = ctl->h;
+	row = ctl->h;*/
+	uintptr_t fb = (uintptr_t)FB_ADDR + SCREEN_W*ctl->y + ctl->x;
+	uintptr_t pixels = (uintptr_t)ctl->pixels;
+	while(ctl->h--){
+			memcpy((void *)fb, (void *)pixels, ctl->w << 2);
+			fb += SCREEN_W<<2; pixels += ctl->w << 2;
+	}
+	return;
+	/*
 	if(ctl->w & 1){
 		while(row--){
 			col = ctl->w>>1;
@@ -51,14 +59,13 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 			while(col--)*tmp1++ = *tmp2++;
 			fb+=SCREEN_W; pixels+=ctl->w;
 		}
-	}
+	}*/
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }
 }
 
 void __am_gpu_memcpy(AM_GPU_MEMCPY_T *mcpy){
-		// This will modify the GPU_MEMCPY input.
 		memcpy((void *)(mcpy->dest+FB_ADDR), mcpy->src, mcpy->size);
 		outl(SYNC_ADDR,1);
 }
