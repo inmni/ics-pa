@@ -28,7 +28,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
     .vmemsz = 0
   };
 }
-
+#include <stdio.h>
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	int row,col;
 	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR+SCREEN_W*ctl->y+ctl->x;
@@ -43,7 +43,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 			fb += SCREEN_W<<2; pixels += ctl->w << 2;
 	}
 	return;*/
-	
+printf("%d\n",ctl->w);	
 	if(ctl->w & 1){
 		while(row--){
 			col = ctl->w>>1;
