@@ -124,6 +124,7 @@ rematch:
 				}
 		}
 }
+// TODO: A problem with int 0 and width
 const char* hex_num = "0123456789abcdef";
 static inline void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func) {
 		//putstr("\nStart print num\n");

@@ -74,18 +74,25 @@ void *memmove(void *dst, const void *src, size_t n) {
 	}
 	return dst;
 }
-
+typedef char 				__1UNIT;
+typedef uint32_t		__4UNIT;
+typedef uint64_t		__8UNIT;
+typedef struct{
+uint64_t u1;uint64_t u2;uint64_t u3;uint64_t u4;
+}										__32UNIT;
+#define fcpy(len)	do{	\
+		while(n >= len){	\
+				*(__##len##UNIT *)out	= *(__##len##UNIT *)in;	\
+				out += len; in += len; n -= len;	\
+		}	\
+}	while(0)	
 void *memcpy(void *out, const void *in, size_t n) {
-  /*if(n>=4){
-			uint32_t *ui_dst = (uint32_t *)out;
-			uint32_t *ui_src = (uint32_t *)in;
-			do{*ui_dst++ = *ui_src++;n-=4;}while(n >= 4);
-			char *bs_dst = (char *)ui_dst;
-			char *bs_src = (char *)ui_src;
-			while(n--){*bs_dst++ = *bs_src++;}
-			return out;
-	}*/
-	//printf("copy %d bytes\n",(uint32_t)n);
+	void *tmp = out;
+	fcpy(32);
+	fcpy(8);
+	fcpy(4);
+	fcpy(1);
+	return tmp;
 	char *bs_dst = (char *)out;
 	char *bs_src = (char *)in;
 	while(n--){
