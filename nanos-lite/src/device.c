@@ -50,7 +50,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 		gpu_memcpy.src = buf;
 		gpu_memcpy.size = len;
 
-		io_write(AM_GPU_MEMCPY, (uintptr_t)(&gpu_memcpy));
+		ioe_write(AM_GPU_MEMCPY, &gpu_memcpy);
 		
 		return len;
 }
