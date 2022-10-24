@@ -25,6 +25,8 @@ static void sh_prompt() {
 static int cmd_run(char *);		static int helper_run(char *);
 static int cmd_exit(char *);	static int helper_exit(char *);
 static int cmd_help(char *);	static int helper_help(char *);
+static int cmd_export(char *);static int helper_export(char *);
+static int cmd_echo(char *);	static int helper_echo(char *);
 int void_cmd(char * _){sh_printf("to implement"); return 0;}
 #define NR_CMD __get_nr_cmd()
 static struct {
@@ -35,6 +37,8 @@ static struct {
 }	cmd_table [] = {
 		{ "help", "Display information about commands", helper_help, cmd_help},
 		{ "run", "Execute file", helper_run, cmd_run},
+		{ "echo", "Output the value of the expression", helper_echo, cmd_echo},
+		{ "export", "Add new variable", helper_export, cmd_export},
 		{ "exit", "Quit terminal", helper_exit, cmd_exit},
 };
 static inline int __get_nr_cmd(){
@@ -71,7 +75,7 @@ static void sh_handle_cmd(const char *_cmd) {
 void builtin_sh_run() {
   sh_banner();
   sh_prompt();
-
+	setenv("PATH","/bin",0);
   while (1) {
     SDL_Event ev;
     if (SDL_PollEvent(&ev)) {
@@ -106,9 +110,27 @@ static int cmd_run(char *args){
 		return 0;
 }
 static int cmd_exit(char *_){exit(0);return 0;}
+static int cmd_echo(char *key){
+		sh_printf("%s\n", getenv(key));
+		return 0;
+}
+static int cmd_export(char *args){
+		char *key; char *value;
+		while((key = strtok(NULL, "="))){
+				value = strtok(NULL, " ");
+				if(value==NULL){
+						sh_printf("No set for '%s' and the following all\n", key);
+						break;
+				}
+				setenv(key, value, 0);
+		}
+		return 0;
+}
 static int helper_help(char *_){
 		sh_printf("Show help about the command\nFor example:\n	help run\n");
 		return 0;
 }
 static int helper_run(char *_){return 0;}
 static int helper_exit(char *_){return 0;}
+static int helper_export(char *_){return 0;}
+static int helper_echo(char *_){return 0;}
