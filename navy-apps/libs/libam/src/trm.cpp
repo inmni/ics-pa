@@ -1,7 +1,7 @@
 #include <am.h>
-#include <stdio.h>
-Area heap;
+#include <stdlib.h>
+Area heap = {};
 
-void putch(char ch) { outb(SERIAL_PORT, ch);}
+void putch(char ch) { putchar(ch);}
 
-void halt(int code) { asm volatile("mv a0, %0; ebreak" : :"r"(code)); }
+void halt(int code) { exit(code); }
