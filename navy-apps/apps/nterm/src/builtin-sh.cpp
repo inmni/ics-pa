@@ -11,7 +11,8 @@ static void sh_printf(const char *format, ...) {
   va_start(ap, format);
   int len = vsnprintf(buf, 256, format, ap);
   va_end(ap);
-  term->write(buf, len);
+  printf("TO write %s in shell\n", buf);
+	term->write(buf, len);
 }
 
 static void sh_banner() {
