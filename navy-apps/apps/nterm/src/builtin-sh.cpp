@@ -127,7 +127,7 @@ static int cmd_export(char *args){
 						sh_printf("No set for '%s' and the following all\n", key);
 						break;
 				}
-				printf("%d\n", setenv(key, value, 0));
+				printf("%d\n", setenv(key, value, 1));
 		}
 		return 0;
 }
