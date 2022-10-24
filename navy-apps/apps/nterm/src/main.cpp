@@ -147,9 +147,9 @@ char handle_key(SDL_Event *ev) {
   if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) { shift ^= 1; return '\0'; }
 
   if (ev->type == SDL_KEYDOWN) {
-    for (auto item: SHIFT) {
+    printf("Start check %c\n",ev->key.keysym.sym);
+		for (auto item: SHIFT) {
       if (item.keycode == key) {
-				printf("get key %c\n", key);
         if (shift) return item.shift;
         else return item.noshift;
       }
