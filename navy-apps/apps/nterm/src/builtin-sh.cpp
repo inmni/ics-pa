@@ -100,7 +100,7 @@ static int cmd_run(char *args){
 		printf("call cmd run\n");
 		char *img_to_run = strtok(NULL, " ");
 		if(img_to_run==NULL)	return 1;
-		printf("To run '%s'\n",img_to_run);
+		printf("To run (%s)\n",img_to_run);
 		execve(img_to_run, NULL, NULL);
 		return 0;
 }
