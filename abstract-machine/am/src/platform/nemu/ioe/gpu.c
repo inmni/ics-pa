@@ -13,8 +13,8 @@
 void __am_gpu_init() {
 				/*
 				int i;
-				int w = *(volatile uint16_t *)(VGACTL_ADDR+2);
-				int h = *(volatile uint16_t *)VGACTL_ADDR;
+				int w = 384;
+				int h = 288;
 				uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
 				for(i = 0; i < w * h; i ++) fb[i] = i;
 				outl(SYNC_ADDR, 1);
