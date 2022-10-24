@@ -15,11 +15,13 @@ int SDL_PushEvent(SDL_Event *ev) {
 }
 
 int SDL_PollEvent(SDL_Event *ev) {
+		if(ev==NULL)	return 1;
 		SDL_WaitEvent(ev);
   	return 0;
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
+		if(event==NULL)	return 0;
   	char buf[32];
 		if(!NDL_PollEvent(buf, 32))return 0;// Error
 		printf("Get Event %s\n", buf);
