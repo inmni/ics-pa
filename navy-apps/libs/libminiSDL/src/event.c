@@ -22,7 +22,7 @@ int SDL_WaitEvent(SDL_Event *event) {
 		if(event==NULL)	return 0;
   	char buf[32];
 		if(!NDL_PollEvent(buf, 32))return 0;// Error
-		printf("Get Event %s\n", buf);
+//		printf("Get Event %s\n", buf);
 		char *prefix = strtok(buf, " ");
 		char *name = strtok(NULL, " ");
 		uint8_t code = atoi(strtok(NULL, " "));
@@ -34,7 +34,7 @@ int SDL_WaitEvent(SDL_Event *event) {
 						default: return 0;// keyboard but no action.
 				}
 				event->type = event->key.type;
-				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
+//				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
 		}
 		return 1;
 }
