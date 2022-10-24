@@ -36,7 +36,7 @@ int SDL_WaitEvent(SDL_Event *event) {
 						default: return 0;// keyboard but no action.
 				}
 				event->type = event->key.type;
-				printf("event type: %d\n", event->type);
+				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
 		}
 		return 1;
 }
