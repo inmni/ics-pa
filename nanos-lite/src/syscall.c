@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include <fs.h>
 #include <sys/time.h>
+#include <proc.h>
 //#define CONFIG_STRACE
 #ifdef CONFIG_STRACE
 static const char *syscall_table[] = {
@@ -14,8 +15,8 @@ static const char *syscall_table[] = {
 #endif
 uint32_t temp;
 extern char end;
-
 static inline int syscall_gettimeofday(struct timeval *tv, struct timezone *tz);
+void naive_uload(PCB *pcb, const char *filename);
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -28,7 +29,8 @@ void do_syscall(Context *c) {
 	printf("syscall trace: %s(%d %d %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
 #endif
   switch (a[0]) {
-		case SYS_exit:	halt(a[1]);											break;
+		case SYS_exit:	naive_uload(NULL, "/bin/menu"); c->GPRx=0;	//halt(a[1]);
+																										break;
 		case SYS_yield:	yield();		c->GPRx=0;					break;
 		case SYS_open:	c->GPRx = fs_open((char *)a[1], a[2], a[3]);
 #ifdef CONFIG_STRACE
@@ -56,6 +58,8 @@ void do_syscall(Context *c) {
 #endif
 																										break;
 		case SYS_brk:								c->GPRx=0;					break;
+		case SYS_execve: naive_uload(NULL, (char *)(a[1]));	c->GPRx = 0;
+										 																break;
 		case SYS_gettimeofday:	c->GPRx = syscall_gettimeofday((struct timeval *)a[1], (struct timezone *)a[2]);
 																										break;
 		default: panic("Unhandled syscall ID = %d", a[0]);
