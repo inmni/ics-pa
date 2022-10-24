@@ -1,5 +1,5 @@
 #include <nterm.h>
-
+#include <stdio.h>
 #define EMPTY ' '
 
 enum Color {
@@ -308,6 +308,7 @@ void Terminal::putch(int x, int y, char ch) {
   buf[x + y * w] = ch;
   color[x + y * w] = (col_f << 4) | col_b;
   dirty[x + y * w] = true;
+	printf("to write %c\n", ch);
 }
 
 uint32_t Terminal::foreground(int x, int y) {
