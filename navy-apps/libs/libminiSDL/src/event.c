@@ -15,9 +15,7 @@ int SDL_PushEvent(SDL_Event *ev) {
 }
 
 int SDL_PollEvent(SDL_Event *ev) {
-		if(ev==NULL)	return 1;
-		SDL_WaitEvent(ev);
-  	return 0;
+		return ev!=NULL&&SDL_WaitEvent(ev);
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
