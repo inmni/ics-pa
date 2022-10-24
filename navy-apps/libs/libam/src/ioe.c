@@ -21,11 +21,11 @@ void __navy_input_keybrd(AM_INPUT_KEYBRD_T *kbd){
 		char *key = strtok(buf, " ");
 		strtok(NULL, " ");
 		char *code= strtok(NULL, "");
-		assert(key[0]=='k' && code!=NULL);	// Maybe mouse event will be add to NDL
+		//assert(key[0]=='k' && code!=NULL);	// Maybe mouse event will be add to NDL
 		switch(key[1]){
 			case 'd': kbd->keydown = __KEYDOWN; break;
 			case 'u': kbd->keydown = __KEYUP;   break;
-			default:	assert(0);// Maybe event write error ?
+			//default:	assert(0);// Maybe event write error ?
 		}
 		kbd->keycode = atoi(code);
 	}
@@ -59,11 +59,11 @@ void __navy_gpu_config(AM_GPU_CONFIG_T *cfg){
 	//Maybe other information will be stored in.
 	if(strcmp(key1, "WIDTH")==0){cfg->width = atoi(val1);}
 	else if(strcmp(key1, "HEIGHT")==0){cfg->height = atoi(val1);}
-	else{assert(0);}
+	//else{assert(0);}
 
 	if(strcmp(key2, "WIDTH")==0){cfg->width = atoi(val2);}
 	else if(strcmp(key2, "HEIGHT")==0){cfg->height = atoi(val2);}
-	else{assert(0);}
+	//else{assert(0);}
 	
 }
 void __navy_gpu_status(AM_GPU_STATUS_T *status){
