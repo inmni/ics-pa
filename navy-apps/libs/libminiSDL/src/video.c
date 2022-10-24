@@ -17,7 +17,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
 	assert(dst->format->BitsPerPixel == 8 || dst->format->BitsPerPixel == 32);
 	// src should not be modified !!
-	printf("Bits per pixel: %d\n", dst->format->BitsPerPixel);	
+	
 	SDL_Rect tmp1; SDL_Rect tmp2;
 	if(!srcrect){
 			srcrect = &tmp1;
