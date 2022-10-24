@@ -107,7 +107,7 @@ static int cmd_run(char *args){
 		char *img_to_run = strtok(NULL, "");
 		if(img_to_run==NULL)	return 1;
 		printf("Try to run %s\n",img_to_run);
-		execve(img_to_run, NULL, NULL);
+		execvp(img_to_run, NULL);
 		return 0;
 }
 static int cmd_exit(char *_){exit(0);return 0;}
