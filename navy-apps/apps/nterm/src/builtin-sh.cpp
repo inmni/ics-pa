@@ -42,10 +42,12 @@ static inline int __get_nr_cmd(){
 		return __nr_cmd;
 }
 static void sh_handle_cmd(const char *_cmd) {
-		char *cmd = (char *)malloc(strlen(_cmd)+1);
+		int i = strlen(_cmd);	// used as the size of _cmd and then the index of cmd_table
+
+		char *cmd = (char *)malloc(i+1);
 		strcpy(cmd, _cmd);
 
-		char *end = cmd + strlen(_cmd);
+		char *end = cmd + i - 1;
 			*end-- = 0;// To set the last '\n' to 0
 		char *cmd_name = strtok(cmd, " ");
 		if(cmd_name == NULL)	return;
@@ -53,7 +55,7 @@ static void sh_handle_cmd(const char *_cmd) {
 		char *args = cmd + strlen(cmd_name) + 1;
 		if(args >= end)	args = NULL;
 
-		int i;	int ret;
+		int ret;
 		for(i = 0; i < NR_CMD; i++){
 				if(strcmp(cmd_name, cmd_table[i].name) == 0){
 						if(cmd_table[i].handler(args)){
