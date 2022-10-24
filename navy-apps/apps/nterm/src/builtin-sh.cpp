@@ -44,12 +44,9 @@ static inline int __get_nr_cmd(){
 static void sh_handle_cmd(const char *_cmd) {
 		char *cmd = (char *)malloc(strlen(_cmd)+1);
 		strcpy(cmd, _cmd);
-		for(int i = 0;i < strlen(cmd);i++){
-				printf("%d ",cmd[i]);
-		}
-		printf("\n");
-		char *end = cmd + strlen(cmd);
-		
+
+		char *end = cmd + strlen(_cmd);
+			*end-- = 0;// To set the last '\n' to 0
 		char *cmd_name = strtok(cmd, " ");
 		if(cmd_name == NULL)	return;
 
