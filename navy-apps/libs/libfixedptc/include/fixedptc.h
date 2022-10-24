@@ -124,7 +124,8 @@ typedef	__uint128_t fixedptud;
  * (e.g. microcontrollers, kernels), so we can't use floating point types directly.
  * Putting them only in macros will effectively make them optional. */
 #define fixedpt_tofloat(T) ((float) ((T)*((float)(1)/(float)(1L << FIXEDPT_FBITS))))
-
+static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B);
+static inline fixedpt fixedpt_div(fixedpt A, fixedpt B);
 /* Multiplies a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_muli(fixedpt A, int B) {
 		return fixedpt_mul(A, fixedpt_fromint(B));
