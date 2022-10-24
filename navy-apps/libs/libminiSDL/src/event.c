@@ -1,5 +1,7 @@
 #include <NDL.h>
 #include <SDL.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define keyname(k) #k,
 
@@ -17,7 +19,21 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
-  return 1;
+  	char buf[32];
+		if(!NDL_PollEvent(buf, 32))return 0;// Error
+		char *prefix = strtok(buf, " ");
+		char *name = strtok(NULL, " ");
+		uint8_t code = atoi(strtok(NULL, " "));
+		if(prefix[0]=='k'){
+				event->key.keysym.sym = code;
+				switch(prefix[1]){
+						case 'd': event->key.type = SDL_KEYDOWN;break;
+						case 'u': event->key.type = SDL_KEYUP;	break;
+						default: return 0;// keyboard but no action.
+				}
+				event->type = event->key.type;
+		}
+		return 1;
 }
 
 int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {
