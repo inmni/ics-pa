@@ -42,7 +42,7 @@ static inline int __get_nr_cmd(){
 		return __nr_cmd;
 }
 static void sh_handle_cmd(const char *_cmd) {
-		char *cmd = (char *)malloc(strlen(_cmd));
+		char *cmd = (char *)malloc(strlen(_cmd)+1);
 		strcpy(cmd, _cmd);
 		char *end = cmd + strlen(cmd);
 		
@@ -61,7 +61,7 @@ static void sh_handle_cmd(const char *_cmd) {
 						break;
 				}
 		}
-		if(i == NR_CMD)	{ printf("Unknown command '%s'\n", cmd_name); }
+		if(i == NR_CMD)	{ sh_printf("Unknown command '%s'\n", cmd_name); }
 		free(cmd);
 }
 
