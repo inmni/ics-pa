@@ -111,6 +111,11 @@ static int cmd_run(char *args){
 }
 static int cmd_exit(char *_){exit(0);return 0;}
 static int cmd_echo(char *key){
+		char *value = getenv(key);
+		if(value==NULL){
+				sh_printf("%s\n", key);
+				return 0;
+		}
 		sh_printf("%s\n", getenv(key));
 		return 0;
 }
@@ -122,6 +127,7 @@ static int cmd_export(char *args){
 						sh_printf("No set for '%s' and the following all\n", key);
 						break;
 				}
+				printf("Set variable '%s'='%s'\n",key,value);
 				setenv(key, value, 0);
 		}
 		return 0;
