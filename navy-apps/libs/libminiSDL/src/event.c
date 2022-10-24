@@ -21,6 +21,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 int SDL_WaitEvent(SDL_Event *event) {
   	char buf[32];
 		if(!NDL_PollEvent(buf, 32))return 0;// Error
+		printf("Get Event %s\n", buf);
 		char *prefix = strtok(buf, " ");
 		char *name = strtok(NULL, " ");
 		uint8_t code = atoi(strtok(NULL, " "));
