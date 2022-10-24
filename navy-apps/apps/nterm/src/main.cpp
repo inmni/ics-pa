@@ -142,10 +142,11 @@ char handle_key(const char *buf) {
 }
 
 char handle_key(SDL_Event *ev) {
+	printf("handle key\n");
   static int shift = 0;
   int key = ev->key.keysym.sym;
   if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) { shift ^= 1; return '\0'; }
-
+	printf("Check if keydown\n");
   if (ev->type == SDL_KEYDOWN) {
     printf("Start check %c\n",ev->key.keysym.sym);
 		for (auto item: SHIFT) {
