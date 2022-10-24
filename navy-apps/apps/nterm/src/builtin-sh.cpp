@@ -111,16 +111,22 @@ static int cmd_run(char *args){
 }
 static int cmd_exit(char *_){exit(0);return 0;}
 static int cmd_echo(char *key){
-		char *value = getenv(key);
+		char *value = secure_getenv(key);
 		if(value==NULL){
 				sh_printf("%s\n", key);
 				return 0;
 		}
-		sh_printf("%s\n", getenv(key));
+		sh_printf("%s\n", value);
 		return 0;
 }
 static int cmd_export(char *args){
 		char *key; char *value;
+		while((key = strtoke(NULL, " ")){
+					if(putenv(key)){
+						return 0;
+					}
+		}
+		return 0;
 		while((key = strtok(NULL, "="))){
 				value = strtok(NULL, " ");
 				if(value==NULL){
