@@ -21,8 +21,48 @@ static void sh_banner() {
 static void sh_prompt() {
   sh_printf("sh> ");
 }
+// From NEMU sdb
+static int cmd_run(char *);		static int helper_run(char *);
+static int cmd_exit(char *);	static int helper_exit(char *);
+static int cmd_help(char *);	static int helper_help(char *);
+int void_cmd(char * _){sh_printf("to implement"); return 0;}
+#define NR_CMD __get_nr_cmd()
+static struct {
+		const char *name;
+		const char *description;
+		int (*helper)(char *);
+		int (*handler)(char *);
+}	cmd_table [] = {
+		{ "help", "Display information about commands", helper_help, cmd_help},
+		{ "run", "Execute file", helper_run, cmd_run},
+		{ "exit", "Quit terminal", helper_exit, cmd_exit},
+};
+static inline int __get_nr_cmd(){
+		static int __nr_cmd = (int)(sizeof(cmd_table) / sizeof(cmd_table[0]));
+		return __nr_cmd;
+}
+static void sh_handle_cmd(const char *_cmd) {
+		char *cmd = (char *)malloc(strlen(_cmd));
+		strcpy(cmd, _cmd);
+		char *end = cmd + strlen(cmd);
+		
+		char *cmd_name = strtok(cmd, " ");
+		if(cmd_name == NULL)	return;
 
-static void sh_handle_cmd(const char *cmd) {
+		char *args = cmd + strlen(cmd_name) + 1;
+		if(args >= end)	args = NULL;
+
+		int i;	int ret;
+		for(i = 0; i < NR_CMD; i++){
+				if(strcmp(cmd_name, cmd_table[i].name) == 0){
+						if(cmd_table[i].handler(args)){
+								cmd_table[i].helper(args);
+						}
+						break;
+				}
+		}
+		if(i == NR_CMD)	{ printf("Unknown command '%s'\n", cmd_name); }
+		free(cmd);
 }
 
 void builtin_sh_run() {
@@ -35,9 +75,7 @@ void builtin_sh_run() {
       if (ev.type == SDL_KEYUP || ev.type == SDL_KEYDOWN) {
         const char *res = term->keypress(handle_key(&ev));
         if (res) {
-          printf("To handle cmd: %s\n", res);
 					sh_handle_cmd(res);
-
           sh_prompt();
         }
       }
@@ -45,3 +83,29 @@ void builtin_sh_run() {
     refresh_terminal();
   }
 }
+static int cmd_help(char *args){
+		char *cmd_name = strtok(NULL, " ");
+		if(cmd_name==NULL)	return 1;
+		int i;
+		for(i = 0; i<NR_CMD; i++){
+				if(strcmp(cmd_name, cmd_table[i].name)==0){
+						cmd_table[i].helper(strtok(NULL, " "));
+						return 0;
+				}
+		}
+		sh_printf("No found command: '%s'", cmd_name);
+		return 0;
+}
+static int cmd_run(char *args){
+		char *img_to_run = strtok(NULL, " ");
+		if(img_to_run==NULL)	return 1;
+		execve(img_to_run, NULL, NULL);
+		return 0;
+}
+static int cmd_exit(char *_){exit(0);return 0;}
+static int helper_help(char *_){
+		sh_printf("Show help about the command\nFor example:\n	help run\n");
+		return 0;
+}
+static int helper_run(char *_){return 0;}
+static int helper_exit(char *_){return 0;}
