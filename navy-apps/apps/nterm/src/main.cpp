@@ -149,6 +149,7 @@ char handle_key(SDL_Event *ev) {
   if (ev->type == SDL_KEYDOWN) {
     for (auto item: SHIFT) {
       if (item.keycode == key) {
+				printf("get key %c\n", key);
         if (shift) return item.shift;
         else return item.noshift;
       }
