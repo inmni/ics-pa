@@ -79,7 +79,7 @@ void format(op func, void *out, const char *fmt, va_list ap) {
 		while(1) {
 				// Common string
 				while(*fmt != '%'){
-						if(*fmt == 0)	return;
+						if(*fmt == 0){ func(0, out); return; }
 						func(*fmt, out);	fmt++;
 				}
 				fmt++;
