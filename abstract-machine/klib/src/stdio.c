@@ -13,7 +13,7 @@ typedef void (* op)(char, void *);
 // func deals a character into the out.
 void format(op func, void *out,const char *fmt, va_list ap);
 static inline uint64_t get_num(va_list* ap, int l_count);
-static inline void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func);
+static void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func);
 
 void output(char ch, int* count){
 		putch(ch);
@@ -126,7 +126,7 @@ rematch:
 }
 // TODO: A problem with int 0 and width
 const char* hex_num = "0123456789abcdef";
-static inline void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func) {
+static void print_num(uint64_t num, int base, int l_count, int unsigned_flag, int width, void *out, op func) {
 		//putstr("\nStart print num\n");
 		if( base==16 ){ func('0',out); func('x',out);
 				switch(l_count){
