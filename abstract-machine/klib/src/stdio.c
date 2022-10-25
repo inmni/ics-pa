@@ -152,6 +152,7 @@ static inline void print_num(uint64_t num, int base, int l_count, int unsigned_f
 				case 16:while(div_num){div_num>>=4;n++;}							break;
 		}
 		while(width-- > n) func('0', out);
+		if(num==0){ func('0', out); return; }
 		//putstr("\nStart get div num\n");
 		div_num = 1; width = n-1;
 		switch(base){
