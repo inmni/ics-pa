@@ -83,7 +83,7 @@ void format(op func, void *out, const char *fmt, va_list ap) {
 						func(*fmt, out);	fmt++;
 				}
 				fmt++;
-				// Now *fmt='%', check the nearest
+				// Now fmt points to the next one to '%', check the nearest
 				int l_count = 0; int unsigned_flag = 0; int width = -1;
 rematch:
 				switch(*fmt++){
