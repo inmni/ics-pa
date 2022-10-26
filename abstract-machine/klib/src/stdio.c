@@ -144,7 +144,7 @@ static void print_num(uint64_t num, int base, int l_count, int unsigned_flag, in
 		}
 		//putstr("\nStart get max width\n");
 		// Now only need to deal with unsigned num.
-		register uint64_t div_num = num;	int n = 0; uint64_t k;
+		uint64_t div_num = num;	int n = 0; uint64_t k;
 		switch(base){
 				case 2:	while(div_num){div_num>>=1;n++;}							break;
 				case 8:	while(div_num){div_num>>=3;n++;}							break;
