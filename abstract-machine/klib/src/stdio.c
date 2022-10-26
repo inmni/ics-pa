@@ -98,7 +98,7 @@ rematch:
 								case '7':case '8':case '9':// width prefix
 												while(*fmt >='0' && *fmt <='9'){
 															width*=10; width+=*fmt-'0'; fmt++;
-												}																goto rematch;
+												}--fmt;													goto rematch;
 					// Check postfix(types)
 								case 'c':// char
 												 // 'char' will be promoted to 'int' through '...'
