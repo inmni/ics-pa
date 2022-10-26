@@ -94,7 +94,9 @@ rematch:
 												l_count++;											goto rematch;
 								case '0':// reset width
 												width = 0;											goto rematch;
-								case '1'...'9':// width prefix
+								case '1':case '2':case '3':
+								case '4':case '5':case '6':
+								case '7':case '8':case '9':// width prefix
 												while(*fmt >='0' && *fmt <='9'){
 															putstr("WIDTH CHANGED\n");
 															width*=10; width+=*fmt-'0'; fmt++;
