@@ -98,7 +98,6 @@ rematch:
 								case '4':case '5':case '6':
 								case '7':case '8':case '9':// width prefix
 												while(*(fmt-1) >='0' && *(fmt-1) <='9'){
-															putstr("WIDTH CHANGED\n");
 															width*=10; width+=*(fmt-1)-'0'; fmt++;
 												}																goto rematch;
 					// Check postfix(types)
