@@ -142,6 +142,7 @@ static void print_num(uint64_t num, int base, int l_count, int unsigned_flag, in
 						default:if((int64_t)num < 0){ func('-', out); num &= ~(-1ll); }																													break;	
 				}
 		}
+		if(num==0)	func('0', out);
 		//putstr("\nStart get max width\n");
 		// Now only need to deal with unsigned num.
 		uint64_t div_num = num;	int n = 0; uint64_t k;
@@ -153,7 +154,7 @@ static void print_num(uint64_t num, int base, int l_count, int unsigned_flag, in
 		}
 		while(width-- > n) func('0', out);
 		
-		if(n==0){ func('0', out); return; }
+		//if(n==0){ func('0', out); return; }
 		//putstr("\nStart get div num\n");
 		div_num = 1; width = n-1;
 		switch(base){
