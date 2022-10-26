@@ -123,6 +123,7 @@ rematch:
 												func('%', out);
 												while(*(--fmt) != '%'){}; fmt++;				break;
 				}
+				++fmt;
 		}
 }
 // TODO: A problem with int 0 and width
