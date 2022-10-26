@@ -34,6 +34,7 @@ struct MenuItem {
   {"NPlayer", "/bin/nplayer", NULL},
   {"coremark", "/bin/coremark", NULL},
   {"dhrystone", "/bin/dhrystone", NULL},
+	{"microbench", "/bin/microbench", NULL},
   {"typing-game", "/bin/typing-game", NULL},
   {"ONScripter", "/bin/onscripter", NULL},
 };
