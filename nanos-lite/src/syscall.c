@@ -58,7 +58,7 @@ void do_syscall(Context *c) {
 #endif
 																										break;
 		case SYS_brk:								c->GPRx=0;					break;
-		case SYS_execve: naive_uload(NULL, (char *)(a[1]));	c->GPRx = 0;
+		case SYS_execve: printf("Try to load '%s'\n",(char *)(a[1])); naive_uload(NULL, (char *)(a[1]));	c->GPRx = 0;
 										 																break;
 		case SYS_gettimeofday:	c->GPRx = syscall_gettimeofday((struct timeval *)a[1], (struct timezone *)a[2]);
 																										break;
