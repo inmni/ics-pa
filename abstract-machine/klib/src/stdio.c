@@ -82,11 +82,10 @@ void format(op func, void *out, const char *fmt, va_list ap) {
 						if(*fmt == 0){ func(0, out); return; }
 						func(*fmt, out);	fmt++;
 				}
-				fmt++;
 				// Now fmt points to the next one to '%', check the nearest
-				int l_count = 0; int unsigned_flag = 0; int width = -1;
+				int l_count = 0; int unsigned_flag = 0; int width = -1; char ch;
 rematch:
-				switch(*fmt++){
+				switch((ch = *(++fmt))){
 					// Check prefix
 								case 'u':// unsigned prefix
 												unsigned_flag = 1;							goto rematch;
@@ -97,8 +96,8 @@ rematch:
 								case '1':case '2':case '3':
 								case '4':case '5':case '6':
 								case '7':case '8':case '9':// width prefix
-												while(*(fmt-1) >='0' && *(fmt-1) <='9'){
-															width*=10; width+=*(fmt-1)-'0'; fmt++;
+												while(*fmt >='0' && *fmt <='9'){
+															width*=10; width+=*fmt-'0'; fmt++;
 												}																goto rematch;
 					// Check postfix(types)
 								case 'c':// char
@@ -122,7 +121,7 @@ rematch:
 								default: // Unrecognized
 												if( unsigned_flag || l_count )		goto rnum;
 												func('%', out);
-												while(*fmt-- != '%'){}; fmt+=2;				break;
+												while(*(--fmt) != '%'){}; fmt++;				break;
 				}
 		}
 }
