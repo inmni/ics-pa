@@ -156,6 +156,7 @@ static void print_num(uint64_t num, int base, int l_count, int unsigned_flag, in
 		// TODO: Here is a mystrery bug for the next line.	
 		//if(n==0){ func('0', out); return; }
 		//putstr("\nStart get div num\n");
+		if(n<1){ return; }
 		div_num = 1; width = n-1;
 		switch(base){
 				case 2:	while(width){div_num<<=1;width--;}						break;
