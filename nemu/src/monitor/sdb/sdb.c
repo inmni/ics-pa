@@ -118,21 +118,21 @@ static int cmd_x(char *args){
 	char *arg1 = strtok(NULL," ");
 	int N;
 	if(!arg1||(N=atoi(arg1))==0){
-		printf("Wrong argument1!\n");
-		return 0;
+		printf("Wrong argument1!\n");	return 0;
 	}
 	char *arg2 = strtok(NULL," ");
 	if(!arg2){
-		printf("Wrong argument2!\n");
+		printf("Wrong argument2!\n");	return 0;
 	}
 	bool success;
 	word_t expr_val = expr(arg2,&success);
 	if(!success){
 		printf("Failed to convert %s to %d",arg2,expr_val);
+		return 0;
 	}
 	for(;N>0;N--){
-		printf("address:0X%08X	value:0X%08X\n",expr_val,paddr_read(expr_val,4));
-		expr_val+=4;
+		printf("address:0X%08X	value:0X%c\n",expr_val,paddr_read(expr_val,1));
+		expr_val+=1;
 	}
 	return 0;
 }
