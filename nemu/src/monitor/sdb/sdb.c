@@ -59,6 +59,8 @@ static int cmd_w(char *args);
 static int cmd_d(char *args);
 static int cmd_help(char *args);
 static int cmd_temp(char *args);
+static int cmd_save(char *args);
+static int cmd_load(char *args);
 static struct {
   const char *name;
   const char *description;
@@ -75,7 +77,79 @@ static struct {
   { "d", "Delete the N_th watchpoint",cmd_d},
   /* TODO: Add more commands */
   { "t", "Temp",cmd_temp},
+	{ "save", "Save snap to the path file",cmd_save},
+	{ "load", "Load snap from the path file",cmd_load},
 };
+typedef struct __Nemu_Snap_Session_Header{
+	uint32_t offset;
+	size_t size;
+}	NS_shdr;
+typedef struct __Nemu_Snap_Header{
+	uint32_t indent;
+	uint32_t version;
+	NS_shdr pc_shdr;
+	NS_shdr sr_shdr;
+	NS_shdr gpr_shdr;
+	NS_shdr pmem_shdr;
+	NS_shdr rtc_shdr;
+	NS_shdr data_shdr;
+	NS_shdr vga_shdr;
+	NS_shdr audio_shdr;
+	NS_shdr disk_shdr;
+	NS_shdr serial_shdr;
+	NS_shdr fb_shdr;
+	NS_shdr sb_shdr;
+} NS_hdr;
+static int cmd_load(char *args){
+	return 0;
+}
+static int cmd_save(char *args){
+	char *path = strtok(NULL, " ");
+	if(path==NULL){
+		printf("Please input the path to save\n");
+	}
+
+	FILE* file = NULL;
+	file = fopen(path, "w+");
+	if(file==NULL){
+		printf("Open file '%s' error\n", path);
+		return 0;
+	}
+	// Save headers
+	NS_hdr ns_hdr;
+	ns_hdr.indent = 0;	ns_hdr.version = 0;
+	NS_shdr pc_shdr = {sizeof(ns_hdr.indent) + sizeof(ns_hdr.version), sizeof(cpu.pc)};	
+	NS_shdr sr_shdr = {pc_shdr.offset + pc_shdr.size, sizeof(cpu.sr)};
+	NS_shdr gpr_shdr = {sr_shdr.offset + sr_shdr.size, sizeof(cpu.gpr)};
+	NS_shdr pmem_shdr = {gpr_shdr.offset + gpr_shdr.size, CONFIG_MSIZE};
+#ifdef CONFIG_DEVICE
+	NS_shdr rtc_shdr = {pmem_shdr.offset + pmem_shdr.size, 8};
+	NS_shdr data_shdr = {rtc_shdr.offset + rtc_shdr.size, 0};
+	NS_shdr vga_shdr = {data_shdr.offset + data_shdr.size, 8};
+	NS_shdr audio_shdr = {vga_shdr.offset + vga_shdr.size, 0};
+	NS_shdr disk_shdr = {audio_shdr.offset + audio_shdr.size, 0};
+	NS_shdr serial_shdr = {disk_shdr.offset + disk_shdr.size,8};
+	NS_shdr fb_shdr = {serial_shdr.offset + serial_shdr.size, MUXDEF(CONFIG_VGA_SIZE_400x300, 800*600, 400*300)*sizeof(uint32_t)};
+	NS_shdr sb_shdr = {fb_shdr.offset + fb_shdr.size, 0};
+#endif
+	ns_hdr.pc_shdr = pc_shdr;		ns_hdr.sr_shdr = sr_shdr;
+	ns_hdr.gpr_shdr = gpr_shdr;	ns_hdr.pmem_shdr = pmem_shdr;
+	ns_hdr.rtc_shdr = rtc_shdr; ns_hdr.data_shdr = data_shdr;
+	ns_hdr.vga_shdr = vga_shdr;	ns_hdr.audio_shdr = audio_shdr;
+	ns_hdr.disk_shdr = disk_shdr;	ns_hdr.serial_shdr = serial_shdr;
+	ns_hdr.fb_shdr = fb_shdr;		ns_hdr.sb_shdr = sb_shdr;
+	
+	fseek(file, 0, SEEK_SET);
+	// Save headers
+	fwrite(&ns_hdr, sizeof(NS_hdr), 1, file);
+	// Save registers
+
+	// Save memory
+	// Save watchpoints
+	fclose(file);
+	printf("Save snap successfully\n");
+	return 0;
+}
 static int cmd_si(char *args){
 	uint64_t n =1;
 	/* args have been stored in a static buffer
