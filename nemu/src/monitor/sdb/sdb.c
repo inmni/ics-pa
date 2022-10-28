@@ -153,6 +153,7 @@ static int cmd_save(char *args){
 	fwrite(cpu.gpr, gpr_shdr.size, 1, file);
 	// Save memory
 	fseek(file, pmem_shdr.offset, SEEK_SET);
+	printf("To save physics memory\n");
 	fwrite((void *)(CONFIG_MBASE), pmem_shdr.size, 1, file);
 	// Save device
 #ifdef CONFIG_DEVICE
