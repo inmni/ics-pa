@@ -126,15 +126,15 @@ static int cmd_load(char *args){
 	// Load registers
 	printf("To load pc\n");
 	fseek(file, ns_hdr.pc_shdr.offset, SEEK_SET);
-	ret &= fread(&cpu.pc, ns_hdr.pc_shdr.size, 1, file);
+	assert(fread(&cpu.pc, ns_hdr.pc_shdr.size, 1, file));
 
 	printf("To load sr\n");
 	fseek(file, ns_hdr.sr_shdr.offset, SEEK_SET);
-	ret &= fread(&cpu.sr, ns_hdr.sr_shdr.size, 1, file);
+	ret += fread(&cpu.sr, ns_hdr.sr_shdr.size, 1, file);
 
 	printf("To load gpr\n");
 	fseek(file, ns_hdr.gpr_shdr.offset, SEEK_SET);
-	ret &= fread(&cpu.gpr, ns_hdr.gpr_shdr.size, 1, file);
+	ret += fread(&cpu.gpr, ns_hdr.gpr_shdr.size, 1, file);
 	
 	fclose(file);
 	printf("Load snap successfully\n");
