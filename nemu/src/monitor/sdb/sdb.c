@@ -22,6 +22,7 @@
 #include "sdb.h"
 static int is_batch_mode = false;
 void init_regex();
+uint8_t *guest_to_host(paddr_t paddr);
 word_t paddr_read(paddr_t addr,int len);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -138,7 +139,7 @@ static int cmd_load(char *args){
 	// Load memory
 	printf("To load physics memory\n");
 	fseek(file, ns_hdr.pmem_shdr.offset, SEEK_SET);
-	ret += fread((void *)CONFIG_MBASE, ns_hdr.pmem_shdr.size, 1, file);
+	ret += fread((void *)(guest_to_host(CONFIG_MBASE)), ns_hdr.pmem_shdr.size, 1, file);
 	//Load device
 #ifdef CONFIG_DEVICE
 	printf("To load rtc mmio\n");
@@ -224,7 +225,7 @@ static int cmd_save(char *args){
 	// Save memory
 	fseek(file, pmem_shdr.offset, SEEK_SET);
 	printf("To save physics memory\n");
-	fwrite((void *)(CONFIG_MBASE), pmem_shdr.size, 1, file);
+	fwrite((void *)(guest_to_host(CONFIG_MBASE)), pmem_shdr.size, 1, file);
 	// Save device
 #ifdef CONFIG_DEVICE
 	printf("To save rtc mmio\n");
