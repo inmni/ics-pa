@@ -160,10 +160,12 @@ static int cmd_save(char *args){
 	printf("To save rtc mmio\n");
 	fseek(file, rtc_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_RTC_MMIO), rtc_shdr.size, 1, file);
-
+	
+	printf("To save data mmio\n");
 	fseek(file, data_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_I8042_DATA_MMIO), data_shdr.size, 1, file);
 
+	printf("To save vga ctl mmio\n");
 	fseek(file, vga_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_VGA_CTL_MMIO), vga_shdr.size, 1, file);
 
