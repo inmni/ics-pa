@@ -160,33 +160,32 @@ static int cmd_save(char *args){
 #ifdef CONFIG_DEVICE
 	printf("To save rtc mmio\n");
 	fseek(file, rtc_shdr.offset, SEEK_SET);
-	printf("0x%08x\n", __fetch_mmio_map(CONFIG_RTC_MMIO) == NULL);
 	fwrite(__fetch_mmio_map(CONFIG_RTC_MMIO)->space, rtc_shdr.size, 1, file);
 	
 	printf("To save data mmio\n");
 	fseek(file, data_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_I8042_DATA_MMIO), data_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_I8042_DATA_MMIO)->space, data_shdr.size, 1, file);
 
 	printf("To save vga ctl mmio\n");
 	fseek(file, vga_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_VGA_CTL_MMIO), vga_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_VGA_CTL_MMIO)->space, vga_shdr.size, 1, file);
 
 	fseek(file, audio_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_AUDIO_CTL_MMIO), audio_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_AUDIO_CTL_MMIO)->space, audio_shdr.size, 1, file);
 
 	fseek(file, disk_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_DISK_CTL_MMIO), disk_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_DISK_CTL_MMIO)->space, disk_shdr.size, 1, file);
 
 	fseek(file, serial_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_SERIAL_MMIO), serial_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_SERIAL_MMIO)->space, serial_shdr.size, 1, file);
 
 	printf("To save fb content\n");
 	fseek(file, fb_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_FB_ADDR), fb_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_FB_ADDR)->space, fb_shdr.size, 1, file);
 
 	printf("To save sb content\n");
 	fseek(file, sb_shdr.offset, SEEK_SET);
-	fwrite((void *)(CONFIG_SB_ADDR), sb_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_SB_ADDR)->space, sb_shdr.size, 1, file);
 #endif
 	// Save watchpoints
 	//
