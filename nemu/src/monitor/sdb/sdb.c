@@ -176,9 +176,11 @@ static int cmd_save(char *args){
 	fseek(file, serial_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_SERIAL_MMIO), serial_shdr.size, 1, file);
 
+	printf("To save fb content\n");
 	fseek(file, fb_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_FB_ADDR), fb_shdr.size, 1, file);
 
+	printf("To save sb content\n");
 	fseek(file, sb_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_SB_ADDR), sb_shdr.size, 1, file);
 #endif
