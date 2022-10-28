@@ -156,6 +156,7 @@ static int cmd_save(char *args){
 	NS_hdr ns_hdr;
 	ns_hdr.indent = NS_INDENT;	ns_hdr.version = NS_VERSION;
 	NS_shdr pc_shdr = {sizeof(ns_hdr.indent) + sizeof(ns_hdr.version), sizeof(cpu.pc)};	
+	printf("0x%08x, 0x%16lx\n", pc_shdr.offset, pc_shdr.size);
 	NS_shdr sr_shdr = {pc_shdr.offset + pc_shdr.size, sizeof(cpu.sr)};
 	NS_shdr gpr_shdr = {sr_shdr.offset + sr_shdr.size, sizeof(cpu.gpr)};
 	NS_shdr pmem_shdr = {gpr_shdr.offset + gpr_shdr.size, CONFIG_MSIZE};
