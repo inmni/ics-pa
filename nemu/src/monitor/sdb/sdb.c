@@ -81,6 +81,8 @@ static struct {
 	{ "save", "Save snap to the path file",cmd_save},
 	{ "load", "Load snap from the path file",cmd_load},
 };
+#define NS_INDENT 0
+#define NS_VERSION 0
 typedef struct __Nemu_Snap_Session_Header{
 	uint32_t offset;
 	size_t size;
@@ -102,6 +104,40 @@ typedef struct __Nemu_Snap_Header{
 	NS_shdr sb_shdr;
 } NS_hdr;
 static int cmd_load(char *args){
+	char *path = strtok(NULL, " ");
+	if(path==NULL){
+		printf("Please input the path to load\n");
+	}
+	FILE* file = NULL;	int ret;
+	file = fopen(path, "r");
+	if(file==NULL){
+		printf("Open file '%s' error\n", path);
+		return 0;
+	}
+	NS_hdr ns_hdr;
+	fseek(file, 0, SEEK_SET);
+	ret = fread(&ns_hdr, sizeof(NS_hdr), 1, file);
+	
+	if(ns_hdr.indent!=NS_INDENT || ns_hdr.version!=NS_VERSION){
+		printf("Error file or version\n");
+		return 0;
+	}
+
+	// Load registers
+	printf("To load pc\n");
+	fseek(file, ns_hdr.pc_shdr.offset, SEEK_SET);
+	ret &= fread(&cpu.pc, ns_hdr.pc_shdr.size, 1, file);
+
+	printf("To load sr\n");
+	fseek(file, ns_hdr.sr_shdr.offset, SEEK_SET);
+	ret &= fread(&cpu.sr, ns_hdr.sr_shdr.size, 1, file);
+
+	printf("To load gpr\n");
+	fseek(file, ns_hdr.gpr_shdr.offset, SEEK_SET);
+	ret &= fread(&cpu.gpr, ns_hdr.gpr_shdr.size, 1, file);
+	
+	fclose(file);
+	printf("Load snap successfully\n");
 	return 0;
 }
 static int cmd_save(char *args){
@@ -118,7 +154,7 @@ static int cmd_save(char *args){
 	}
 	// Save headers
 	NS_hdr ns_hdr;
-	ns_hdr.indent = 0;	ns_hdr.version = 0;
+	ns_hdr.indent = NS_INDENT;	ns_hdr.version = NS_VERSION;
 	NS_shdr pc_shdr = {sizeof(ns_hdr.indent) + sizeof(ns_hdr.version), sizeof(cpu.pc)};	
 	NS_shdr sr_shdr = {pc_shdr.offset + pc_shdr.size, sizeof(cpu.sr)};
 	NS_shdr gpr_shdr = {sr_shdr.offset + sr_shdr.size, sizeof(cpu.gpr)};
