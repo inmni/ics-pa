@@ -147,7 +147,7 @@ static int cmd_save(char *args){
 	}
 
 	FILE* file = NULL;
-	file = fopen(path, "w+");
+	file = fopen(path, "w");
 	if(file==NULL){
 		printf("Open file '%s' error\n", path);
 		return 0;
