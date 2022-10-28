@@ -157,6 +157,7 @@ static int cmd_save(char *args){
 	fwrite((void *)(CONFIG_MBASE), pmem_shdr.size, 1, file);
 	// Save device
 #ifdef CONFIG_DEVICE
+	printf("To save rtc mmio\n");
 	fseek(file, rtc_shdr.offset, SEEK_SET);
 	fwrite((void *)(CONFIG_RTC_MMIO), rtc_shdr.size, 1, file);
 
