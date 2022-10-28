@@ -183,7 +183,8 @@ static int cmd_save(char *args){
 	fwrite((void *)(CONFIG_SB_ADDR), sb_shdr.size, 1, file);
 #endif
 	// Save watchpoints
-	// 
+	//
+	printf("To close the file\n"); 
 	fclose(file);
 	printf("Save snap successfully\n");
 	return 0;
