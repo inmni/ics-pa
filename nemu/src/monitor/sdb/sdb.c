@@ -160,7 +160,7 @@ static int cmd_save(char *args){
 #ifdef CONFIG_DEVICE
 	printf("To save rtc mmio\n");
 	fseek(file, rtc_shdr.offset, SEEK_SET);
-	printf("0x%08x\n", *(uint32_t *)CONFIG_RTC_MMIO);
+	printf("0x%08x\n", __fetch_mmio_map(CONFIG_RTC_MMIO) == NULL);
 	fwrite(__fetch_mmio_map(CONFIG_RTC_MMIO)->space, rtc_shdr.size, 1, file);
 	
 	printf("To save data mmio\n");
