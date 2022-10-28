@@ -174,9 +174,9 @@ static int cmd_save(char *args){
 	fseek(file, audio_shdr.offset, SEEK_SET);
 	fwrite(__fetch_mmio_map(CONFIG_AUDIO_CTL_MMIO)->space, audio_shdr.size, 1, file);
 
-	printf("To save disk ctl mmio\n");
-	fseek(file, disk_shdr.offset, SEEK_SET);
-	fwrite(__fetch_mmio_map(CONFIG_DISK_CTL_MMIO)->space, disk_shdr.size, 1, file);
+	//printf("To save disk ctl mmio\n");
+	//fseek(file, disk_shdr.offset, SEEK_SET);
+	//fwrite(__fetch_mmio_map(CONFIG_DISK_CTL_MMIO)->space, disk_shdr.size, 1, file);
 
 	printf("To save serial mmio\n");
 	fseek(file, serial_shdr.offset, SEEK_SET);
