@@ -145,7 +145,7 @@ static int cmd_save(char *args){
 	if(path==NULL){
 		printf("Please input the path to save\n");
 	}
-
+	printf("%d\n", (uint32_t)sizeof(NS_hdr));
 	FILE* file = NULL;
 	file = fopen(path, "w");
 	if(file==NULL){
