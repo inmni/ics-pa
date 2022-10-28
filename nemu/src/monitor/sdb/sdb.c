@@ -123,7 +123,7 @@ static int cmd_save(char *args){
 	NS_shdr gpr_shdr = {sr_shdr.offset + sr_shdr.size, sizeof(cpu.gpr)};
 	NS_shdr pmem_shdr = {gpr_shdr.offset + gpr_shdr.size, CONFIG_MSIZE};
 #ifdef CONFIG_DEVICE
-	NS_shdr rtc_shdr = {pmem_shdr.offset + pmem_shdr.size, 8};
+	NS_shdr rtc_shdr = {pmem_shdr.offset + pmem_shdr.size, 2};
 	NS_shdr data_shdr = {rtc_shdr.offset + rtc_shdr.size, 4};
 	NS_shdr vga_shdr = {data_shdr.offset + data_shdr.size, 8};
 	NS_shdr audio_shdr = {vga_shdr.offset + vga_shdr.size, 24};
