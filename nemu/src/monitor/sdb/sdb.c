@@ -123,7 +123,7 @@ static int cmd_save(char *args){
 	NS_shdr gpr_shdr = {sr_shdr.offset + sr_shdr.size, sizeof(cpu.gpr)};
 	NS_shdr pmem_shdr = {gpr_shdr.offset + gpr_shdr.size, CONFIG_MSIZE};
 #ifdef CONFIG_DEVICE
-	NS_shdr rtc_shdr = {pmem_shdr.offset + pmem_shdr.size, 7};
+	NS_shdr rtc_shdr = {pmem_shdr.offset + pmem_shdr.size, 8};
 	NS_shdr data_shdr = {rtc_shdr.offset + rtc_shdr.size, 4};
 	NS_shdr vga_shdr = {data_shdr.offset + data_shdr.size, 8};
 	NS_shdr audio_shdr = {vga_shdr.offset + vga_shdr.size, 24};
@@ -159,7 +159,7 @@ static int cmd_save(char *args){
 #ifdef CONFIG_DEVICE
 	printf("To save rtc mmio\n");
 	fseek(file, rtc_shdr.offset, SEEK_SET);
-	printf("[0x%08x, 0x%08x]\n", CONFIG_RTC_MMIO, (uint32_t)(CONFIG_RTC_MMIO+rtc_shdr.size));
+	printf("0x%08x\n", *(uint32_t *)CONFIG_RTC_MMIO);
 	fwrite((void *)(CONFIG_RTC_MMIO), rtc_shdr.size, 1, file);
 	
 	printf("To save data mmio\n");
