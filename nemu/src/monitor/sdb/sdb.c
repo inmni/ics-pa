@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <device/map.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <watchpoint.h>
@@ -160,7 +161,7 @@ static int cmd_save(char *args){
 	printf("To save rtc mmio\n");
 	fseek(file, rtc_shdr.offset, SEEK_SET);
 	printf("0x%08x\n", *(uint32_t *)CONFIG_RTC_MMIO);
-	fwrite((void *)(CONFIG_RTC_MMIO), rtc_shdr.size, 1, file);
+	fwrite(__fetch_mmio_map(CONFIG_RTC_MMIO)->space, rtc_shdr.size, 1, file);
 	
 	printf("To save data mmio\n");
 	fseek(file, data_shdr.offset, SEEK_SET);
