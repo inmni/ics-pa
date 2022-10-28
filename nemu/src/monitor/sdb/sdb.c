@@ -124,9 +124,9 @@ static int cmd_save(char *args){
 	NS_shdr pmem_shdr = {gpr_shdr.offset + gpr_shdr.size, CONFIG_MSIZE};
 #ifdef CONFIG_DEVICE
 	NS_shdr rtc_shdr = {pmem_shdr.offset + pmem_shdr.size, 8};
-	NS_shdr data_shdr = {rtc_shdr.offset + rtc_shdr.size, 0};
+	NS_shdr data_shdr = {rtc_shdr.offset + rtc_shdr.size, 4};
 	NS_shdr vga_shdr = {data_shdr.offset + data_shdr.size, 8};
-	NS_shdr audio_shdr = {vga_shdr.offset + vga_shdr.size, 0};
+	NS_shdr audio_shdr = {vga_shdr.offset + vga_shdr.size, 24};
 	NS_shdr disk_shdr = {audio_shdr.offset + audio_shdr.size, 0};
 	NS_shdr serial_shdr = {disk_shdr.offset + disk_shdr.size,8};
 	NS_shdr fb_shdr = {serial_shdr.offset + serial_shdr.size, MUXDEF(CONFIG_VGA_SIZE_400x300, 800*600, 400*300)*sizeof(uint32_t)};
