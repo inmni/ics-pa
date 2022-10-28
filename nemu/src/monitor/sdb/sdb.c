@@ -163,6 +163,7 @@ static int cmd_save(char *args){
 	
 	printf("To save data mmio\n");
 	fseek(file, data_shdr.offset, SEEK_SET);
+	printf("%08x\n", CONFIG_I8042_DATA_MMIO);
 	fwrite((void *)(CONFIG_I8042_DATA_MMIO), data_shdr.size, 1, file);
 
 	printf("To save vga ctl mmio\n");
