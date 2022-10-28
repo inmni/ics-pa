@@ -143,9 +143,45 @@ static int cmd_save(char *args){
 	// Save headers
 	fwrite(&ns_hdr, sizeof(NS_hdr), 1, file);
 	// Save registers
+	fseek(file, pc_shdr.offset, SEEK_SET);
+	fwrite(&cpu.pc, pc_shdr.size, 1, file);
+	
+	fseek(file, sr_shdr.offset, SEEK_SET);
+	fwrite(cpu.sr, sr_shdr.size, 1, file);
 
+	fseek(file, gpr_shdr.offset, SEEK_SET);
+	fwrite(cpu.gpr, gpr_shdr.size, 1, file);
 	// Save memory
+	fseek(file, pmem_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_MBASE), pmem_shdr.size, 1, file);
+	// Save device
+#ifdef CONFIG_DEVICE
+	fseek(file, rtc_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_RTC_MMIO), rtc_shdr.size, 1, file);
+
+	fseek(file, data_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_I8042_DATA_MMIO), data_shdr.size, 1, file);
+
+	fseek(file, vga_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_VGA_CTL_MMIO), vga_shdr.size, 1, file);
+
+	fseek(file, audio_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_AUDIO_CTL_MMIO), audio_shdr.size, 1, file);
+
+	fseek(file, disk_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_DISK_CTL_MMIO), disk_shdr.size, 1, file);
+
+	fseek(file, serial_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_SERIAL_MMIO), serial_shdr.size, 1, file);
+
+	fseek(file, fb_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_FB_ADDR), fb_shdr.size, 1, file);
+
+	fseek(file, sb_shdr.offset, SEEK_SET);
+	fwrite((void *)(CONFIG_SB_ADDR), sb_shdr.size, 1, file);
+#endif
 	// Save watchpoints
+	// 
 	fclose(file);
 	printf("Save snap successfully\n");
 	return 0;
