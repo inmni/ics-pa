@@ -126,7 +126,7 @@ static int cmd_load(char *args){
 	// Load registers
 	printf("To load pc\n");
 	fseek(file, ns_hdr.pc_shdr.offset, SEEK_SET);
-	assert(fread(&cpu.pc, ns_hdr.pc_shdr.size, 1, file));
+	ret += fread(&cpu.pc, ns_hdr.pc_shdr.size, 1, file);
 
 	printf("To load sr\n");
 	fseek(file, ns_hdr.sr_shdr.offset, SEEK_SET);
@@ -135,7 +135,40 @@ static int cmd_load(char *args){
 	printf("To load gpr\n");
 	fseek(file, ns_hdr.gpr_shdr.offset, SEEK_SET);
 	ret += fread(&cpu.gpr, ns_hdr.gpr_shdr.size, 1, file);
-	
+	// Load memory
+	printf("To load physics memory\n");
+	fseek(file, ns_hdr.pmem_shdr.offset, SEEK_SET);
+	ret += fread((void *)CONFIG_MBASE, ns_hdr.pmem_shdr.size, 1, file);
+	//Load device
+#ifdef CONFIG_DEVICE
+	printf("To load rtc mmio\n");
+	fseek(file, ns_hdr.rtc_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_RTC_MMIO)->space, ns_hdr.rtc_shdr.size, 1, file);
+
+	printf("To load data mmio\n");
+	fseek(file, ns_hdr.data_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_I8042_DATA_MMIO)->space, ns_hdr.data_shdr.size, 1, file);
+
+	printf("To load vga ctl mmio\n");
+	fseek(file, ns_hdr.vga_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_VGA_CTL_MMIO)->space, ns_hdr.vga_shdr.size, 1, file);
+
+	printf("To load audio mmio\n");
+	fseek(file, ns_hdr.audio_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_AUDIO_CTL_MMIO)->space, ns_hdr.audio_shdr.size, 1, file);
+
+	printf("To load serial mmio\n");
+	fseek(file, ns_hdr.serial_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_SERIAL_MMIO)->space, ns_hdr.serial_shdr.size, 1, file);
+
+	printf("To load fb mmio\n");
+	fseek(file, ns_hdr.fb_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_FB_ADDR)->space, ns_hdr.fb_shdr.size, 1, file);
+
+	printf("To load sb mmio\n");
+	fseek(file, ns_hdr.sb_shdr.offset, SEEK_SET);
+	ret += fread(__fetch_mmio_map(CONFIG_SB_ADDR)->space, ns_hdr.sb_shdr.size, 1, file);
+#endif
 	fclose(file);
 	printf("Load snap successfully\n");
 	return 0;
