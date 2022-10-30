@@ -22,13 +22,14 @@ void hello_fun(void *arg) {
 
 void naive_uload(PCB *pcb, const char *filename);
 void init_proc() {
-	context_kload(&pcb[0], hello_fun, NULL);
+	context_kload(&pcb[0], hello_fun, "AAAAAA");
+	context_kload(&pcb[1], hello_fun, "ZZZZZZ");
   switch_boot_pcb();
 
   Log("Initializing processes...");
 
   // load program here
-//	naive_uload(NULL, "/bin/hello");
+	naive_uload(NULL, "/bin/hello");
 }
 
 void context_kload(PCB* p, void (*entry)(void *), void* arg) {
@@ -37,12 +38,14 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 	kstack.end = p->stack + sizeof(p->stack);
 
 	p->cp = kcontext(kstack, entry, arg);
+
+	p->cp->mstatus = 0xa0001800;// For DiffTest, though there is not its implement;
 }
 
 Context* schedule(Context *prev) {
 	current->cp = prev;
 
-	current = &pcb[0]; // Need to change
+	current = (current==&pcb[0] ? &pcb[1] : &pcb[0]); // Need to change
 
   return current->cp;
 }

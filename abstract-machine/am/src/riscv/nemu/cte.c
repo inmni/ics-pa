@@ -37,10 +37,10 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 	Context *c = (Context *)(kstack.end - sizeof(Context));
 	memset(c, 0, sizeof(Context));
 	c->mcause = EVENT_NULL;
-	c->mepc = (intptr_t)entry;
-	/* arg need to be stored in c->gpr, maybe
-	 * it is ignored now
-	 */
+	c->mepc = (uintptr_t)entry;
+	c->mstatus = 0xa0001800; //For DiffTest, though there is not its implement, maybe it will exist in the future.
+
+	c->GPR2 = (uintptr_t)arg;	// Only argument 0 stored, maybe incorrect but sufficient for now.
 	return c;
 }
 
