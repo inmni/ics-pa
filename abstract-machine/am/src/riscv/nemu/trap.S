@@ -49,6 +49,7 @@ __am_asm_trap:
 
   mv a0, sp
   jal __am_irq_handle
+	mv sp, a0	# Added for PA4.1, the tip is prepared for fixing bug if bug exists.
 
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)

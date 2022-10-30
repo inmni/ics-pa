@@ -34,7 +34,14 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+	Context *c = (Context *)(kstack.end - sizeof(Context));
+	memset(c, 0, sizeof(Context));
+	c->mcause = EVENT_NULL;
+	c->mepc = (intptr_t)entry;
+	/* arg need to be stored in c->gpr, maybe
+	 * it is ignored now
+	 */
+	return c;
 }
 
 void yield() {
