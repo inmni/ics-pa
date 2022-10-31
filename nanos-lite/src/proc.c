@@ -25,13 +25,13 @@ void naive_uload(PCB *pcb, const char *filename);
 void init_proc() {
 	//context_kload(&pcb[0], hello_fun, "AAAAAA");
 	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
-//	char *arg1[] = {"FIRST", NULL};
+	char *arg1[] = {"/bin/exec-test", "1", NULL};
 //	char *arg2[] = {"SECOND", NULL};
 	char *empty[] = {NULL};
 //  context_uload(&pcb[0], "/bin/hello", arg1, empty);
 //	context_uload(&pcb[1], "/bin/hello", arg2, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
-	context_uload(&pcb[0], "/bin/exec-test", empty, empty);
+	context_uload(&pcb[0], "/bin/exec-test", arg1, empty);
 	switch_boot_pcb();
 
   Log("Initializing processes...");
