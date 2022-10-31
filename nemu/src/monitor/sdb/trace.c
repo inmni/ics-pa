@@ -100,7 +100,8 @@ void call_to_ftrace(uint32_t dst_pc){
 					strcmp(str_table+sym.st_name, "fs_read")==0 || 
 					strcmp(str_table+sym.st_name, "ioe_read")==0 || 
 					strcmp(str_table+sym.st_name, "fs_write")==0 || 
-					strcmp(str_table+sym.st_name, "ioe_write")==0){return;}
+					strcmp(str_table+sym.st_name, "ioe_write")==0 ||
+					strcmp(str_table+sym.st_name, "putch")==0){return;}
 				Log("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
