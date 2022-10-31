@@ -72,10 +72,9 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	Area kstack;
 	kstack.start = p->cp;
 	kstack.end = p->cp + STACK_SIZE;
-
+	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
 	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
-	printf("get context\n");
 	p->cp->GPRx = (uintptr_t)ustack;
 }
 Context* schedule(Context *prev) {
