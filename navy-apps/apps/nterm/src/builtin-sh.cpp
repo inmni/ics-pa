@@ -104,18 +104,14 @@ static int cmd_help(char *args){
 		return 0;
 }
 static int cmd_run(char *args){
-		uint32_t argc = 0; char *t;
-		while(t = strtok(NULL, " ")){
-				printf("%d: %s\n",argc, t);
-				argc++;
-		}
-		char **argv = new char*[argc];
+		char *argv[8];
 		char *img_to_run = strtok(args, " ");
 		int i = 0;	char *tmp;
 		while(tmp = strtok(NULL, " ")) {
 				printf("%s\n", tmp);
 				argv[i++] = tmp;
 		}
+		argv[i]=NULL;
 		if(img_to_run==NULL)	return 1;
 		printf("Try to run %s with arguments: %s and so on\n",img_to_run, argv[0]);
 		execvp(img_to_run, argv);
