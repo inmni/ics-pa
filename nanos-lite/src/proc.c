@@ -56,7 +56,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	void* ustack = new_page(8);
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
-	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
+//	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
 	while(argv && argv[argv_c]){
@@ -76,12 +76,12 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	Area kstack;
 	kstack.start = p->stack;
 	kstack.end = p->stack + STACK_SIZE;
-	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
-	printf("try to load %s\n",filename);
+//	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
+//	printf("try to load %s\n",filename);
 	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
 	p->cp->GPRx = (uintptr_t)ustack;
-	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
+//	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
 Context* schedule(Context *prev) {
 	current->cp = prev;
