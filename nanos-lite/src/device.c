@@ -21,7 +21,7 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 		for(i=0; i<len; i++){
 				putch(*((char *)buf+i));
 		}
-		return 0;
+		return len;
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
