@@ -11,11 +11,11 @@ int main(int argc, char *argv[]) {
 	}
   while (argc>0 && argv) {
     j ++;
-    if (j == 10000) {
+    if (j == 1000000) {
 			//write(1, "Hello World from Navy-apps for the ",36);
 			//printf("%d", i ++);
 			//write(1," th times!\n",11);
-      printf("%s for the %dth time!\n", strToPrint, i ++);
+      printf("%p: %s for the %dth time!\n", strToPrint, strToPrint, i ++);
       j = 0;
     }
   }
