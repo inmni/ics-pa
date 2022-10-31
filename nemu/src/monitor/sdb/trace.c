@@ -106,7 +106,13 @@ void call_to_ftrace(uint32_t dst_pc){
 					strcmp(str_table+sym.st_name, "fs_size")==0 ||
 					strcmp(str_table+sym.st_name, "memcpy")==0 ||
 					strcmp(str_table+sym.st_name, "yield")==0 ||
-					strcmp(str_table+sym.st_name, "schedule")==0){return;}
+					strcmp(str_table+sym.st_name, "schedule")==0 ||
+					strcmp(str_table+sym.st_name, "strcmp")==0 ||
+					strcmp(str_table+sym.st_name, "format")==0 ||
+					strcmp(str_table+sym.st_name, "__udivdi3")==0 ||
+					strcmp(str_table+sym.st_name, "_udivmoddi4")==0 ||
+					strcmp(str_table+sym.st_name, "ramdisk_read")==0 ||
+					strcmp(str_table+sym.st_name, "fs_close")==0){return;}
 				Log("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
