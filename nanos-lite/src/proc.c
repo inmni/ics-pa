@@ -70,8 +70,8 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	*(uint32_t *)ustack = argv_c + envp_c;
 	
 	Area kstack;
-	kstack.start = p->cp;
-	kstack.end = p->cp + STACK_SIZE;
+	kstack.start = p->stack;
+	kstack.end = p->stack + STACK_SIZE;
 	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
 	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
