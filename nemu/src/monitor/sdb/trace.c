@@ -95,6 +95,12 @@ void call_to_ftrace(uint32_t dst_pc){
 		/*		for(int temp = 0;temp<count;temp++){
 					log_write("    ");
 				}*/
+				if(strcmp(str_table+sym.st_name, "do_syscall")==0 || 
+					strcmp(str_table+sym.st_name, "__am_irq_handle")==0 || 
+					strcmp(str_table+sym.st_name, "fs_read")==0 || 
+					strcmp(str_table+sym.st_name, "ioe_read")==0 || 
+					strcmp(str_table+sym.st_name, "fs_write")==0 || 
+					strcmp(str_table+sym.st_name, "ioe_write")==0){return;}
 				Log("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
