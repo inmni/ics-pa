@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 			//write(1, "Hello World from Navy-apps for the ",36);
 			//printf("%d", i ++);
 			//write(1," th times!\n",11);
-      printf("%p: %s for the %dth time!\n", strToPrint, strToPrint, i ++);
+      printf("%p: %s for the %dth time!\n", argv, strToPrint, i ++);
       j = 0;
     }
   }
