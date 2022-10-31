@@ -75,6 +75,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	kstack.start = p->stack;
 	kstack.end = p->stack + STACK_SIZE;
 	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
+	printf("try to load %s\n",filename);
 	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
 	p->cp->GPRx = (uintptr_t)ustack;
