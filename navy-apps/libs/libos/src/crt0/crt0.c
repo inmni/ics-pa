@@ -12,6 +12,7 @@ void call_main(uintptr_t *args) {
 	char **argv = (char **)(args + sizeof(int));
 	char **envp = (char **)(args + sizeof(int) + sizeof(char**));
   environ = envp;
+	printf("The args are %d, %p, %p\n", argc, argv, envp);
 	exit(main(argc, argv, envp));
   assert(0);
 }
