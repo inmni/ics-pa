@@ -83,7 +83,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 Context* schedule(Context *prev) {
 	current->cp = prev;
 
-	current = (current==&pcb[0] ? &pcb[1] : &pcb[0]); // Need to change
+	current = (current==&pcb[0] ? &pcb[0] : &pcb[0]); // Need to change
 
   return current->cp;
 }
