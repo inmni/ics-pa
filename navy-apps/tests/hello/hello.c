@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 	if(argc>0 && argv){
 			strToPrint = argv[0];
 	}
-  while (1) {
+  while (argc>0 && argv) {
     j ++;
     if (j == 10000) {
 			//write(1, "Hello World from Navy-apps for the ",36);
