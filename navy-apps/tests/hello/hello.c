@@ -7,8 +7,10 @@ int main(int argc, char *argv[]) {
   volatile int j = 0;
 	char *strToPrint = NULL;
 	if(argc>0 && argv){
-			strToPrint = argv[0];
-			printf("argument is: %s\n", strToPrint);
+			printf("The input is following:\n");
+			for( int idx = 0; idx<argc; idx++){
+				printf("	[%d]: %s\n", idx, argv[idx]);
+			}
 	}
 	return 0;
   while (argc>0 && argv) {
