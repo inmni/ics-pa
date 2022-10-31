@@ -9,8 +9,8 @@ void call_main(uintptr_t *args) {
   environ = empty;
 	printf("The address of args: %p\n", args);
 	int argc = *(int *)args;
-	char **argv = (char **)(args + sizeof(int));
-	char **envp = (char **)(args + sizeof(int) + sizeof(char**));
+	char **argv = (char **)(args + 1);
+	char **envp = (char **)(args + 2);
   environ = envp;
 	printf("The args are %d, %p, %p\n", argc, argv, envp);
 	exit(main(argc, argv, envp));
