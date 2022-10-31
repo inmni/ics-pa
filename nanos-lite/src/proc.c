@@ -5,7 +5,7 @@
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
-void loader(PCB* p, char *filename);
+void *loader(PCB* p, char *filename);
 void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[]);
 void context_kload(PCB* p, void (*entry)(void *), void* arg);
 void switch_boot_pcb() {
@@ -74,7 +74,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 
 	void *entry = loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, entry);
-	p->cp->GPRx = ustack;
+	p->cp->GPRx = (uintptr_t)ustack;
 }
 Context* schedule(Context *prev) {
 	current->cp = prev;
