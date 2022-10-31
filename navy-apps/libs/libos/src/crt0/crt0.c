@@ -7,6 +7,9 @@ extern char **environ;
 void call_main(uintptr_t *args) {
   char *empty[] =  {NULL };
   environ = empty;
-  exit(main(0, empty, empty));
+	int argc = *(int *)args;
+	char **argv = (char **)(args + sizeof(int));
+	char **envp = (char **)(args + sizeof(int) + sizeof(char**));
+  exit(main(argc, argv, envp));
   assert(0);
 }
