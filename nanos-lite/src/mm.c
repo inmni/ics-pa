@@ -3,7 +3,11 @@
 static void *pf = NULL;
 
 void* new_page(size_t nr_page) {
-  return NULL;
+	assert(pf + nr_page*PGSIZE <= heap.end);
+	void *pf_start = pf;
+	memset(pf_start, 0, nr_page * PGSIZE);
+	pf += nr_page * PGSIZE;
+	return pf_start;
 }
 
 #ifdef HAS_VME

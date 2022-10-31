@@ -6,6 +6,7 @@ static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
 
+void context_uload(PCB* p, void (*entry)(void *), char *const argv[], char *const envp[]);
 void context_kload(PCB* p, void (*entry)(void *), void* arg);
 void switch_boot_pcb() {
   current = &pcb_boot;
@@ -42,6 +43,34 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 	p->cp->mstatus = 0xa0001800;// For DiffTest, though there is not its implement;
 }
 
+void context_uload(PCB* p, void (*entry)(void *), char *const argv[], char *const envp[]) {
+	void* ustack = new_page(8);
+	uint32_t* ustack_start = ustack + 4;
+	uint32_t* ustack_end = ustack + STACK_SIZE;
+	// copy arguments
+	int argv_c = 0; int envp_c = 0;
+	while(argv && argv[argv_c]){
+		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
+		strcpy(ustack_end, argv[argv_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		argv_c++;
+	}
+	while(envp && envp[envp_c]){
+		ustack_end -= strlen(envp[envp_c]) + 1;
+		strcpy(ustack_end, envp[envp_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		envp_c++;
+	}
+	*(uint32_t *)ustack = argv_c + envp_c;
+	
+	Area kstack;
+	kstack.start = p->cp;
+	kstack.end = p->cp + STACK_SIZE;
+
+	void *entry = loader(p, filename);
+	p->cp = ucontext(&(p->as), kstack, entry);
+	p->cp->GPRx = ustack;
+}
 Context* schedule(Context *prev) {
 	current->cp = prev;
 
