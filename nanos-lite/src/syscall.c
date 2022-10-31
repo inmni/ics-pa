@@ -31,7 +31,7 @@ void do_syscall(Context *c) {
 	printf("syscall trace: %s(%d %d %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
 #endif
   switch (a[0]) {
-		case SYS_exit:	naive_uload(NULL, "/bin/menu"); c->GPRx=0;	//halt(a[1]);
+		case SYS_exit:	context_uload(current, "/bin/menu", NULL, NULL); switch_boot_pcb(); yield();	//halt(a[1]);
 																										break;
 		case SYS_yield:	yield();		c->GPRx=0;					break;
 		case SYS_open:	c->GPRx = fs_open((char *)a[1], a[2], a[3]);
