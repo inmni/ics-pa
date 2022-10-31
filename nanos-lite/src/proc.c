@@ -5,7 +5,7 @@
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
-uintptr_t loader(PCB* p, char *filename);
+uintptr_t outside_loader(PCB* p, char *filename);
 void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[]);
 void context_kload(PCB* p, void (*entry)(void *), void* arg);
 void switch_boot_pcb() {
@@ -72,7 +72,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	kstack.start = p->cp;
 	kstack.end = p->cp + STACK_SIZE;
 
-	uintptr_t entry = loader(p, filename);
+	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
 	p->cp->GPRx = (uintptr_t)ustack;
 }

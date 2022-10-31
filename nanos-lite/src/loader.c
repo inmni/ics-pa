@@ -10,7 +10,6 @@
 # define Elf_Phdr Elf32_Phdr
 # define uintN		uint32_t
 #endif
-
 static uintptr_t loader(PCB *pcb, const char *filename) {
   int fr_r, i;
 	uintN offset;
@@ -44,6 +43,9 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	return ehdr.e_entry;
 }
 
+uintptr_t outside_loader(PCB* p, const char *filename) {
+	return loader(p, filename);
+}
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
