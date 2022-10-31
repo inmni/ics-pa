@@ -5,8 +5,8 @@
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
-uintptr_t outside_loader(PCB* p, char *filename);
-void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[]);
+uintptr_t outside_loader(PCB* p, const char *filename);
+void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]);
 void context_kload(PCB* p, void (*entry)(void *), void* arg);
 void switch_boot_pcb() {
   current = &pcb_boot;
@@ -52,7 +52,7 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 	p->cp->mstatus = 0xa0001800;// For DiffTest, though there is not its implement;
 }
 
-void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[]) {
+void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	void* ustack = new_page(8);
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
