@@ -104,8 +104,9 @@ static int cmd_help(char *args){
 		return 0;
 }
 static int cmd_run(char *args){
-		uint32_t argc = 0;
-		while(strtok(NULL, " ")){
+		uint32_t argc = 0; char *t;
+		while(t = strtok(NULL, " ")){
+				printf("%s\n",t );
 				argc++;
 		}
 		char **argv = new char*[argc];
