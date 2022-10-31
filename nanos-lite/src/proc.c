@@ -77,6 +77,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
 	p->cp->GPRx = (uintptr_t)ustack;
+	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
 Context* schedule(Context *prev) {
 	current->cp = prev;
