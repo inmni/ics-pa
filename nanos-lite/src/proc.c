@@ -5,8 +5,8 @@
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
-
-void context_uload(PCB* p, void (*entry)(void *), char *const argv[], char *const envp[]);
+void loader(PCB* p, char *filename);
+void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[]);
 void context_kload(PCB* p, void (*entry)(void *), void* arg);
 void switch_boot_pcb() {
   current = &pcb_boot;
@@ -23,9 +23,14 @@ void hello_fun(void *arg) {
 
 void naive_uload(PCB *pcb, const char *filename);
 void init_proc() {
-	context_kload(&pcb[0], hello_fun, "AAAAAA");
-	context_kload(&pcb[1], hello_fun, "ZZZZZZ");
-  switch_boot_pcb();
+	//context_kload(&pcb[0], hello_fun, "AAAAAA");
+	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
+	char *arg1[] = {"FIRST", NULL};
+	char *arg2[] = {"SECOND", NULL};
+	char *empty[] = {NULL};
+  context_uload(&pcb[0], "/bin/hello", arg1, empty);
+	context_uload(&pcb[1], "/bin/hello", arg2, empty);
+	switch_boot_pcb();
 
   Log("Initializing processes...");
 
@@ -43,7 +48,7 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 	p->cp->mstatus = 0xa0001800;// For DiffTest, though there is not its implement;
 }
 
-void context_uload(PCB* p, void (*entry)(void *), char *const argv[], char *const envp[]) {
+void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[]) {
 	void* ustack = new_page(8);
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
