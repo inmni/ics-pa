@@ -62,8 +62,7 @@ int fs_open(const char *filename, int flags, int mode){
 								return idx;
 				}
 		}
-		printf("No found %s\n", filename);
-		assert(0);
+		//printf("No found %s\n", filename);
 		return -1;
 }
  
