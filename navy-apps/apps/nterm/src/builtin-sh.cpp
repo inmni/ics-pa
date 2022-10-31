@@ -115,7 +115,7 @@ static int cmd_run(char *args){
 				argv[i++] = tmp;
 		}
 		if(img_to_run==NULL)	return 1;
-		printf("Try to run %s\n",img_to_run);
+		printf("Try to run %s with arguments: %s and so on\n",img_to_run, argv[0]);
 		execvp(img_to_run, argv);
 		return 0;
 }
