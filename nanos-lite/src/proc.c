@@ -52,6 +52,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	void* ustack = new_page(8);
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
+	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
 	while(argv && argv[argv_c]){
