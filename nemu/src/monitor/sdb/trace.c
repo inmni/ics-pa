@@ -95,7 +95,7 @@ void call_to_ftrace(uint32_t dst_pc){
 		/*		for(int temp = 0;temp<count;temp++){
 					log_write("    ");
 				}*/
-				log_write("call %s\n", str_table+sym.st_name);
+				Log("call %s\n", str_table+sym.st_name);
 				count++;
 				return;
 				if(ftb.cur_len<MAX_NR_FTB){
