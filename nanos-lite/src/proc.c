@@ -56,7 +56,6 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
 	while(argv && argv[argv_c]){
-		printf("%p:%s\n", argv[argv_c], (char *)argv[argv_c]);
 		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
 		strcpy((char *)ustack_end, argv[argv_c]);
 		*ustack_start++ = (uint32_t)ustack_end;
@@ -76,6 +75,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 
 	uintptr_t entry = outside_loader(p, filename);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
+	printf("get context\n");
 	p->cp->GPRx = (uintptr_t)ustack;
 }
 Context* schedule(Context *prev) {
