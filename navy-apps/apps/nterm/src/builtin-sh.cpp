@@ -106,7 +106,7 @@ static int cmd_help(char *args){
 static int cmd_run(char *args){
 		uint32_t argc = 0; char *t;
 		while(t = strtok(NULL, " ")){
-				printf("%s\n",t );
+				printf("%d: %s\n",argc, t);
 				argc++;
 		}
 		char **argv = new char*[argc];
