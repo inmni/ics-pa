@@ -32,7 +32,7 @@ void putToStrn(char ch, buf* out){
 		out->count++;
 }
 int printf(const char *fmt, ...) {
-	return 1;
+//	return 1;
 	va_list ap;
 	va_start(ap, fmt);
 	int count = 0;
