@@ -106,7 +106,6 @@ static int cmd_help(char *args){
 static int cmd_run(char *args){
 		char *argv[16]; int i = 0;
 		while(argv[i++] = strtok(NULL, " "));
-		if(img_to_run==NULL)	return 1;
 		printf("Try to run %s with arguments: %s and so on\n",argv[0], argv[1]);
 		execvp(argv[0], argv);
 		return 0;
