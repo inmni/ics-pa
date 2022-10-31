@@ -104,10 +104,19 @@ static int cmd_help(char *args){
 		return 0;
 }
 static int cmd_run(char *args){
-		char *img_to_run = strtok(NULL, "");
+		uint32_t argc = 0;
+		while(strtok(NULL, " ")){
+				argc++;
+		}
+		char **argv = new char*[argc];
+		char *img_to_run = strtok(args, " ");
+		int i = 0;	char *tmp;
+		while(tmp = strtok(NULL, " ")) {
+				argv[i++] = tmp;
+		}
 		if(img_to_run==NULL)	return 1;
 		printf("Try to run %s\n",img_to_run);
-		execvp(img_to_run, NULL);
+		execvp(img_to_run, argv);
 		return 0;
 }
 static int cmd_exit(char *_){exit(0);return 0;}
