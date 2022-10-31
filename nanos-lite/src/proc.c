@@ -15,7 +15,7 @@ void switch_boot_pcb() {
 void hello_fun(void *arg) {
   int j = 1;
   while (1) {
-    Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char *)arg, j);
+    //Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char *)arg, j);
     j ++;
     yield();
   }
@@ -23,7 +23,7 @@ void hello_fun(void *arg) {
 
 void naive_uload(PCB *pcb, const char *filename);
 void init_proc() {
-	//context_kload(&pcb[0], hello_fun, "AAAAAA");
+	context_kload(&pcb[0], hello_fun, "AAAAAA");
 	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
 	//char *arg1[] = {"/bin/exec-test", "1", NULL};
 //	char *arg2[] = {"SECOND", NULL};
@@ -31,7 +31,7 @@ void init_proc() {
 //  context_uload(&pcb[0], "/bin/hello", arg1, empty);
 //	context_uload(&pcb[1], "/bin/hello", arg2, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
-	context_uload(&pcb[0], "/bin/menu", empty, empty);
+	context_uload(&pcb[1], "/bin/menu", empty, empty);
 	switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -58,7 +58,6 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
 	while(argv && argv[argv_c]){
-		printf("%s\n", argv[argv_c]);
 		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
 		strcpy((char *)ustack_end, argv[argv_c]);
 		*ustack_start++ = (uint32_t)ustack_end;
@@ -85,7 +84,7 @@ void context_uload(PCB* p, char *filename, char *const argv[], char *const envp[
 Context* schedule(Context *prev) {
 	current->cp = prev;
 
-	current = (current==&pcb[0] ? &pcb[0] : &pcb[0]); // Need to change
+	current = (current==&pcb[0] ? &pcb[1] : &pcb[0]); // Need to change
 
   return current->cp;
 }
