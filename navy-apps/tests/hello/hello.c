@@ -8,8 +8,9 @@ int main(int argc, char *argv[]) {
 	char *strToPrint = NULL;
 	if(argc>0 && argv){
 			strToPrint = argv[0];
-			printf("The repeated string is: %s\n", strToPrint);
+			printf("argument is: %s\n", strToPrint);
 	}
+	return 0;
   while (argc>0 && argv) {
     j ++;
     if (j == 1000000) {
