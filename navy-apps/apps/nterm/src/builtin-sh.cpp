@@ -112,6 +112,7 @@ static int cmd_run(char *args){
 		char *img_to_run = strtok(args, " ");
 		int i = 0;	char *tmp;
 		while(tmp = strtok(NULL, " ")) {
+				printf("%s\n", tmp);
 				argv[i++] = tmp;
 		}
 		if(img_to_run==NULL)	return 1;
