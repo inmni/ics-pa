@@ -8,6 +8,7 @@ int main(int argc, char *argv[]) {
 	char *strToPrint = NULL;
 	if(argc>0 && argv){
 			strToPrint = argv[0];
+			printf("The repeated string is: %s\n", strToPrint);
 	}
   while (argc>0 && argv) {
     j ++;
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]) {
 			//write(1, "Hello World from Navy-apps for the ",36);
 			//printf("%d", i ++);
 			//write(1," th times!\n",11);
-      printf("%p\n", strToPrint);
+      printf("%s\n", strToPrint);
       j = 0;
     }
   }
