@@ -29,7 +29,7 @@ void init_proc() {
   Log("Initializing processes...");
 
   // load program here
-	 naive_uload(NULL, "/bin/menu");
+	// naive_uload(NULL, "/bin/menu");
 }
 
 void context_kload(PCB* p, void (*entry)(void *), void* arg) {
