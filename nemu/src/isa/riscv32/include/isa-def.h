@@ -22,6 +22,7 @@ typedef struct {
   word_t gpr[32];
   vaddr_t pc;
 	word_t sr[4096];
+	bool INTR;
 } riscv32_CPU_state;
 #define MCAUSE 		0x342
 #define MEPC			0x341

@@ -15,12 +15,20 @@
 #include <isa.h>
 #include "../local-include/reg.h"
 void isa_reg_display();
+#define IRQ_TIMER 0x80000007
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
+	switch(NO){
+		case IRQ_TIMER:{
+			sr(MSTATUS) = ((BITS(sr(MSTATUS), 31, 8)<<8) | (BITS(sr(MSTATUS), 3, 3)<<7) | (BITS(sr(MSTATUS), 6, 0))) & 0xFFFFFFF7;
+			break;
+		}
+		default: break;
+	}
 #ifdef CONFIG_ETRACE
 	Log("Exception Trace: PC=0x%08x status: %d cause: %d\n", epc, sr(MSTATUS),sr(MCAUSE));
 #endif
@@ -30,5 +38,9 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 }
 
 word_t isa_query_intr() {
+	if(cpu.INTR){
+		cpu.INTR = false;
+		return IRQ_TIMER;
+	}
   return INTR_EMPTY;
 }
