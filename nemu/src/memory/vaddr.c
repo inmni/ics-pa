@@ -25,7 +25,7 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
 	}
 	if(paddr!=addr)printf("paddr:%08x, vaddr:%08x\n",paddr, addr);
 	// assert(paddr==addr);
-	return paddr_read(paddr, len);
+	return paddr_read(addr, len);
 }
 
 word_t vaddr_read(vaddr_t addr, int len) {
