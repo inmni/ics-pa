@@ -43,12 +43,51 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	return ehdr.e_entry;
 }
 
-uintptr_t outside_loader(PCB* p, const char *filename) {
-	return loader(p, filename);
-}
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
   ((void(*)())entry) ();
 }
 
+void context_kload(PCB* p, void (*entry)(void *), void* arg) {
+	Area kstack;
+	kstack.start = &(p->cp);
+	kstack.end = p->stack + sizeof(p->stack);
+
+	p->cp = kcontext(kstack, entry, arg);
+
+	p->cp->mstatus = 0xa0001800;// For DiffTest, though there is not its implement;
+}
+
+void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
+	void* ustack = new_page(8);
+	uint32_t* ustack_start = ustack + 4;
+	uint32_t* ustack_end = ustack + STACK_SIZE;
+//	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
+	// copy arguments
+	int argv_c = 0; int envp_c = 0;
+	while(argv && argv[argv_c]){
+		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
+		strcpy((char *)ustack_end, argv[argv_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		argv_c++;
+	}
+	while(envp && envp[envp_c]){
+		ustack_end -= strlen(envp[envp_c]) + 1;
+		strcpy((char *)ustack_end, envp[envp_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		envp_c++;
+	}
+	*(uint32_t *)ustack = argv_c + envp_c;
+	
+	Area kstack;
+	kstack.start = p->stack;
+	kstack.end = p->stack + STACK_SIZE;
+//	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
+//	printf("try to load %s\n",filename);
+	uintptr_t entry = loader(p, filename);
+	printf("%s's entry: %08x\n",filename, entry);
+	p->cp = ucontext(&(p->as), kstack, (void *)entry);
+	p->cp->GPRx = (uintptr_t)ustack;
+//	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
+}
