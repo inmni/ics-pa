@@ -25,12 +25,12 @@ void hello_fun(void *arg) {
 }
 
 void init_proc() {
-	context_kload(&pcb[0], hello_fun, "AAAAAA");
+//	context_kload(&pcb[0], hello_fun, "AAAAAA");
 	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
 	char *arg1[] = {"ZZZZZZ", NULL};
-//	char *arg2[] = {"/bin/cat", "/share/games/bird/atlas.txt", NULL};
+	char *arg2[] = {"/bin/cat", "/share/games/bird/atlas.txt", NULL};
 	char *empty[] = {NULL};
-//  context_uload(&pcb[0], "/bin/hello", arg2, empty);
+  context_uload(&pcb[0], "/bin/hello", arg2, empty);
 //	context_uload(&pcb[1], "/bin/hello", arg2, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/hello", arg1, empty);
