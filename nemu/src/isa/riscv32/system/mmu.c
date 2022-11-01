@@ -81,6 +81,8 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 	// Skip for PA request
 
 	// Step 8
-	assert((PTE_PPN(leaf_pte_val)*PAGESIZE | VA_PGOFF(vaddr)) == vaddr);
+	if(!((PTE_PPN(leaf_pte_val)*PAGESIZE | VA_PGOFF(vaddr)) == vaddr)){
+			printf("%08x\n",vaddr);
+	}
 	return  PTE_PPN(leaf_pte_val)*PAGESIZE | VA_PGOFF(vaddr);
 }
