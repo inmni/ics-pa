@@ -12,6 +12,11 @@ int main(int argc, char *argv[]) {
 				printf("	[%d]: %s\n", idx, argv[idx]);
 			}
 	}
+	else{
+		while(1){
+			printf("No argument\n");
+		}
+	}
   while (argc>0 && argv) {
     j ++;
     if (j == 1000000) {
