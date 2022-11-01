@@ -78,7 +78,7 @@ void __am_switch(Context *c) {
 #define PTE_PPN_0(pte)	(((uintptr_t)pte>>10)&0x3FF)
 #define PTE_PPN_1(pte)	(((uintptr_t)pte>>20)&0xFFF)
 void map(AddrSpace *as, void *va, void *pa, int prot) {
-	if(prot)printf("map va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)va, (uintptr_t)pa, prot);
+	if(prot)printf("start map va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)va, (uintptr_t)pa, prot);
 	// LEVEL 1
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
 	// if the pte is not valid
@@ -93,7 +93,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	//printf("set leaf page va:%p, pa:%p, pte:%p\n", va, pa, leaf_pte);
 	// Set permission
 	*leaf_pte = (((PTE)pa>>2) & PTE_PPN_MASK) | PTE_V | PTE_W | PTE_R | PTE_X;
-	
+	if(prot)printf("finish map va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)va, (uintptr_t)pa, prot);
 	assert(PTE_PPN(*leaf_pte) * PGSIZE + ((uintptr_t)va & VA_POFF_MASK) == (uintptr_t)pa);
 }
 
