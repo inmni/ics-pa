@@ -25,6 +25,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
 	assert(ehdr.e_phoff!=0);
 	
+	AddrSpace as = pcb->as;	
 	offset = ehdr.e_phoff - ehdr.e_phentsize;
 	for(i = 0; i < ehdr.e_phnum; i++){
 			offset += ehdr.e_phentsize;
@@ -43,7 +44,7 @@ printf("iteration %dth\n",i);
 			void *pg_ptr = new_page(pg_nr);
 			printf("alloc %d pages\n", pg_nr);
 			for(int j=0; j < pg_nr; j++){
-				map(&pcb->as,
+				map(&as,
 						(void *)(pg_start + j*PGSIZE),
 						pg_ptr + j*PGSIZE,
 						MMAP_READ | MMAP_WRITE
@@ -75,11 +76,8 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	AddrSpace as;
-	printf("as->ptr: %08x\n", (uintptr_t)((p->as).ptr));
 	as = p->as;
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	protect(&as);
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	void *ustack = new_page(8);
 	for(int i=0; i<8; i++){
 		map(&as, 
@@ -89,7 +87,6 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	}
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 //	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
@@ -105,17 +102,12 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 		*ustack_start++ = (uint32_t)ustack_end;
 		envp_c++;
 	}
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	*(uint32_t *)ustack = argv_c + envp_c;
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));	
 	Area kstack;
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	kstack.start = p->stack;
-	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
 	kstack.end = p->stack + STACK_SIZE;
 //	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
 //	printf("try to load %s\n",filename);
-	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
 	uintptr_t entry = loader(p, filename);
 	printf("%s's entry: %08x\n",filename, entry);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
