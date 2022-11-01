@@ -83,13 +83,13 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
 	// if the pte is not valid
 	if(!(*pte & PTE_V)){
+		printf("start alloc a leaf page\n");
 		// alloc leaf page
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
 		// keep permission
 		*pte = (*pte & PTE_POFF_MASK)|((alloced_page>>2) & PTE_PPN_MASK)|0x1;
 	//	printf("To alloc leaf page in:%p, va:%p\n", pte, va);
 	}
-	printf("finish alloc a new leaf page\n");
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	//printf("set leaf page va:%p, pa:%p, pte:%p\n", va, pa, leaf_pte);
 	// Set permission
