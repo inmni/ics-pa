@@ -88,6 +88,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 		*pte = (*pte & PTE_POFF_MASK)|((alloced_page>>2) & PTE_PPN_MASK)|0x1;
 		// not keep permission
 		// *pte = (alloced_page>>2) | 0x1;
+		printf("To alloc leaf page in:%p, va:%p\n", pte, va);
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	// keep permission
