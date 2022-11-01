@@ -86,16 +86,13 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
 		// keep permission
 		*pte = (*pte & PTE_POFF_MASK)|((alloced_page>>2) & PTE_PPN_MASK)|0x1;
-		// not keep permission
-		// *pte = (alloced_page>>2) | 0x1;
 		printf("To alloc leaf page in:%p, va:%p\n", pte, va);
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	//printf("set leaf page va:%p, pa:%p, pte:%p\n", va, pa, leaf_pte);
-	// keep permission
-	*leaf_pte = (((PTE)pa>>2) & PTE_PPN_MASK) | (*pte & PTE_POFF_MASK);
-	// not keep permission
-	// *leaf_pte = (*pa >> 2)|0x1;
+	// Set permission
+	*leaf_pte = (((PTE)pa>>2) & PTE_PPN_MASK) | PTE_V | PTE_W | PTE_R | PTE_X;
+	
 	assert(PTE_PPN(*leaf_pte) * PGSIZE + ((uintptr_t)va & VA_POFF_MASK) == (uintptr_t)pa);
 }
 
