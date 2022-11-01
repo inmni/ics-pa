@@ -40,8 +40,8 @@ bool vme_init(void* (*pgalloc_f)(int), void (*pgfree_f)(void*)) {
 
   set_satp(kas.ptr);
   vme_enable = 1;
-	i = get_satp();
-  return true;
+  
+	return true;
 }
 
 void protect(AddrSpace *as) {
