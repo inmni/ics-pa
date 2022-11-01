@@ -26,6 +26,7 @@ typedef struct {
 } riscv32_CPU_state;
 #define MCAUSE 		0x342
 #define MEPC			0x341
+#define MSCRATCH	0x340
 #define MTVEC 		0x305
 #define MSTATUS 	0x300
 #define SATP			0x180
