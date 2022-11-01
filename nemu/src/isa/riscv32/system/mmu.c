@@ -54,7 +54,7 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 	PTE_T pte1_val = paddr_read(pte1_addr, sizeof(PTE_T));
 	// printf("PTE: %08x\n", pte1_val);
 	// Step 3
-	if(!((!PTE_V(pte1_val)) || ((!PTE_R(pte1_val))&&PTE_W(pte1_val)))){
+	if(((!PTE_V(pte1_val)) || ((!PTE_R(pte1_val))&&PTE_W(pte1_val)))){
 		printf("PTE: %08x, %x, %x, %x\n", pte1_val, PTE_V(pte1_val), PTE_R(pte1_val), PTE_W(pte1_val));
 		assert(0);
 	}
