@@ -27,6 +27,7 @@ typedef struct {
 #define MEPC			0x341
 #define MTVEC 		0x305
 #define MSTATUS 	0x300
+#define SATP			0x180
 // decode
 typedef struct {
   union {
@@ -34,6 +35,5 @@ typedef struct {
   } inst;
 } riscv32_ISADecodeInfo;
 
-#define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
 
 #endif
