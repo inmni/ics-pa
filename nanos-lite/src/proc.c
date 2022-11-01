@@ -43,9 +43,21 @@ void init_proc() {
 }
 
 Context* schedule(Context *prev) {
+	static int curr_pcb_id = 0;
+	static int count = 1;
 	current->cp = prev;
+	
+	if(count < current->prio){
+		count++;
+		return current->cp;
+	}
+	count = 1;
+	do{
+		curr_pcb_id++;
+		curr_pcb_id %= MAX_NR_PROC;
+	} while(pcb[curr_pcb_id].prio==0);
 
-	current = (current==&pcb[0] ? &pcb[1] : &pcb[0]); // Need to change
+	current = &pcb[curr_pcb_id]; // Need to change
 
   return current->cp;
 }
