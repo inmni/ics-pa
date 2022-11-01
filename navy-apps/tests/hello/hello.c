@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 			//write(1, "Hello World from Navy-apps for the ",36);
 			//printf("%d", i ++);
 			//write(1," th times!\n",11);
-      printf("%s\n", strToPrint);
+      printf("%s\n", argv[0]);
       j = 0;
     }
   }
