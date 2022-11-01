@@ -74,7 +74,7 @@ save_context:
 
 	csrrw sp, mscratch, sp
 	bnez sp, return
-	csrrw sp, mscratch, sp
+	csrr sp, mscratch
 
 return:
   mret
