@@ -50,7 +50,9 @@ printf("iteration %dth\n",i);
 				);
 			}
 			fs_read(fd, pg_ptr + pg_off, phdr.p_filesz);
+			printf("after fs_read\n");
 			memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+			printf("after memset\n");
 	}
 
 	fs_close(fd);
@@ -108,6 +110,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	uintptr_t entry = loader(p, filename);
 	printf("%s's entry: %08x\n",filename, entry);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
+	printf("test\n");
 	p->cp->GPRx = (uintptr_t)ustack;
 //	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
