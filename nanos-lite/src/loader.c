@@ -83,6 +83,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 		ustack + i*PGSIZE, 
 		MMAP_READ | MMAP_WRITE);
 	}
+	printf("the address of as->ptr: %p\n", &(as.ptr));
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
 //	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
