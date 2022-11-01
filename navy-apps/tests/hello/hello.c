@@ -12,7 +12,6 @@ int main(int argc, char *argv[]) {
 				printf("	[%d]: %s\n", idx, argv[idx]);
 			}
 	}
-	return 0;
   while (argc>0 && argv) {
     j ++;
     if (j == 1000000) {
