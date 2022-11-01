@@ -36,9 +36,9 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	//isa_reg_display();
 	return sr(MTVEC);
 }
-
+#define MSTATUS_MIE_MASK 0x8
 word_t isa_query_intr() {
-	if(cpu.INTR && (sr(MSTATUS)&0x8)){
+	if(cpu.INTR && (sr(MSTATUS)&MSTATUS_MIE_MASK)){
 		cpu.INTR = false;
 		return IRQ_TIMER;
 	}

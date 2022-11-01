@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
 			//write(1," th times!\n",11);
       printf("%s\n", argv[0]);
       j = 0;
-			yield();
     }
   }
   return 0;
