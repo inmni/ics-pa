@@ -81,7 +81,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	if(prot)printf("start map va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)va, (uintptr_t)pa, prot);
 	// LEVEL 1
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
-	if(prot)printf("PTE addr: %p, value: %08x\n", pte, 0);
+	if(prot)printf("PTE addr: %08x, value: %08x\n", (uintptr_t)pte, 0);
 	// if the pte is not valid
 	if(!(*pte & PTE_V)){
 		// alloc leaf page
