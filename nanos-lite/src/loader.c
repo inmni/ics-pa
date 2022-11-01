@@ -29,11 +29,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	for(i = 0; i < ehdr.e_phnum; i++){
 			offset += ehdr.e_phentsize;
 			fs_lseek(fd, offset, SEEK_SET);
-
+printf("iteration %dth\n",i);
 			fs_read(fd, &phdr, sizeof(Elf_Phdr));
 
 			if(phdr.p_type != PT_LOAD)continue;
-			
+			printf("after continue at %dth iteration\n", i);
 			fs_lseek(fd, phdr.p_offset, SEEK_SET);
 			uint32_t pg_start = phdr.p_vaddr & 0xFFFFF000;
 			uint32_t pg_end = (phdr.p_vaddr + phdr.p_memsz - 1) & 0xFFFFF000;
@@ -74,7 +74,7 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	void* ustack = new_page(8); 
-/*	AddrSpace as = p->as;
+	AddrSpace as = p->as;
 	protect(&as);
 	for(int i=0; i<8; i++){
 		map(&as, 
@@ -82,7 +82,6 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 		ustack + i*PGSIZE, 
 		MMAP_READ | MMAP_WRITE);
 	}
-	*/
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
 //	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
