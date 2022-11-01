@@ -23,6 +23,7 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
 		case MMU_TRANSLATE:	paddr = isa_mmu_translate(addr, len, MEM_TYPE_IFETCH);																break;
 		case MMU_FAIL:			assert(0);					break;
 	}
+	printf("paddr:%08x, vaddr:%08x\n",paddr, addr);
 	assert(paddr==addr);
 	return paddr_read(paddr, len);
 }
