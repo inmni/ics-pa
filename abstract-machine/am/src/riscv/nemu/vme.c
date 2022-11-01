@@ -101,6 +101,6 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
 	memset(c, 0, sizeof(Context));
 	c->mepc = (uintptr_t)entry;
 	c->mcause = EVENT_NULL;
-
+	c->pdir = as->ptr;
 	return c;
 }
