@@ -1,7 +1,6 @@
 #include <memory.h>
-
+#include <proc.h>
 static void *pf = NULL;
-
 void* new_page(size_t nr_page) {
 	assert(pf + nr_page*PGSIZE <= heap.end);
 	void *pf_start = pf;
@@ -24,7 +23,20 @@ void free_page(void *p) {
 
 /* The brk() system call handler. */
 int mm_brk(uintptr_t brk) {
-  return 0;
+  current->max_brk = ROUNDUP(current->max_brk, PGSIZE);
+	if(brk <= current->max_brk)	return 0;
+	// alloc
+	uint32_t pg_nr = ROUNDUP(brk - current->max_brk, PGSIZE)/PGSIZE;
+	void* pg_start = new_page(pg_nr);	int i;
+	for(i = 0; i<pg_nr; i++){
+		map(&current->as,
+			(void *)current->max_brk + i*PGSIZE,
+			pg_start + i*PGSIZE,
+			MMAP_READ | MMAP_WRITE
+			);
+	}
+	current->max_brk += pg_nr * PGSIZE;
+	return 0;
 }
 
 void init_mm() {
