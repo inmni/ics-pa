@@ -50,7 +50,7 @@ save_context:
   STORE t2, OFFSET_EPC(sp)
 	STORE t3, OFFSET_NP(sp)
 
-	csrw mscratch, 0	#	support re-entry of CTE
+	csrwi mscratch, 0	#	support re-entry of CTE
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
