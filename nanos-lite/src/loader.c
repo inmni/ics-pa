@@ -51,7 +51,7 @@ printf("iteration %dth\n",i);
 			}
 			fs_read(fd, pg_ptr + pg_off, phdr.p_filesz);
 			printf("after fs_read\n");
-			memset((void *)(pg_ptr + pg_off  + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+			memset((void *)(pg_ptr + pg_off + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
 			printf("after memset\n");
 	}
 
