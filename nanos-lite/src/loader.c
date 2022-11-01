@@ -85,7 +85,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	}
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
-	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
+	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 //	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
@@ -101,11 +101,11 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 		*ustack_start++ = (uint32_t)ustack_end;
 		envp_c++;
 	}
-	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
+	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	*(uint32_t *)ustack = argv_c + envp_c;
-	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));	
+	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));	
 	Area kstack;
-	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
+	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	kstack.start = p->stack;
 	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
 	kstack.end = p->stack + STACK_SIZE;
