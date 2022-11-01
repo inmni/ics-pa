@@ -74,9 +74,9 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 }
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
-	void* ustack = new_page(8); 
 	AddrSpace as = p->as;
 	protect(&as);
+	void *ustack = new_page(8);
 	for(int i=0; i<8; i++){
 		map(&as, 
 		as.area.end - (8 - i)*PGSIZE, 
