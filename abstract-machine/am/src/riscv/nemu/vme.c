@@ -104,5 +104,6 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
 	c->mepc = (uintptr_t)entry;
 	c->mcause = EVENT_NULL;
 	c->pdir = as->ptr;
+	printf("Set pdir = %08x\n", as->ptr);
 	return c;
 }
