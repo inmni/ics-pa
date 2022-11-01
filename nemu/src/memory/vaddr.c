@@ -23,8 +23,6 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
 		case MMU_TRANSLATE:	paddr = isa_mmu_translate(addr, len, MEM_TYPE_IFETCH);																break;
 		case MMU_FAIL:			assert(0);					break;
 	}
-	if(paddr!=addr)printf("paddr:%08x, vaddr:%08x\n",paddr, addr);
-	assert(paddr==addr);
 	return paddr_read(paddr, len);
 }
 
@@ -35,8 +33,6 @@ word_t vaddr_read(vaddr_t addr, int len) {
 		case MMU_TRANSLATE:	paddr = isa_mmu_translate(addr, len, MEM_TYPE_READ);																	break;
 		case MMU_FAIL:			assert(0);					break;
 	}
-	if(paddr!=addr)printf("paddr:%08x, vaddr:%08x\n",paddr, addr);
-	assert(paddr==addr);
 	return paddr_read(paddr, len);
 }
 
@@ -47,7 +43,5 @@ void vaddr_write(vaddr_t addr, int len, word_t data) {
 		case MMU_TRANSLATE:	paddr = isa_mmu_translate(addr, len, MEM_TYPE_WRITE);																	break;
 		case MMU_FAIL:			assert(0);					break;
 	}
-	if(paddr!=addr)printf("paddr:%08x, vaddr:%08x\n",paddr, addr);
-	assert(paddr==addr);
 	paddr_write(paddr, len, data);
 }
