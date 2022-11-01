@@ -56,7 +56,7 @@ printf("iteration %dth\n",i);
 	}
 
 	fs_close(fd);
-	return ehdr.e_entry;
+	return 0x80735400;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
