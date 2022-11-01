@@ -29,19 +29,19 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	for(i = 0; i < ehdr.e_phnum; i++){
 			offset += ehdr.e_phentsize;
 			fs_lseek(fd, offset, SEEK_SET);
-printf("iteration %dth\n",i);
+			//printf("iteration %dth\n",i);
 			fs_read(fd, &phdr, sizeof(Elf_Phdr));
 
 			if(phdr.p_type != PT_LOAD)continue;
-			printf("after continue at %dth iteration\n", i);
+			//printf("after continue at %dth iteration\n", i);
 			fs_lseek(fd, phdr.p_offset, SEEK_SET);
 			uint32_t pg_start = phdr.p_vaddr & 0xFFFFF000;
 			uint32_t pg_end = (phdr.p_vaddr + phdr.p_memsz - 1) & 0xFFFFF000;
 			uint32_t pg_off = phdr.p_vaddr & 0xFFF;
 			uint32_t pg_nr = (pg_end - pg_start)/PGSIZE + 1;
-			printf("to alloc %d pages [%08x, %08x) based on %08x\n",pg_nr, pg_start, pg_end, (uintptr_t)(pcb->as.ptr));
+			//printf("to alloc %d pages [%08x, %08x) based on %08x\n",pg_nr, pg_start, pg_end, (uintptr_t)(pcb->as.ptr));
 			void *pg_ptr = new_page(pg_nr);
-			printf("alloc %d pages\n", pg_nr);
+			//printf("alloc %d pages\n", pg_nr);
 			for(int j=0; j < pg_nr; j++){
 				map(&pcb->as,
 						(void *)(pg_start + j*PGSIZE),
@@ -50,13 +50,13 @@ printf("iteration %dth\n",i);
 				);
 			}
 			fs_read(fd, pg_ptr + pg_off, phdr.p_filesz);
-			printf("after fs_read\n");
+			//printf("after fs_read\n");
 			memset((void *)(pg_ptr + pg_off + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
-			printf("after memset\n");
+			//printf("after memset\n");
 	}
 
 	fs_close(fd);
-	return 0x80735400;
+	return ehdr.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
@@ -110,7 +110,6 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	uintptr_t entry = loader(p, filename);
 	printf("%s's entry: %08x\n",filename, entry);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
-	printf("test\n");
 	p->cp->GPRx = (uintptr_t)ustack;
 //	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
