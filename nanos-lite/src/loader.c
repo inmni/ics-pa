@@ -75,7 +75,7 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	AddrSpace as;
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
+	printf("as->ptr: %08x\n", (uintptr_t)((p->as).ptr));
 	as = p->as;
 	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
 	protect(&as);
