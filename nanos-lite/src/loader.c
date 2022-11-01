@@ -38,7 +38,7 @@ printf("iteration %dth\n",i);
 			uint32_t pg_start = phdr.p_vaddr & 0xFFFFF000;
 			uint32_t pg_end = (phdr.p_vaddr + phdr.p_memsz - 1) & 0xFFFFF000;
 			uint32_t pg_off = phdr.p_vaddr & 0xFFF;
-			uint32_t pg_nr = (pg_start - pg_end)/PGSIZE + 1;
+			uint32_t pg_nr = (pg_end - pg_start)/PGSIZE + 1;
 			printf("to alloc %d pages [%08x, %08x)\n",pg_nr, pg_start, pg_end);
 			void *pg_ptr = new_page(pg_nr);
 			printf("alloc %d pages\n", pg_nr);
