@@ -111,7 +111,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	kstack.end = p->stack + STACK_SIZE;
 //	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
 //	printf("try to load %s\n",filename);
-	printf("as->ptr: %08x\n", (uintptr_t)(p->as.ptr));
+	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
 	uintptr_t entry = loader(p, filename);
 	printf("%s's entry: %08x\n",filename, entry);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
