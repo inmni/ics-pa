@@ -65,8 +65,35 @@ void __am_switch(Context *c) {
     set_satp(c->pdir);
   }
 }
-
+#define PTESIZE 4
+#define PTE_PPN_MASK		0xFFFFFC00
+#define PTE_POFF_MASK		0x3FF
+#define VA_POFF_MASK		0xFFF
+#define PA_POFF_MASK		0xFFF
+#define PTE uintptr_t
+// PTE is 'page-table entry', is a pointer
+#define VPN_0(va)				((((uintptr_t)va)>>12)&0x3FF)
+#define VPN_1(va)				((((uintptr_t)va)>>22)&0x3FF)
+#define PTE_PPN(pte)		(((uintptr_t)pte)>>10)
+#define PTE_PPN_0(pte)	(((uintptr_t)pte>>10)&0x3FF)
+#define PTE_PPN_1(pte)	(((uintptr_t)pte>>20)&0xFFF)
 void map(AddrSpace *as, void *va, void *pa, int prot) {
+	// LEVEL 1
+	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
+	// if the pte is not valid
+	if(!(*pte & PTE_V)){
+		// alloc leaf page
+		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
+		// keep permission
+		*pte = (*pte & PTE_POFF_MASK)|((alloced_page>>2) & PTE_PPN_MASK)|0x1;
+		// not keep permission
+		// *pte = (alloced_page>>2) | 0x1;
+	}
+	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
+	// keep permission
+	*leaf_pte = (((PTE)pa>>2) & PTE_PPN_MASK) | (*pte & PTE_POFF_MASK);
+	// not keep permission
+	// *leaf_pte = (*pa >> 2)|0x1;
 }
 
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {

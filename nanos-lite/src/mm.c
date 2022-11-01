@@ -5,14 +5,16 @@ static void *pf = NULL;
 void* new_page(size_t nr_page) {
 	assert(pf + nr_page*PGSIZE <= heap.end);
 	void *pf_start = pf;
-	memset(pf_start, 0, nr_page * PGSIZE);
+	//memset(pf_start, 0, nr_page * PGSIZE);
 	pf += nr_page * PGSIZE;
 	return pf_start;
 }
 
 #ifdef HAS_VME
 static void* pg_alloc(int n) {
-  return NULL;
+  void *pg =  new_page(n/PGSIZE);
+	memset(pg, 0, n);
+	return pg;
 }
 #endif
 
