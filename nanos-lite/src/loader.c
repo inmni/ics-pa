@@ -72,7 +72,6 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 
 	p->cp = kcontext(kstack, entry, arg);
 
-	p->cp->mstatus = 0xa0001800;// For DiffTest, though there is not its implement;
 }
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {

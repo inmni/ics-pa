@@ -103,6 +103,7 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
 	memset(c, 0, sizeof(Context));
 	c->mepc = (uintptr_t)entry;
 	c->mcause = EVENT_NULL;
+	c->mstatus = 0xa0001800 | 0x80;
 	c->pdir = as->ptr;
 	//printf("Set pdir = %08x\n", as->ptr);
 	return c;

@@ -6,6 +6,7 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 void __am_get_cur_as(Context* c);
 void __am_switch(Context* c);
 
+#define IRQ_TIMER 0x80000007
 Context* __am_irq_handle(Context *c) {
 	/*
 	printf("CONTEXT, mepc:%d, mcause: %d, mstatus: %d\nREGS:\n",c->mepc,c->mcause,c->mstatus);
@@ -14,7 +15,8 @@ Context* __am_irq_handle(Context *c) {
 	if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
-						case EVENT_YIELD:	ev.event = c->GPR1==-1 ? EVENT_YIELD:EVENT_SYSCALL; break;
+				case EVENT_YIELD:	ev.event = c->GPR1==-1 ? EVENT_YIELD:EVENT_SYSCALL; break;
+				case IRQ_TIMER:	ev.event = EVENT_IRQ_TIMER;	break;
 				default: ev.event = EVENT_ERROR; break;
     }
 
@@ -42,7 +44,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 	memset(c, 0, sizeof(Context));
 	c->mcause = EVENT_NULL;
 	c->mepc = (uintptr_t)entry;
-	c->mstatus = 0xa0001800; //For DiffTest, though there is not its implement, maybe it will exist in the future.
+	c->mstatus = 0xa0001800 | 0x80; //For DiffTest, though there is not its implement, maybe it will exist in the future.
 
 	c->GPRx = (uintptr_t)arg;	// Only argument 0 stored, maybe incorrect but sufficient for now.
 	return c;

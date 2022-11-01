@@ -30,7 +30,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 		default: break;
 	}
 #ifdef CONFIG_ETRACE
-	Log("Exception Trace: PC=0x%08x status: %d cause: %d\n", epc, sr(MSTATUS),sr(MCAUSE));
+	Log("Exception Trace: PC=0x%08x status: %08x cause: %d\n", epc, sr(MSTATUS),sr(MCAUSE));
 #endif
 	//printf("Start raise. mepc:0x%08x, mcause: %d, mtvec:0x%08x\n",sr(MEPC),sr(MCAUSE),sr(MTVEC));
 	//isa_reg_display();

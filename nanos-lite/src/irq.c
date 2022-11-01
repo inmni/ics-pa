@@ -8,6 +8,7 @@ static Context* do_event(Event e, Context* c) {
     	case EVENT_YIELD:	c = schedule(c);						break;
 									//Log("yield on 0x%08x",c->mepc);	break;
 			case EVENT_SYSCALL:	do_syscall(c);						break;
+			case EVENT_IRQ_TIMER: Log("irq_timer\n");schedule(c);break;
 			default: panic("Unhandled event ID = %d", e.event);
   }
 
