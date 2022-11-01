@@ -25,7 +25,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
 	assert(ehdr.e_phoff!=0);
 	
-	AddrSpace as = pcb->as;	
 	offset = ehdr.e_phoff - ehdr.e_phentsize;
 	for(i = 0; i < ehdr.e_phnum; i++){
 			offset += ehdr.e_phentsize;
@@ -44,7 +43,7 @@ printf("iteration %dth\n",i);
 			void *pg_ptr = new_page(pg_nr);
 			printf("alloc %d pages\n", pg_nr);
 			for(int j=0; j < pg_nr; j++){
-				map(&as,
+				map(&pcb->as,
 						(void *)(pg_start + j*PGSIZE),
 						pg_ptr + j*PGSIZE,
 						MMAP_READ | MMAP_WRITE
@@ -75,13 +74,11 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 }
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
-	AddrSpace as;
-	as = p->as;
-	protect(&as);
+	protect(&p->as);
 	void *ustack = new_page(8);
 	for(int i=0; i<8; i++){
-		map(&as, 
-		as.area.end - (8 - i)*PGSIZE, 
+		map(&p->as, 
+		p->as.area.end - (8 - i)*PGSIZE, 
 		ustack + i*PGSIZE, 
 		MMAP_READ | MMAP_WRITE);
 	}
