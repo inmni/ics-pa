@@ -35,6 +35,17 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 			if(phdr.p_type != PT_LOAD)continue;
 			
 			fs_lseek(fd, phdr.p_offset, SEEK_SET);
+			uint32_t pg_start = phdr.p_vaddr & 0xFFFFF000;
+			uint32_t pg_end = (phdr.p_vaddr + phdr.p_memsz - 1) & 0xFFFFF000;
+			uint32_t pg_nr = (pg_start - pg_end)/PGSIZE + 1;
+			void *pg_ptr = new_page(pg_nr);
+			for(int j=0; j < pg_nr; j++){
+				map(&pcb->as,
+						(void *)(pg_start + j*PGSIZE),
+						pg_ptr + j*PGSIZE,
+						MMAP_READ | MMAP_WRITE
+				);
+			}
 			fs_read(fd, (void *)phdr.p_vaddr, phdr.p_filesz);
 			memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
 	}
