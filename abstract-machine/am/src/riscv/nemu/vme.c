@@ -96,6 +96,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	*leaf_pte = (((PTE)pa>>2) & PTE_PPN_MASK) | (*pte & PTE_POFF_MASK);
 	// not keep permission
 	// *leaf_pte = (*pa >> 2)|0x1;
+	assert(va==pa);
 }
 
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
