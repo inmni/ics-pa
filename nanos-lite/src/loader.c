@@ -101,6 +101,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 		*ustack_start++ = (uint32_t)ustack_end;
 		envp_c++;
 	}
+	printf("as->ptr: %08x\n", (uintptr_t)(as.ptr));
 	*(uint32_t *)ustack = argv_c + envp_c;
 	
 	Area kstack;
