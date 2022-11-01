@@ -74,7 +74,7 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	void* ustack = new_page(8); 
-	AddrSpace as = p->as;
+/*	AddrSpace as = p->as;
 	protect(&as);
 	for(int i=0; i<8; i++){
 		map(&as, 
@@ -82,6 +82,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 		ustack + i*PGSIZE, 
 		MMAP_READ | MMAP_WRITE);
 	}
+	*/
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
 //	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
