@@ -78,21 +78,15 @@ void __am_switch(Context *c) {
 #define PTE_PPN_0(pte)	(((uintptr_t)pte>>10)&0x3FF)
 #define PTE_PPN_1(pte)	(((uintptr_t)pte>>20)&0xFFF)
 void map(AddrSpace *as, void *va, void *pa, int prot) {
-	//if(prot)printf("map base[%08x] va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)(as->ptr), (uintptr_t)va, (uintptr_t)pa, prot);
-	// LEVEL 1
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
-	//if(prot)printf("PTE addr: %08x, value: %08x\n", (uintptr_t)pte, *pte);
-	// if the pte is not valid
 	if(!(*pte & PTE_V)){
-		// alloc leaf page
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
 		*pte = (alloced_page>>2) |0x1;
-	//	printf("To alloc leaf page in:%p, va:%p\n", pte, va);
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
-	//printf("set leaf page va:%p, pa:%p, pte:%p\n", va, pa, leaf_pte);
-	// Set permission
-	*leaf_pte = ((PTE)pa>>2) | PTE_V | PTE_W | PTE_R | PTE_X;
+	*leaf_pte = ((PTE)pa>>2) | 0xf;
+	
+
 	if(prot)printf("map va[%08x]->pa[%08x] with pte %08x and leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *pte, *leaf_pte);
 	assert(PTE_PPN(*leaf_pte) * PGSIZE + ((uintptr_t)va & VA_POFF_MASK) == (uintptr_t)pa);
 }

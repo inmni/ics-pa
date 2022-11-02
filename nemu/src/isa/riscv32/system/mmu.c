@@ -48,9 +48,9 @@ inline int isa_mmu_check(vaddr_t vaddr, int len, int type) {
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   SATP_T satp = cpu.sr[SATP];
 	// Step 1
-	uint32_t a = SATP_PPN(satp)*PAGESIZE;uint32_t i = LEVELS - 1;//1
+	uint32_t i = LEVELS - 1;//1
 	// Step 2
-	uintptr_t pte1_addr = a + VA_VPN_1(vaddr)*PTESIZE;
+	uintptr_t pte1_addr = SATP_PPN(satp)*PAGESIZE + VA_VPN_1(vaddr)*PTESIZE;
 	PTE_T pte1_val = paddr_read(pte1_addr, sizeof(PTE_T));
 	// printf("PTE: %08x\n", pte1_val);
 	// Step 3
@@ -60,14 +60,11 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 		assert(0);
 	}
 	// Step 4
-	PTE_T leaf_pte_val = pte1_val;
-	if(!(PTE_R(pte1_val)||PTE_X(pte1_val))) {
-		i = i - 1;	//0
-		a = PTE_PPN(pte1_val) * PAGESIZE;
-		// Perform Step 2 again
-		uintptr_t leaf_pte_addr = a + VA_VPN_0(vaddr)*PTESIZE;
-		leaf_pte_val = paddr_read(leaf_pte_addr, sizeof(PTE_T));
-		// Perform Step 3 again
+	i--;
+	// Perform Step 2 again
+	uintptr_t leaf_pte_addr = PTE_PPN(pte1_val)*PAGESIZE + VA_VPN_0(vaddr)*PTESIZE;
+	PTE_T leaf_pte_val = paddr_read(leaf_pte_addr, sizeof(PTE_T));
+	// Perform Step 3 again
 		if(((!PTE_V(leaf_pte_val)) || ((!PTE_R(leaf_pte_val))&&PTE_W(leaf_pte_val)))){
 				printf("Error in translate %08x, type %d\n", vaddr, type);
 				printf("PTE on %08x: %08x, %x, %x, %x\n", (uint32_t)pte1_addr, pte1_val, PTE_V(pte1_val), PTE_R(pte1_val), PTE_W(pte1_val));
@@ -76,9 +73,8 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 				return 0;
 				assert(0);
 		}
-		// Assert Step 4 for this is Sv32
-		assert(PTE_R(leaf_pte_val) || PTE_X(leaf_pte_val));
-	}
+	// Assert Step 4 for this is Sv32
+	assert(PTE_R(leaf_pte_val) || PTE_X(leaf_pte_val));
 	// Step 5
 	// Skip for PA request
 	

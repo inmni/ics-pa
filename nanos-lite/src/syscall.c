@@ -19,6 +19,7 @@ static inline int syscall_gettimeofday(struct timeval *tv, struct timezone *tz);
 void naive_uload(PCB *pcb, const char *filename);
 void context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]);
 void switch_boot_pcb();
+int mm_brk(int brk);
 
 static int exec(const char *filename, char *const argv[], char *const envp[]);
 void do_syscall(Context *c) {
@@ -60,7 +61,7 @@ void do_syscall(Context *c) {
 										printf("Set offset %d in file: %s\n", a[2], fs_name(a[1]));
 #endif
 																										break;
-		case SYS_brk:								c->GPRx=0;					break;
+		case SYS_brk:			c->GPRx=mm_brk(a[1]);					break;
 		case SYS_execve: c->GPRx = exec((char *)a[1], (char *const*)a[2], (char *const*)a[3]);
 										 																break;
 		case SYS_gettimeofday:	c->GPRx = syscall_gettimeofday((struct timeval *)a[1], (struct timezone *)a[2]);
