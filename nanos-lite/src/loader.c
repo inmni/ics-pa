@@ -78,9 +78,9 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	protect(&p->as);
 	void *ustack = new_page(8);
-	for(int i=1; i<=8; i++){
+	for(int i=0; i<8; i++){
 		map(&p->as, 
-		p->as.area.end - (8 - i)*PGSIZE, 
+		p->as.area.start + i*PGSIZE, 
 		ustack + i*PGSIZE, 
 		MMAP_READ | MMAP_WRITE);
 	}
