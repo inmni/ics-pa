@@ -142,16 +142,17 @@ static void statistic() {
 }
 #ifdef CONFIG_ITRACE_RING
 void itrace_write(){
+	FILE *file = fopen("/home/inmny/ics2022/nanos-lite/trace.txt", "w");
 	int tmp = iRB.st_index;
 	Log("=======latest instructions=======");
-	log_write("=======latest instructions=======");
+	fprintf(file, "=======latest instructions=======");
 	do{
 					Log("%s", iRB.buf[tmp]);
-					log_write("%s", iRB.buf[tmp]);
+					fprintf(file, "%s", iRB.buf[tmp]);
 					tmp++; tmp%=MAX_NR_IRB;
 		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
 	Log("Latest instructions have been stored in nemu-log");
-	log_write("Latest instructions have been stored in nemu-log");
+	fprintf(file,"Latest instructions have been stored in nemu-log");
 
 }
 #endif
@@ -190,7 +191,6 @@ void cpu_exec(uint64_t n) {
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
-			nemu_state.state= NEMU_QUIT;
       // fall through
     case NEMU_QUIT: statistic();
   }
