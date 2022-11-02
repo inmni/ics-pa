@@ -32,7 +32,7 @@ f(30) f(31)
 .globl __am_asm_trap
 __am_asm_trap:
 	// c->sp = sp has been set in ucontext and kcontext
-	
+	STORE sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)	
 	// swap sp, ksp
 	csrrw sp, mscratch, sp
 	// if ksp!=0, fix swap
@@ -84,4 +84,5 @@ save_context:
 	bnez sp, return
 	csrrw sp, mscratch, sp
 return:
+	LOAD sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)
   mret
