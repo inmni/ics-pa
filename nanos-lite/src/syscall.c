@@ -32,7 +32,7 @@ void do_syscall(Context *c) {
 	printf("syscall trace: %s(%d %d %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
 #endif
   switch (a[0]) {
-		case SYS_exit:	//halt(a[1]); c->GPRx = exec("/bin/menu", NULL, NULL);
+		case SYS_exit:	halt(a[1]); c->GPRx = exec("/bin/menu", NULL, NULL);
 																										break;
 		case SYS_yield:	yield();		c->GPRx=0;					break;
 		case SYS_open:	c->GPRx = fs_open((char *)a[1], a[2], a[3]);
