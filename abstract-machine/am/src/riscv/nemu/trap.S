@@ -62,7 +62,7 @@ save_context:
 	STORE t0, OFFSET_NP(sp)
 	// now np is kstack.end if USER else 0
 	csrw mscratch, zero
-	// now ksp = 0
+	// now ksp = 0 to support CTE re-entry
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
