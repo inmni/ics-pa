@@ -53,12 +53,11 @@ Context* schedule(Context *prev) {
 		return current->cp;
 	}
 	count = 1;
-	/*do{
+	do{
 		curr_pcb_id++;
 		curr_pcb_id %= MAX_NR_PROC;
 	} while(pcb[curr_pcb_id].prio==0);
-*/
-	//curr_pcb_id = !curr_pcb_id;
+
 	current = &pcb[curr_pcb_id]; // Need to change
 
   return current->cp;
