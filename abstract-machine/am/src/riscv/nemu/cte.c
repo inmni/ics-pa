@@ -17,7 +17,7 @@ Context* __am_irq_handle(Context *c) {
     switch (c->mcause) {
 				case EVENT_YIELD:	ev.event = c->GPR1==-1 ? EVENT_YIELD:EVENT_SYSCALL; break;
 				case IRQ_TIMER:	ev.event = EVENT_IRQ_TIMER;	break;
-				default: ev.event = EVENT_ERROR; break;
+				default: ev.event = EVENT_ERROR; printf("EVENT_ERROR\n");break;
     }
 
     c = user_handler(ev, c);
