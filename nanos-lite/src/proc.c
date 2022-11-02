@@ -20,8 +20,8 @@ void hello_fun(void *arg) {
     if(j%100000==0){
 			Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char *)arg, _fun_count);
 			_fun_count++; j = 0;
-			yield();
 		}
+		yield();
 		j ++;
   }
 }
@@ -36,7 +36,7 @@ void init_proc() {
   //context_uload(&pcb[0], "/bin/hello", arg2, empty);
 //	context_uload(&pcb[1], "/bin/hello", arg2, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
-	context_uload(&pcb[1], "/bin/hello", arg1, empty);
+	context_uload(&pcb[1], "/bin/menu", arg1, empty);
 	switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -58,10 +58,10 @@ Context* schedule(Context *prev) {
 	do{
 		curr_pcb_id++;
 		curr_pcb_id %= MAX_NR_PROC;
-		printf("check %d prio: %d\n", curr_pcb_id, pcb[curr_pcb_id].prio);
+		//printf("check %d prio: %d\n", curr_pcb_id, pcb[curr_pcb_id].prio);
 	} while(pcb[curr_pcb_id].prio==0);
-	printf("schedule to %d\n", curr_pcb_id);
-	current = &pcb[curr_pcb_id]; // Need to change
-	//current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
+//	printf("schedule to %d\n", curr_pcb_id);
+	//current = &pcb[curr_pcb_id]; // Need to change
+	current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
   return current->cp;
 }
