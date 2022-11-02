@@ -5,7 +5,8 @@
 int main(int argc, char *argv[], char *envp[]);
 extern char **environ;
 void call_main(uintptr_t *args) {
-  char *empty[] =  {NULL };
+  printf("call_main\n");
+	char *empty[] =  {NULL };
   environ = empty;
 	int argc = *(int *)args;
 	char **argv = (char **)(args + 1);
