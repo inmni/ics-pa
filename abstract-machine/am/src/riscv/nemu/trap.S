@@ -48,12 +48,13 @@ save_context:
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
-	csrr t3, mscratch
 
   STORE t0, OFFSET_CAUSE(sp)
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
-	STORE t3, OFFSET_NP(sp)
+
+	csrr t0, mscratch
+	STORE t0, OFFSET_NP(sp)
 
 	csrw mscratch, zero
 
@@ -68,11 +69,11 @@ save_context:
 
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
-	LOAD t3, OFFSET_NP(sp)
+	LOAD t0, OFFSET_NP(sp)
 
   csrw mstatus, t1
   csrw mepc, t2
-	csrw mscratch, t3
+	csrw mscratch, t0
 
   MAP(REGS, POP)
 
