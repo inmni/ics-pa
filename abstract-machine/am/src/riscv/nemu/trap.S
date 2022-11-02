@@ -34,13 +34,6 @@ __am_asm_trap:
 	// swap sp and ksp
 	csrrw sp, mscratch, sp
 	
-	// store the np
-	//STORE sp, OFFSET_NP(mscratch)	// mscratch is the real sp
-																// if np==0, the np is KERNEL
-																// if np!=0, the np is USER
-
-	bnez sp, save_context
-
 	// if ksp!=0 restore sp	
 	csrrw sp, mscratch, sp
 
@@ -53,12 +46,13 @@ save_context:
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
-	csrr t3, mscratch
 
   STORE t0, OFFSET_CAUSE(sp)
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
-	STORE t3, OFFSET_NP(sp)
+
+	csrr t0, mscratch
+	STORE t0, OFFSET_NP(sp)
 
 	csrw mscratch, zero
 
@@ -73,11 +67,11 @@ save_context:
 
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
-	LOAD t3, OFFSET_NP(sp)
+	LOAD t0, OFFSET_NP(sp)
 
   csrw mstatus, t1
   csrw mepc, t2
-	csrw mscratch, t3
+	csrw mscratch, t0
 
   MAP(REGS, POP)
 
