@@ -78,7 +78,7 @@ void __am_switch(Context *c) {
 #define PTE_PPN_0(pte)	(((uintptr_t)pte>>10)&0x3FF)
 #define PTE_PPN_1(pte)	(((uintptr_t)pte>>20)&0xFFF)
 void map(AddrSpace *as, void *va, void *pa, int prot) {
-	//if(prot)printf("start map base[%08x] va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)(as->ptr), (uintptr_t)va, (uintptr_t)pa, prot);
+	if(prot)printf("map base[%08x] va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)(as->ptr), (uintptr_t)va, (uintptr_t)pa, prot);
 	// LEVEL 1
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
 	//if(prot)printf("PTE addr: %08x, value: %08x\n", (uintptr_t)pte, *pte);
