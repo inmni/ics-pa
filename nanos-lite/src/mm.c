@@ -5,7 +5,7 @@ void* new_page(size_t nr_page) {
 	assert(pf + nr_page*PGSIZE <= heap.end);
 	void *pf_start = pf;
 	printf("new page [%08x, %08x)\n", (uintptr_t)pf_start, (uintptr_t)pf_start + nr_page*PGSIZE);
-//	memset(pf_start, 0, nr_page * PGSIZE);
+	memset(pf_start, 0, nr_page * PGSIZE);
 	pf += nr_page * PGSIZE;
 	return pf_start;
 }
