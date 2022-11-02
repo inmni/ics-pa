@@ -39,7 +39,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 			uint32_t pg_end = (phdr.p_vaddr + phdr.p_memsz - 1) & 0xFFFFF000;
 			uint32_t pg_off = phdr.p_vaddr & 0xFFF;
 			uint32_t pg_nr = (pg_end - pg_start)/PGSIZE + 1;
-			//printf("to alloc %d pages [%08x, %08x) based on %08x\n",pg_nr, pg_start, pg_end, (uintptr_t)(pcb->as.ptr));
+			printf("to alloc %d pages [%08x, %08x) based on %08x\n",pg_nr, pg_start, pg_end + PGSIZE, (uintptr_t)(pcb->as.ptr));
 			void *pg_ptr = new_page(pg_nr);
 			//printf("alloc %d pages\n", pg_nr);
 			for(int j=0; j < pg_nr; j++){
