@@ -93,7 +93,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	//printf("set leaf page va:%p, pa:%p, pte:%p\n", va, pa, leaf_pte);
 	// Set permission
 	*leaf_pte = ((PTE)pa>>2) | PTE_V | PTE_W | PTE_R | PTE_X;
-	if(prot)printf("map va[%08x]->pa[%08x] with leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *leaf_pte);
+	if(prot)printf("map va[%08x]->pa[%08x] with pte %08x and leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *pte, *leaf_pte);
 	assert(PTE_PPN(*leaf_pte) * PGSIZE + ((uintptr_t)va & VA_POFF_MASK) == (uintptr_t)pa);
 }
 
