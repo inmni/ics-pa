@@ -40,7 +40,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 word_t isa_query_intr() {
 	if(cpu.INTR && (sr(MSTATUS)&MSTATUS_MIE_MASK)){
 		cpu.INTR = false;
-		return IRQ_TIMER;
+		return INTR_EMPTY;
 	}
   return INTR_EMPTY;
 }
