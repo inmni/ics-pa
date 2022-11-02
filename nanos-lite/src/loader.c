@@ -72,17 +72,15 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 	kstack.end = p->stack + sizeof(p->stack);
 
 	p->cp = kcontext(kstack, entry, arg);
-	p->prio = 1;
+	//p->prio = 1;
 }
 
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	protect(&p->as);
 	void *ustack = new_page(8);
 	for(int i=0; i<8; i++){
-		map(&p->as, 
-		p->as.area.start + i*PGSIZE, 
-		ustack + i*PGSIZE, 
-		MMAP_READ | MMAP_WRITE);
+		map(&p->as,	p->as.area.start + i*PGSIZE, 
+		ustack + i*PGSIZE, MMAP_READ | MMAP_WRITE);
 	}
 	uint32_t* ustack_start = ustack + 4;
 	uint32_t* ustack_end = ustack + STACK_SIZE;
@@ -111,7 +109,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	printf("%s's entry: %08x\n",filename, entry);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
 	p->cp->GPRx = (uintptr_t)ustack;
-	p->prio = 1;
-	printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
+	//p->prio = 1;
+	//printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
 	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
