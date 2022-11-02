@@ -51,7 +51,6 @@ static void out_of_bound(paddr_t addr) {
 	}while(tmp!=mrwb.st_index && tmp<mrwb.cur_len);
 	printf("Latest memory operations have been stored in nemu-log\n");
 #endif
-  printf("aaaa\n");
 	panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
