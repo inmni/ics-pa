@@ -84,8 +84,10 @@ save_context:
 
 	addi sp, sp, CONTEXT_SIZE
 	csrrw sp, mscratch, sp
-	bnez sp, return					// if ksp != 0, means USER, just exchange back
-	csrrw sp, mscratch, sp	// if ksp == 0, means KERNEL, no action
+	bnez sp, return					
+	// if ksp != 0, means USER, just exchange back and return
+	csrrw sp, mscratch, sp	
+	// if ksp == 0, means KERNEL, no action
 
 return:
   mret
