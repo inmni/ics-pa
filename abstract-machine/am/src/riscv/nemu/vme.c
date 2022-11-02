@@ -85,7 +85,9 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	// if the pte is not valid
 	if(!(*pte & PTE_V)){
 		// alloc leaf page
+		printf("to alloc a leaf page\n");
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
+		printf("finish alloc a leaf page\n");
 		*pte = (alloced_page>>2) |0x1;
 	//	printf("To alloc leaf page in:%p, va:%p\n", pte, va);
 	}
