@@ -38,7 +38,7 @@ void init_proc() {
 	context_uload(&pcb[0], "/bin/nterm", empty, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/hello", arg1, empty);
-	pcb[0].prio = 64;
+	pcb[0].prio = 512;
 	switch_boot_pcb();
 
   Log("Initializing processes...");
