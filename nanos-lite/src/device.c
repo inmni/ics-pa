@@ -16,7 +16,7 @@ static const char *keyname[256] __attribute__((used)) = {
 };
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
-//	yield();
+	yield();
 	int i;
 		for(i=0; i<len; i++){
 				putch(*((char *)buf+i));
@@ -25,7 +25,8 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  	AM_INPUT_KEYBRD_T input = io_read(AM_INPUT_KEYBRD);
+		yield();
+		AM_INPUT_KEYBRD_T input = io_read(AM_INPUT_KEYBRD);
 		if( input.keycode == AM_KEY_NONE ){
 				return 0;
 		}
@@ -41,6 +42,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+		yield();
 		if(offset + len > fs_size(4)){
 				len = fs_size(4) - offset;
 		}
