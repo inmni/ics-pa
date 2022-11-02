@@ -57,7 +57,8 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 	if(((!PTE_V(pte1_val)) || ((!PTE_R(pte1_val))&&PTE_W(pte1_val)))){
 		printf("Error in translate %08x, type %d\n", vaddr, type);
 		printf("PTE on %08x: %08x, %x, %x, %x\n", (uint32_t)pte1_addr, pte1_val, PTE_V(pte1_val), PTE_R(pte1_val), PTE_W(pte1_val));
-		assert(0);
+		nemu_state.state = NEMU_ABORT;
+		return MEM_RET_FAIL;
 	}
 	// Step 4
 	PTE_T leaf_pte_val = pte1_val;
@@ -71,7 +72,8 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 		if(((!PTE_V(leaf_pte_val)) || ((!PTE_R(leaf_pte_val))&&PTE_W(leaf_pte_val)))){
 				printf("Error in translate %08x, type %d\n", vaddr, type);
 				printf("Leaf PTE on %08x: %08x, %x, %x, %x\n", (uint32_t)leaf_pte_addr, leaf_pte_val, PTE_V(leaf_pte_val), PTE_R(leaf_pte_val), PTE_W(leaf_pte_val));
-				assert(0);
+				nemu_state.state = NEMU_ABORT;
+				return MEM_RET_FAIL;
 		}
 		// Assert Step 4 for this is Sv32
 		assert(PTE_R(leaf_pte_val) || PTE_X(leaf_pte_val));
