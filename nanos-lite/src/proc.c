@@ -35,7 +35,7 @@ void init_proc() {
 	//char *arg2[] = {"/bin/cat", "/share/games/bird/atlas.txt", NULL};
 	char *empty[] = {NULL};
  // context_uload(&pcb[0], "/bin/hello", arg1, empty);
-	context_uload(&pcb[0], "/bin/nterm", arg1, empty);
+	context_uload(&pcb[0], "/bin/nterm", empty, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/hello", arg1, empty);
 	switch_boot_pcb();
