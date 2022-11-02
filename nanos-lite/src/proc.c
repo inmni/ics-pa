@@ -37,7 +37,6 @@ void init_proc() {
 //	context_uload(&pcb[1], "/bin/hello", arg2, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/hello", arg1, empty);
-	pcb[1].prio = 1;
 	switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -59,6 +58,7 @@ Context* schedule(Context *prev) {
 	do{
 		curr_pcb_id++;
 		curr_pcb_id %= MAX_NR_PROC;
+		printf("check %d valid\n", curr_pcb_id);
 	} while(pcb[curr_pcb_id].prio==0);
 	printf("schedule to %d\n", curr_pcb_id);
 	current = &pcb[curr_pcb_id]; // Need to change
