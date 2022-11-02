@@ -21,7 +21,7 @@ f(30) f(31)
 #define PUSH(n) STORE concat(x, n), (n * XLEN)(sp);
 #define POP(n)  LOAD  concat(x, n), (n * XLEN)(sp);
 
-#define CONTEXT_SIZE  ((32 + 3 + 1) * XLEN)
+#define CONTEXT_SIZE  ((32 + 4 + 1) * XLEN)
 #define OFFSET_SP     ( 2 * XLEN)
 #define OFFSET_CAUSE  (32 * XLEN)
 #define OFFSET_STATUS (33 * XLEN)
@@ -31,11 +31,22 @@ f(30) f(31)
 .align 3
 .globl __am_asm_trap
 __am_asm_trap:
+	// swap sp and ksp
 	csrrw sp, mscratch, sp
+	
+	// store the np
+	//STORE sp, OFFSET_NP(mscratch)	// mscratch is the real sp
+																// if np==0, the np is KERNEL
+																// if np!=0, the np is USER
+
 	bnez sp, save_context
+
+	// if ksp!=0 restore sp	
 	csrr sp, mscratch
 
 save_context:
+	csrw mscratch, zero						// support re-entry of CTE
+
   addi sp, sp, -CONTEXT_SIZE
 
   MAP(REGS, PUSH)
@@ -50,7 +61,7 @@ save_context:
   STORE t2, OFFSET_EPC(sp)
 	STORE t3, OFFSET_NP(sp)
 
-	csrw mscratch, zero	#	support re-entry of CTE
+	csrw mscratch, zero
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
@@ -59,11 +70,12 @@ save_context:
 
   mv a0, sp
   jal __am_irq_handle
-	mv sp, a0	# Added for PA4.1, the tip is prepared for fixing bug if bug exists.
+	mv sp, a0
 
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
 	LOAD t3, OFFSET_NP(sp)
+
   csrw mstatus, t1
   csrw mepc, t2
 	csrw mscratch, t3
@@ -71,10 +83,9 @@ save_context:
   MAP(REGS, POP)
 
   addi sp, sp, CONTEXT_SIZE
-
+	
 	csrrw sp, mscratch, sp
 	bnez sp, return
-	csrrw sp, mscratch, sp
-
+	csrr sp, mscratch
 return:
   mret
