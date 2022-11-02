@@ -61,12 +61,13 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 		return MEM_RET_FAIL;
 	}
 	// Step 4
+	uintptr_t leaf_pte_addr = 0;
 	PTE_T leaf_pte_val = pte1_val;
 	if(!(PTE_R(pte1_val)||PTE_X(pte1_val))) {
 		i = i - 1;	//0
 		a = PTE_PPN(pte1_val) * PAGESIZE;
 		// Perform Step 2 again
-		uintptr_t leaf_pte_addr = a + VA_VPN_0(vaddr)*PTESIZE;
+		leaf_pte_addr = a + VA_VPN_0(vaddr)*PTESIZE;
 		leaf_pte_val = paddr_read(leaf_pte_addr, sizeof(PTE_T));
 		// Perform Step 3 again
 		if(((!PTE_V(leaf_pte_val)) || ((!PTE_R(leaf_pte_val))&&PTE_W(leaf_pte_val)))){
@@ -80,7 +81,12 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 	}
 	// Step 5
 	// Skip for PA request
-	
+	if (type == 0){// Read
+		paddr_write(leaf_pte_addr, PTESIZE, leaf_pte_val | 0x40);
+  }
+	else if(type == 1){// Write
+		paddr_write(leaf_pte_addr, PTESIZE, leaf_pte_val | 0x80);
+	}	
 	// Step 6
 	// Skip for Sv32, i=0 here
 	assert(i==0);
