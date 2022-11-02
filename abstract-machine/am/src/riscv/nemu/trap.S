@@ -42,10 +42,9 @@ __am_asm_trap:
 	bnez sp, save_context
 
 	// if ksp!=0 restore sp	
-	csrr sp, mscratch
+	csrrw sp, mscratch, sp
 
 save_context:
-	csrw mscratch, zero						// support re-entry of CTE
 
   addi sp, sp, -CONTEXT_SIZE
 
@@ -86,6 +85,6 @@ save_context:
 	
 	csrrw sp, mscratch, sp
 	bnez sp, return
-	csrr sp, mscratch
+	csrrw sp, mscratch, sp
 return:
   mret
