@@ -53,14 +53,13 @@ save_context:
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
-
+	csrr t3, mscratch
   STORE t0, OFFSET_CAUSE(sp)
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
-	
-	csrr t0, mscratch
-	STORE t0, OFFSET_NP(sp)
+	STORE t3, OFFSET_NP(sp)
 	// now np is kstack.end if USER else 0
+	
 	csrw mscratch, zero
 	// now ksp = 0 to support CTE re-entry
 
