@@ -8,9 +8,9 @@ void __am_switch(Context* c);
 
 #define IRQ_TIMER 0x80000007
 Context* __am_irq_handle(Context *c) {
-	/*
-	printf("CONTEXT, mepc:%d, mcause: %d, mstatus: %d\nREGS:\n",c->mepc,c->mcause,c->mstatus);
-  */
+	
+	printf("CONTEXT, mepc:%08x, mcause: %d, mstatus: %08x\nREGS:\n",c->mepc,c->mcause,c->mstatus);
+  
 	__am_get_cur_as(c);
 	if (user_handler) {
     Event ev = {0};
