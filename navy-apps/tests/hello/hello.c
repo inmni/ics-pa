@@ -24,7 +24,8 @@ int main(int argc, char *argv[]) {
 			//printf("%d", i ++);
 			//write(1," th times!\n",11);
       printf("%s\n", argv[0]);
-      j = 0;
+			yield();
+			j = 0;
     }
   }
   return 0;
