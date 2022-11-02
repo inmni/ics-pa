@@ -62,7 +62,7 @@ Context* schedule(Context *prev) {
 		printf("check %d prio: %d\n", curr_pcb_id, pcb[curr_pcb_id].prio);
 	} while(pcb[curr_pcb_id].prio==0);
 	printf("schedule to %d\n", curr_pcb_id);
-	//current = &pcb[curr_pcb_id]; // Need to change
-	current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
+	current = &pcb[curr_pcb_id]; // Need to change
+	//current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
   return current->cp;
 }
