@@ -77,12 +77,9 @@ save_context:
   csrw mepc, t2
 
   MAP(REGS, POP)
-	
-	addi sp, sp, CONTEXT_SIZE
 
-	csrrw sp, mscratch, sp
-	bnez sp, return
-	csrrw sp, mscratch, sp
-return:
-	//LOAD sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)
+	//addi sp, sp, CONTEXT_SIZE
+	//csrw mscratch, sp
+	//bnez 
+	LOAD sp, OFFSET_SP(sp)	
   mret
