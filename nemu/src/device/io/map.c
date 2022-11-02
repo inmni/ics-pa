@@ -38,16 +38,9 @@ uint8_t* new_space(int size) {
 
 static void check_bound(IOMap *map, paddr_t addr) {
 	if (map == NULL) {
-		if(map == NULL){
-			nemu_state.state = NEMU_ABORT;
-			return;
-		}
     Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, cpu.pc);
   } else {
-		if(addr > map->high && addr < map->low){
-				nemu_state.state = NEMU_ABORT;
-				return;
-		}
+		if(addr > map->high && addr < map->low)
     Assert(addr <= map->high && addr >= map->low,
         "address (" FMT_PADDR ") is out of bound {%s} [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
         addr, map->name, map->low, map->high, cpu.pc);
@@ -66,6 +59,10 @@ void init_map() {
 
 word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
+	if(map==NULL){
+		nemu_state.state = NEMU_ABORT;
+		return 0;
+	}
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
