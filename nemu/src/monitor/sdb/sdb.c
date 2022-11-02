@@ -322,7 +322,7 @@ static int cmd_x(char *args){
 		return 0;
 	}
 	for(int i = 0; i < N; i++){
-		printf("[%d]: address:0x%08x	value:0x%08x\n", i, expr_val,paddr_read(expr_val,4));
+		printf("[%d]:\taddress:0x%08x\tvalue:0x%08x\n", i, expr_val,paddr_read(expr_val,4));
 		expr_val+=4;
 	}
 	return 0;
