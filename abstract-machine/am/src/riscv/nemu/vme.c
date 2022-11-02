@@ -65,36 +65,38 @@ void __am_switch(Context *c) {
     set_satp(c->pdir);
   }
 }
-#define VA_VPN_0(x) (((uintptr_t)x & 0x003FF000u) >> 12)
-#define VA_VPN_1(x) (((uintptr_t)x & 0xFFC00000u) >> 22)
-#define VA_OFFSET(x) ((uintptr_t)x & 0x00000FFFu)
-
-#define PTE_PPN_MASK (0xFFFFFC00u)
-#define PTE_PPN(x) (((uintptr_t)x & PTE_PPN_MASK) >> 10)
-
+#define PTESIZE 4
+#define PTE_PPN_MASK		0xFFFFFC00
+#define PTE_POFF_MASK		0x3FF
+#define VA_POFF_MASK		0xFFF
+#define PA_POFF_MASK		0xFFF
+#define PTE uintptr_t
+// PTE is 'page-table entry', is a pointer
+#define VPN_0(va)				((((uintptr_t)va)>>12)&0x3FF)
+#define VPN_1(va)				((((uintptr_t)va)>>22)&0x3FF)
+#define PTE_PPN(pte)		(((uintptr_t)pte)>>10)
+#define PTE_PPN_0(pte)	(((uintptr_t)pte>>10)&0x3FF)
+#define PTE_PPN_1(pte)	(((uintptr_t)pte>>20)&0xFFF)
 void map(AddrSpace *as, void *va, void *pa, int prot) {
-  va = (void *)(((uintptr_t)va) & (~0xfff));
-  pa = (void *)(((uintptr_t)pa) & (~0xfff));
-
-  PTE *page_table_entry = as->ptr + VA_VPN_1(va) * 4;
-  // assert((uintptr_t)as->ptr + VA_VPN_1(va) * 4 == get_satp() + VA_VPN_1(va) * 4);
-
-  if (!(*page_table_entry & PTE_V)){ // 说明二级表未分配
-    void *alloced_page = pgalloc_usr(PGSIZE);
-    *page_table_entry = (*page_table_entry & ~PTE_PPN_MASK) | (PTE_PPN_MASK & ((uintptr_t)alloced_page >> 2));
-    *page_table_entry = (*page_table_entry | PTE_V);
-    // printf("二级表未分配\t二级表项地址:%p\t虚拟地址:%p\n", page_table_entry, va);
-    //assert(((PTE_PPN(*page_table_entry) * 4096 + VA_VPN_0(va) * 4) & ~0xFFFFFF) == ((uintptr_t)alloced_page& ~0xFFFFFF));
-  }
-  // 找到二级表中的表项
-  PTE *leaf_page_table_entry = (PTE *)(PTE_PPN(*page_table_entry) * 4096 + VA_VPN_0(va) * 4);
-  // if ((uintptr_t)va <= 0x40100000){
-  //   printf("设置二级表项\t虚拟地址:%p\t实际地址:%p\t表项:%p\n", va, pa, leaf_page_table_entry);
-  // }
-  // 设置PPN
-  *leaf_page_table_entry = (PTE_PPN_MASK & ((uintptr_t)pa >> 2)) | (PTE_V | PTE_R | PTE_W | PTE_X) | (prot ? PTE_U : 0);
-  //assert(PTE_PPN(*leaf_page_table_entry) * 4096 + VA_OFFSET(va) == (uintptr_t)pa);
+	//if(prot)printf("map base[%08x] va[%08x]->pa[%08x] with prot[%x]\n", (uintptr_t)(as->ptr), (uintptr_t)va, (uintptr_t)pa, prot);
+	// LEVEL 1
+	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
+	//if(prot)printf("PTE addr: %08x, value: %08x\n", (uintptr_t)pte, *pte);
+	// if the pte is not valid
+	if(!(*pte & PTE_V)){
+		// alloc leaf page
+		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
+		*pte = (alloced_page>>2) |0x1;
+	//	printf("To alloc leaf page in:%p, va:%p\n", pte, va);
+	}
+	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
+	//printf("set leaf page va:%p, pa:%p, pte:%p\n", va, pa, leaf_pte);
+	// Set permission
+	*leaf_pte = ((PTE)pa>>2) | PTE_V | PTE_W | PTE_R | PTE_X;
+	if(prot)printf("map va[%08x]->pa[%08x] with pte %08x and leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *pte, *leaf_pte);
+	assert(PTE_PPN(*leaf_pte) * PGSIZE + ((uintptr_t)va & VA_POFF_MASK) == (uintptr_t)pa);
 }
+
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
   Context *c = (Context *)(kstack.end - sizeof(Context));
 	memset(c, 0, sizeof(Context));
