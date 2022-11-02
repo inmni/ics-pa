@@ -27,6 +27,7 @@ void hello_fun(void *arg) {
 }
 
 void init_proc() {
+	memset(pcb, 0, sizeof(pcb));
 	context_kload(&pcb[0], hello_fun, "AAAAAA");
 	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
 	char *arg1[] = {"ZZZZZZ", NULL};
