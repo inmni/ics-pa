@@ -40,12 +40,10 @@ __am_asm_trap:
 	// if ksp==0, swap back
 	csrrw sp, mscratch, sp
 
-	// c->np has been set in ucontext and kcontext
+	// c->np = kstack.end if USER else 0
 save_context:
 	// now sp is pointing to the kernel stack
-	// set ksp = 0
-	csrw mscratch, zero
-
+	// now ksp is kstack.end if USER else 0
 	addi sp, sp, -CONTEXT_SIZE
 	
   MAP(REGS, PUSH)
@@ -57,6 +55,10 @@ save_context:
   STORE t0, OFFSET_CAUSE(sp)
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
+	
+	csrr t0, mscratch
+	STORE t0, OFFSET_NP(sp)
+	csrw mscratch, zero
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
@@ -76,6 +78,10 @@ save_context:
 
   MAP(REGS, POP)
 	
-	LOAD sp, OFFSET_SP(sp)
+	addi sp, sp, CONTEXT_SIZE
 
+	csrrw sp, mscratch, sp
+	bnez sp, return
+	csrrw sp, mscratch, sp
+return:
   mret
