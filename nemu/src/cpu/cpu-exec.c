@@ -144,14 +144,14 @@ static void statistic() {
 void itrace_write(){
 	FILE *file = fopen("/home/inmny/ics2022/nanos-lite/trace.txt", "w");
 	int tmp = iRB.st_index;
-	Log("=======latest instructions=======");
+//	Log("=======latest instructions=======");
 	fprintf(file, "=======latest instructions=======\n");
 	do{
-					Log("%s", iRB.buf[tmp]);
+	//				Log("%s", iRB.buf[tmp]);
 					fprintf(file, "%s\n", iRB.buf[tmp]);
 					tmp++; tmp%=MAX_NR_IRB;
 		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
-	Log("Latest instructions have been stored in nemu-log");
+//	Log("Latest instructions have been stored in nemu-log");
 	fprintf(file,"Latest instructions have been stored in nemu-log\n");
 	fclose(file);
 }
