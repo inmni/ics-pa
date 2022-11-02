@@ -105,7 +105,8 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
 	c->mcause = EVENT_NULL;
 	c->mstatus = 0xa0001800 | 0x80;
 	c->pdir = as->ptr;
-	c->np = (uintptr_t)kstack.end;
+	c->gpr[2] = (uintptr_t)kstack.end;
+	c->np = (uintptr_t)kstack.end;// not zero means user
 	//printf("Set pdir = %08x\n", as->ptr);
 	return c;
 }
