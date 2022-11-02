@@ -110,7 +110,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	uintptr_t entry = loader(p, filename);
 	printf("%s's entry: %08x\n",filename, entry);
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
-	p->cp->GPRx = (uintptr_t)ustack;
+	p->cp->GPRx = (uintptr_t)p->as.area.start;
 	p->prio = 1;
 	printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
 //	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
