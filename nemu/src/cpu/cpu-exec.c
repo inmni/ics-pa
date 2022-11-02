@@ -144,11 +144,15 @@ static void statistic() {
 void itrace_write(){
 	int tmp = iRB.st_index;
 	Log("=======latest instructions=======");
+	log_write("=======latest instructions=======");
 	do{
 					Log("%s", iRB.buf[tmp]);
+					log_write("%s", iRB.buf[tmp]);
 					tmp++; tmp%=MAX_NR_IRB;
 		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
 	Log("Latest instructions have been stored in nemu-log");
+	log_write("Latest instructions have been stored in nemu-log");
+
 }
 #endif
 void assert_fail_msg() {
