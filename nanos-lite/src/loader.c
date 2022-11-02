@@ -9,87 +9,56 @@
 # define Elf_Ehdr Elf32_Ehdr
 # define Elf_Phdr Elf32_Phdr
 # define uintN		uint32_t
-# define Elf_Off  Elf32_Off
 #endif
-#define PAGESIZE 4096
- __attribute__ ((__used__)) static void * alloc_section_space(AddrSpace *as, uintptr_t vaddr, size_t p_memsz){
-  //size_t page_n = p_memsz % PAGESIZE == 0 ? p_memsz / 4096 : (p_memsz / 4096 + 1);
-  size_t page_n = ((vaddr + p_memsz - 1) >> 12) - (vaddr >> 12) + 1;
-  void *page_start = new_page(page_n);
-
-  printf("Loaded Segment from [%x to %x)\n", vaddr, vaddr + p_memsz);
-  
-  for (int i = 0; i < page_n; ++i){
-    // TODO: 这里prot参数不规范
-    map(as, (void *)((vaddr & ~0xfff) + i * PAGESIZE), (void *)(page_start + i * PAGESIZE), 1);
-  }
-
-  return page_start;
-}
-static void read(int fd, void *buf, size_t offset, size_t len){
-  fs_lseek(fd, offset, SEEK_SET);
-  fs_read(fd, buf, len);
-}
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  int fd = fs_open(filename, 0, 0);
-  if (fd == -1){ 
-    assert(0); //filename指向文件不存在
-  }
-  
-  AddrSpace *as = &pcb->as;
-  
-  Elf_Ehdr elf_header;
-  read(fd, &elf_header, 0, sizeof(elf_header));
-  //根据小端法 0x7F E L F
-  assert(*(uint32_t *)elf_header.e_ident == 0x464c457f);
-  
-  Elf_Off program_header_offset = elf_header.e_phoff;
-  size_t headers_entry_size = elf_header.e_phentsize;
-  int headers_entry_num = elf_header.e_phnum;
+  int fr_r, i;
+	uintN offset;
+	Elf_Ehdr ehdr; Elf_Phdr phdr;
+	
+	int fd = fs_open(filename, 0, 0);
+	assert(fd!=-1);
+	fs_lseek(fd, 0, SEEK_SET);
+	
+	fr_r = fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
+	printf("filename:%s, e_ident:%d\n", filename, *(uint32_t *)ehdr.e_ident);	
+	assert(fr_r==sizeof(Elf_Ehdr));
+	assert(*(uint32_t *)ehdr.e_ident == 0x464C457F/*To complete*/);
+	assert(ehdr.e_phoff!=0);
+	
+	offset = ehdr.e_phoff - ehdr.e_phentsize;
+	for(i = 0; i < ehdr.e_phnum; i++){
+			offset += ehdr.e_phentsize;
+			fs_lseek(fd, offset, SEEK_SET);
+			//printf("iteration %dth\n",i);
+			fs_read(fd, &phdr, sizeof(Elf_Phdr));
 
-  for (int i = 0; i < headers_entry_num; ++i){
-    Elf_Phdr section_entry;
-    read(fd, &section_entry, 
-      i * headers_entry_size + program_header_offset, sizeof(elf_header));
-    void *phys_addr;
-    uintptr_t virt_addr;
-    switch (section_entry.p_type) {
-    case PT_LOAD:
-      //virt_addr = (void *)section_entry.p_vaddr; 
-      // phys_addr = (void *)alloced_page_start + (section_entry.p_vaddr - 0x40000000); // 这里是把0x40000000加载到他对应的实际地址
-      virt_addr = section_entry.p_vaddr;
-      phys_addr = alloc_section_space(as, virt_addr, section_entry.p_memsz);
+			if(phdr.p_type != PT_LOAD)continue;
+			//printf("after continue at %dth iteration\n", i);
+			fs_lseek(fd, phdr.p_offset, SEEK_SET);
+			uint32_t pg_start = phdr.p_vaddr & 0xFFFFF000;
+			uint32_t pg_end = (phdr.p_vaddr + phdr.p_memsz - 1) & 0xFFFFF000;
+			uint32_t pg_off = phdr.p_vaddr & 0xFFF;
+			uint32_t pg_nr = (pg_end - pg_start)/PGSIZE + 1;
+			printf("to alloc %d pages [%08x, %08x) based on %08x\n",pg_nr, pg_start, pg_end + PGSIZE, (uintptr_t)(pcb->as.ptr));
+			void *pg_ptr = new_page(pg_nr);
+			printf("pa start: %08x\n", (uintptr_t)pg_ptr);
+			//printf("alloc %d pages\n", pg_nr);
+			for(int j=0; j < pg_nr; j++){
+				map(&pcb->as,
+						(void *)(pg_start + j*PGSIZE),
+						pg_ptr + j*PGSIZE,
+						MMAP_READ | MMAP_WRITE
+				);
+			}
+			fs_read(fd, pg_ptr + pg_off, phdr.p_filesz);
+			//printf("after fs_read\n");
+			pcb->max_brk = pg_end + PGSIZE;
+			//memset((void *)(pg_ptr + pg_off + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+			//printf("after memset\n");
+	}
 
-      // printf("Load to %x with offset %x\n", phys_addr, section_entry.p_offset);
-      //做一个偏移
-      read(fd, phys_addr + (virt_addr & 0xfff), section_entry.p_offset, section_entry.p_filesz);
-      //同样做一个偏移
-      memset(phys_addr + (virt_addr & 0xfff) + section_entry.p_filesz, 0, 
-        section_entry.p_memsz - section_entry.p_filesz);
-      
-      if (section_entry.p_filesz < section_entry.p_memsz){// 应该是.bss节
-        //做一个向上的4kb取整数
-        // if (pcb->max_brk == 0){
-        printf("Setting .bss end %x\n", section_entry.p_vaddr + section_entry.p_memsz);
-        // 我们虽然用max_brk记录了最高达到的位置，但是在新的PCB中，我们并未在页表目录中更新这些信息，oH，所以就会失效啦。
-        // 于是我们就做了一些权衡。
-        //pcb->max_brk = MAX(pcb->max_brk, ROUNDUP(section_entry.p_vaddr + section_entry.p_memsz, 0xfff));
-        //TODO: Trade-off
-        pcb->max_brk = ROUNDUP(section_entry.p_vaddr + section_entry.p_memsz, 0xfff);
-        
-        // }
-      }
-      
-      break;
-    
-    default:
-      break;
-    }
-
-  }
-  
-  printf("Entry: %p\n", elf_header.e_entry);
-  return elf_header.e_entry;
+	fs_close(fd);
+	return ehdr.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
@@ -106,101 +75,42 @@ void context_kload(PCB* p, void (*entry)(void *), void* arg) {
 	p->cp = kcontext(kstack, entry, arg);
 	//p->prio = 1;
 }
-#define NR_PAGE 8
-#define PAGESIZE 4096
-static size_t ceil_4_bytes(size_t size){
-  if (size & 0x3)
-    return (size & (~0x3)) + 0x4;
-  return size;
-}
+
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
-	int envc = 0, argc = 0;
-  AddrSpace *as = &p->as;
-  protect(as);
-  
-  if (envp){
-    for (; envp[envc]; ++envc){}
-  }
-  if (argv){
-    for (; argv[argc]; ++argc){}
-  }
-  char *envp_ustack[envc];
-
-  void *alloced_page = new_page(NR_PAGE) + NR_PAGE * 4096; //得到栈顶
-
-  //这段代码有古怪，一动就会出问题，莫动
-  //这个问题确实已经被修正了，TMD，真cao dan
-  // 2021/12/16
-  
-  map(as, as->area.end - 8 * PAGESIZE, alloced_page - 8 * PAGESIZE, 1); 
-  map(as, as->area.end - 7 * PAGESIZE, alloced_page - 7 * PAGESIZE, 1);
-  map(as, as->area.end - 6 * PAGESIZE, alloced_page - 6 * PAGESIZE, 1); 
-  map(as, as->area.end - 5 * PAGESIZE, alloced_page - 5 * PAGESIZE, 1);
-  map(as, as->area.end - 4 * PAGESIZE, alloced_page - 4 * PAGESIZE, 1); 
-  map(as, as->area.end - 3 * PAGESIZE, alloced_page - 3 * PAGESIZE, 1);
-  map(as, as->area.end - 2 * PAGESIZE, alloced_page - 2 * PAGESIZE, 1); 
-  map(as, as->area.end - 1 * PAGESIZE, alloced_page - 1 * PAGESIZE, 1); 
-  
-  char *brk = (char *)(alloced_page - 4);
-  // 拷贝字符区
-  for (int i = 0; i < envc; ++i){
-    brk -= (ceil_4_bytes(strlen(envp[i]) + 1)); // 分配大小
-    envp_ustack[i] = brk;
-    strcpy(brk, envp[i]);
-  }
-
-  char *argv_ustack[envc];
-  for (int i = 0; i < argc; ++i){
-    brk -= (ceil_4_bytes(strlen(argv[i]) + 1)); // 分配大小
-    argv_ustack[i] = brk;
-    strcpy(brk, argv[i]);
-  }
-  
-  intptr_t *ptr_brk = (intptr_t *)(brk);
-
-  // 分配envp空间
-  ptr_brk -= 1;
-  *ptr_brk = 0;
-  ptr_brk -= envc;
-  for (int i = 0; i < envc; ++i){
-    ptr_brk[i] = (intptr_t)(envp_ustack[i]);
-  }
-
-  // 分配argv空间
-  ptr_brk -= 1;
-  *ptr_brk = 0;
-  ptr_brk = ptr_brk - argc;
-  
-  // printf("%p\n", ptr_brk);
-  printf("%p\t%p\n", alloced_page, ptr_brk);
-  //printf("%x\n", ptr_brk);
-  //assert((intptr_t)ptr_brk == 0xDD5FDC);
-  for (int i = 0; i < argc; ++i){
-    ptr_brk[i] = (intptr_t)(argv_ustack[i]);
-  }
-
-  ptr_brk -= 1;
-  *ptr_brk = argc;
-  
-  //这条操作会把参数的内存空间扬了，要放在最后
-  uintptr_t entry = loader(p, filename);
-  Area karea;
-  karea.start = &p->cp;
-  karea.end = &p->cp + STACK_SIZE;
-
-  Context* context = ucontext(as, karea, (void *)entry);
-  p->cp = context;
-
-  printf("新分配ptr=%p\n", as->ptr);
-  printf("UContext Allocted at %p\n", context);
-  printf("Alloced Page Addr: %p\t PTR_BRK_ADDR: %p\n", alloced_page, ptr_brk);
-
-  ptr_brk -= 1;
-  *ptr_brk = 0;//为了t0_buffer
-  //设置了sp
-  context->gpr[2]  = (uintptr_t)ptr_brk - (uintptr_t)alloced_page + (uintptr_t)as->area.end;
-
-  //似乎不需要这个了，但我还不想动
-  context->GPRx = (uintptr_t)ptr_brk - (uintptr_t)alloced_page + (uintptr_t)as->area.end + 4;
-  //context->GPRx = (intptr_t)(ptr_brk);
+	int i; protect(&p->as);
+	void *ustack = new_page(8);
+	for(i=0; i<8; i++){
+		map(&p->as,	p->as.area.start + i*PGSIZE, 
+		ustack + i*PGSIZE, MMAP_READ | MMAP_WRITE);
+	}
+	uint32_t* ustack_start = ustack + 4;
+	uint32_t* ustack_end = ustack + STACK_SIZE;
+	printf("MALLOC [%p, %p)\n", ustack, ustack_end);
+	// copy arguments
+	int argv_c = 0; int envp_c = 0;
+	while(argv && argv[argv_c]){
+		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
+		strcpy((char *)ustack_end, argv[argv_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		argv_c++;
+	}
+	while(envp && envp[envp_c]){
+		ustack_end -= strlen(envp[envp_c]) + 1;
+		strcpy((char *)ustack_end, envp[envp_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		envp_c++;
+	}
+	*(uint32_t *)ustack = argv_c + envp_c;
+	Area kstack;
+	kstack.start = p->stack;
+	kstack.end = p->stack + STACK_SIZE;
+	printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
+//	printf("try to load %s\n",filename);
+	uintptr_t entry = loader(p, filename);
+	printf("%s's entry: %08x\n",filename, entry);
+	p->cp = ucontext(&(p->as), kstack, (void *)entry);
+	p->cp->GPRx = (uintptr_t)ustack;
+	p->prio = 1;
+	printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
+	printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
