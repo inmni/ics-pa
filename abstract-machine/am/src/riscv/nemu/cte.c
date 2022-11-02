@@ -45,7 +45,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 	c->mcause = EVENT_NULL;
 	c->mepc = (uintptr_t)entry;
 	c->mstatus = 0xa0001800 | 0x80; //For DiffTest, though there is not its implement, maybe it will exist in the future.
-	c->np = 0;	// 0 means kernel
+//	c->np = 0;	// 0 means kernel
 	c->GPRx = (uintptr_t)arg;	// Only argument 0 stored, maybe incorrect but sufficient for now.
 	return c;
 }
