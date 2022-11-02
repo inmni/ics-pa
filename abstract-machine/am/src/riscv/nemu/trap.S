@@ -84,5 +84,5 @@ save_context:
 	bnez sp, return
 	csrrw sp, mscratch, sp
 return:
-	LOAD sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)
+	//LOAD sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)
   mret
