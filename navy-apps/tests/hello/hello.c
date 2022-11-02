@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	}
   while (argc>0 && argv) {
     j ++;
-    if (j == 1000000) {
+    if (j == 100000) {
 			//write(1, "Hello World from Navy-apps for the ",36);
 			//printf("%d", i ++);
 			//write(1," th times!\n",11);
