@@ -37,7 +37,7 @@ void init_proc() {
   //context_uload(&pcb[0], "/bin/hello", arg1, empty);
 	//context_uload(&pcb[1], "/bin/nterm", arg1, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
-	context_uload(&pcb[1], "/bin/exec-test", arg1, empty);
+	context_uload(&pcb[1], "/bin/cat", arg1, empty);
 	switch_boot_pcb();
 
   Log("Initializing processes...");

@@ -86,7 +86,6 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	if(!(*pte & PTE_V)){
 		// alloc leaf page
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
-		// keep permission
 		*pte = (alloced_page>>2) |0x1;
 	//	printf("To alloc leaf page in:%p, va:%p\n", pte, va);
 	}
