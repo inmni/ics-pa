@@ -29,13 +29,13 @@ void hello_fun(void *arg) {
 
 void init_proc() {
 	//memset(pcb, 0, sizeof(pcb));
-	context_kload(&pcb[0], hello_fun, "AAAAAA");
+//	context_kload(&pcb[0], hello_fun, "AAAAAA");
 	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
 	char *arg1[] = {"/bin/exec-test","1", NULL};
 	//char *arg2[] = {"/bin/cat", "/share/games/bird/atlas.txt", NULL};
 	char *empty[] = {NULL};
  // context_uload(&pcb[0], "/bin/hello", arg1, empty);
-	//context_uload(&pcb[1], "/bin/nterm", arg1, empty);
+	context_uload(&pcb[0], "/bin/nterm", arg1, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/exec-test", arg1, empty);
 	switch_boot_pcb();
