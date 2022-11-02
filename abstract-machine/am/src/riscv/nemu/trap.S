@@ -36,11 +36,11 @@ __am_asm_trap:
 	// STORE sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)	
 
 	// swap sp, ksp
-//	csrrw sp, mscratch, sp
+	csrrw sp, mscratch, sp
 	// if ksp!=0, fix swap
-//	bnez sp, save_context
+	bnez sp, save_context
 	// if ksp==0, swap back
-//	csrrw sp, mscratch, sp
+	csrrw sp, mscratch, sp
 
 	// c->np = kstack.end if USER else 0
 save_context:
@@ -56,11 +56,11 @@ save_context:
   STORE t0, OFFSET_CAUSE(sp)
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
-//	csrr t0, mscratch
-//	STORE t0, OFFSET_NP(sp)
+	csrr t0, mscratch
+	STORE t0, OFFSET_NP(sp)
 	// now np is kstack.end if USER else 0
 	
-//	csrw mscratch, zero
+	csrw mscratch, zero
 	// now ksp = 0 to support CTE re-entry
 
   # set mstatus.MPRV to pass difftest
@@ -72,10 +72,10 @@ save_context:
   jal __am_irq_handle
 	mv sp, a0
 	
-//	LOAD t0, OFFSET_NP(sp)// if c->np=0, ksp keeps 0, else ksp = c->np = sp
+	LOAD t0, OFFSET_NP(sp)// if c->np=0, ksp keeps 0, else ksp = c->np = sp
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
-//	csrw mscratch, t0
+	csrw mscratch, t0
 	// now ksp is kstack.end if USER else 0
   csrw mstatus, t1
   csrw mepc, t2
@@ -83,10 +83,10 @@ save_context:
   MAP(REGS, POP)
 
 	addi sp, sp, CONTEXT_SIZE
-//	csrrw sp, mscratch, sp
-//	bnez sp, return					
+	csrrw sp, mscratch, sp
+	bnez sp, return					
 	// if ksp != 0, means USER, just exchange back and return
-//	csrrw sp, mscratch, sp	
+	csrrw sp, mscratch, sp	
 	// if ksp == 0, means KERNEL, no action
 
 return:
