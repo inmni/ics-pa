@@ -47,10 +47,10 @@ void init_proc() {
 }
 
 Context* schedule(Context *prev) {
-	static int curr_pcb_id = 0;
-	static int count = 1;
+//	static int curr_pcb_id = 0;
+	//static int count = 1;
 	current->cp = prev;
-	
+/*	
 	if(count < current->prio){
 		count++;
 		return current->cp;
@@ -63,6 +63,7 @@ Context* schedule(Context *prev) {
 	} while(pcb[curr_pcb_id].prio==0);
 	//printf("schedule to %d\n", curr_pcb_id);
 	//current = &pcb[curr_pcb_id];
+*/
 	current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
   return current->cp;
 }
