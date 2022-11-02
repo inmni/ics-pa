@@ -28,7 +28,7 @@ int mm_brk(uintptr_t brk) {
 	if(brk <= current->max_brk)	return 0;
 	// alloc
 	uint32_t pg_nr = ROUNDUP(brk - current->max_brk, PGSIZE)/PGSIZE;
-	Log("brk: %d - curr->max_brk: %d = %d pages to alloc in mm_brk", brk, current->max_brk, pg_nr);
+	Log("brk: %08x - curr->max_brk: %08x = %d pages to alloc in mm_brk", brk, current->max_brk, pg_nr);
 	void* pg_start = new_page(pg_nr);	int i;
 	for(i = 0; i<pg_nr; i++){
 		map(&current->as,
