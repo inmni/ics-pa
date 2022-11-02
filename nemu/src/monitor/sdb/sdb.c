@@ -321,8 +321,8 @@ static int cmd_x(char *args){
 		printf("Failed to convert %s to %d",arg2,expr_val);
 		return 0;
 	}
-	for(;N>0;N--){
-		printf("address:0X%08X	value:0X%08X\n",expr_val,paddr_read(expr_val,4));
+	for(int i = 0; i < N; i++){
+		printf("[%d]: address:0x%08x	value:0x%08x\n", i, expr_val,paddr_read(expr_val,4));
 		expr_val+=4;
 	}
 	return 0;
