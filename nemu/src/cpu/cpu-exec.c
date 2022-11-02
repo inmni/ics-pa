@@ -153,7 +153,7 @@ void itrace_write(){
 		}while(tmp!=iRB.st_index && tmp<iRB.cur_len);
 	Log("Latest instructions have been stored in nemu-log");
 	fprintf(file,"Latest instructions have been stored in nemu-log");
-
+	fclose(file);
 }
 #endif
 void assert_fail_msg() {
