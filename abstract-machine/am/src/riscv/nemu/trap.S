@@ -34,15 +34,15 @@ __am_asm_trap:
 	// swap sp and ksp
 	csrrw sp, mscratch, sp
 	
-	bnez sp, save_context
+	bnez sp, save_context	// jump for user trap
 
-	// if ksp!=0 restore sp	
+	// if ksp==0 restore sp and ksp	
 	csrrw sp, mscratch, sp
 
 save_context:
-
-  addi sp, sp, -CONTEXT_SIZE
-
+	// now sp is pointing to the kernel stack
+	addi sp, sp, -CONTEXT_SIZE
+	
   MAP(REGS, PUSH)
 
   csrr t0, mcause
@@ -55,7 +55,6 @@ save_context:
 
 	csrr t0, mscratch
 	STORE t0, OFFSET_NP(sp)
-
 	csrw mscratch, zero
 
   # set mstatus.MPRV to pass difftest
@@ -67,13 +66,13 @@ save_context:
   jal __am_irq_handle
 	mv sp, a0
 
+	LOAD t0, OFFSET_NP(sp)
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
-	LOAD t0, OFFSET_NP(sp)
 
+	csrw mscratch, t0
   csrw mstatus, t1
   csrw mepc, t2
-	csrw mscratch, t0
 
   MAP(REGS, POP)
 
@@ -82,5 +81,6 @@ save_context:
 	csrrw sp, mscratch, sp
 	bnez sp, return
 	csrrw sp, mscratch, sp
+
 return:
   mret
