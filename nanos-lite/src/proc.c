@@ -58,7 +58,7 @@ Context* schedule(Context *prev) {
 		curr_pcb_id %= MAX_NR_PROC;
 	} while(pcb[curr_pcb_id].prio==0);
 
-	current = &pcb[curr_pcb_id]; // Need to change
-
+	//current = &pcb[curr_pcb_id]; // Need to change
+	current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
   return current->cp;
 }
