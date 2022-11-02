@@ -32,7 +32,9 @@ f(30) f(31)
 .globl __am_asm_trap
 __am_asm_trap:
 	// c->sp = sp has been set in ucontext and kcontext
-	STORE sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)	
+	// The statement is useless
+	// STORE sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)	
+
 	// swap sp, ksp
 	csrrw sp, mscratch, sp
 	// if ksp!=0, fix swap
@@ -58,7 +60,9 @@ save_context:
 	
 	csrr t0, mscratch
 	STORE t0, OFFSET_NP(sp)
+	// now np is kstack.end if USER else 0
 	csrw mscratch, zero
+	// now ksp = 0
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
@@ -73,13 +77,16 @@ save_context:
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
 	csrw mscratch, t0
+	// now ksp is kstack.end if USER else 0
   csrw mstatus, t1
   csrw mepc, t2
 
   MAP(REGS, POP)
 
-	//addi sp, sp, CONTEXT_SIZE
-	//csrw mscratch, sp
-	//bnez 
-	LOAD sp, OFFSET_SP(sp)	
+	addi sp, sp, CONTEXT_SIZE
+	csrrw sp, mscratch, sp
+	bnez sp, return					// if ksp != 0, means USER, just exchange back
+	csrrw sp, mscratch, sp	// if ksp == 0, means KERNEL, no action
+
+return:
   mret

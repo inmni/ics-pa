@@ -26,6 +26,7 @@ static const uint32_t img [] = {
 };
 
 static void restart() {
+	memset(&cpu, 0, sizeof(cpu));
   /* Set the initial program counter. */
   cpu.pc = RESET_VECTOR;
 
