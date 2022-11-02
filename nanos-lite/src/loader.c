@@ -52,7 +52,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 			fs_read(fd, pg_ptr + pg_off, phdr.p_filesz);
 			//printf("after fs_read\n");
 			pcb->max_brk = pg_end + PGSIZE;
-			memset((void *)(pg_ptr + pg_off + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+			//memset((void *)(pg_ptr + pg_off + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
 			//printf("after memset\n");
 	}
 
