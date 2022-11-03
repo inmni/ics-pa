@@ -49,6 +49,7 @@ void init_proc() {
 }
 
 void switch_prog(uint32_t id) {
+	Log("Switch to %d\n",id);
 	assert(id>=1 && id<=3);
 	assert(pcb[id].prio!=0);
 	for(int i = 0; i<MAX_NR_PROC; i++){
