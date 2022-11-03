@@ -85,7 +85,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	*leaf_pte = ((PTE)pa>>2) | 0xf;
-	assert(*leaf_pte!=0x0124306);
+	assert(*leaf_pte!=0x01242306);
 	
 
 //	if(prot)printf("map va[%08x]->pa[%08x] with pte %08x and leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *pte, *leaf_pte);
