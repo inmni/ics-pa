@@ -38,8 +38,8 @@ void init_proc() {
 	context_uload(&pcb[0], "/bin/hello", arg1, empty);
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/nterm", empty, empty);
-	context_uload(&pcb[2], "/bin/menu", empty, empty);
-	context_uload(&pcb[3], "/bin/bird", empty, empty);
+//	context_uload(&pcb[2], "/bin/menu", empty, empty);
+//	context_uload(&pcb[3], "/bin/bird", empty, empty);
 	pcb[0].prio = 512;
 	switch_boot_pcb();
 
