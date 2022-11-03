@@ -81,10 +81,11 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
 	if(!(*pte & PTE_V)){
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
-		*pte = (alloced_page>>2) |0xf;
+		*pte = (alloced_page>>2) |0x1;
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	*leaf_pte = ((PTE)pa>>2) | 0xf;
+	assert(*leaf_pte!=0x0124306);
 	
 
 //	if(prot)printf("map va[%08x]->pa[%08x] with pte %08x and leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *pte, *leaf_pte);
