@@ -75,6 +75,7 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 				return 0;
 				assert(0);
 		}
+	printf("\n%08x\n", leaf_pte_val);
 	// Assert Step 4 for this is Sv32
 	assert(PTE_R(leaf_pte_val) || PTE_X(leaf_pte_val));
 	// Step 5
