@@ -54,10 +54,9 @@ void switch_prog(uint32_t id) {
 	assert(id>=1 && id<=3);
 	assert(pcb[id].prio!=0);
 	for(int i = 0; i<MAX_NR_PROC; i++){
-		if(pcb[i].prio!=0){
-				pcb[i].prio = 1;
-		}
+			pcb[i].prio = 0;
 	}
+	pcb[0].prio = 1;
 	pcb[id].prio = 512;
 }
 Context* schedule(Context *prev) {
@@ -69,9 +68,7 @@ Context* schedule(Context *prev) {
 		count++;
 		return current->cp;
 	}
-	current = &pcb[0];
 	count = 1;
-	return current->cp;
 	do{
 		curr_pcb_id++;
 		curr_pcb_id %= MAX_NR_PROC;
