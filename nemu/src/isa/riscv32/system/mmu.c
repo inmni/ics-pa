@@ -66,6 +66,7 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 	// Perform Step 2 again
 	uintptr_t leaf_pte_addr = PTE_PPN(pte1_val)*PAGESIZE + VA_VPN_0(vaddr)*PTESIZE;
 	PTE_T leaf_pte_val = paddr_read(leaf_pte_addr, sizeof(PTE_T));
+	if(leaf_pte_val<=0x2000000f){printf("\nERROR LEAF PTE: %08x\n", leaf_pte_val);}
 	// Perform Step 3 again
 		if(((!PTE_V(leaf_pte_val)) || ((!PTE_R(leaf_pte_val))&&PTE_W(leaf_pte_val)))){
 				printf("Error in translate %08x, type %d\n", vaddr, type);
@@ -75,7 +76,6 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 				return 0;
 				assert(0);
 		}
-	printf("\n%08x\n", leaf_pte_val);
 	// Assert Step 4 for this is Sv32
 	assert(PTE_R(leaf_pte_val) || PTE_X(leaf_pte_val));
 	// Step 5
