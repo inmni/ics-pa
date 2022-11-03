@@ -81,7 +81,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	PTE *pte = as->ptr + VPN_1(va)*PTESIZE;
 	if(!(*pte & PTE_V)){
 		PTE alloced_page = (PTE)pgalloc_usr(PGSIZE);
-		*pte = (alloced_page>>2) |0x1;
+		*pte = (alloced_page>>2) |0xf;
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	*leaf_pte = ((PTE)pa>>2) | 0xf;
