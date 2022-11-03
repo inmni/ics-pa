@@ -40,7 +40,7 @@ void init_proc() {
 	context_uload(&pcb[1], "/bin/nterm", empty, empty);
 	context_uload(&pcb[2], "/bin/nslider", empty, empty);
 	pcb[1].prio = 512;
-//	context_uload(&pcb[3], "/bin/bird", empty, empty);
+	context_uload(&pcb[3], "/bin/bird", empty, empty);
 	switch_boot_pcb();
 
   Log("Initializing processes...");
