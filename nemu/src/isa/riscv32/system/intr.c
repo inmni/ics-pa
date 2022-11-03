@@ -41,7 +41,7 @@ word_t isa_query_intr() {
 	if(cpu.INTR && (sr(MSTATUS)&MSTATUS_MIE_MASK)){
 		cpu.INTR = false;
 		Log("SWITCH");
-		return IRQ_TIMER;
+		return INTR_EMPTY;
 	}
   return INTR_EMPTY;
 }
