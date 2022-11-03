@@ -60,7 +60,6 @@ void switch_prog(uint32_t id) {
 	for(int i = 0; i<MAX_NR_PROC; i++){
 			pcb[i].prio = 0;
 	}
-	pcb[0].prio = 1;
 	pcb[id].prio = 512;
 	yield();
 }
