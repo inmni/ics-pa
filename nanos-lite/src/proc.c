@@ -39,7 +39,7 @@ void init_proc() {
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/nterm", empty, empty);
 	context_uload(&pcb[2], "/bin/nslider", empty, empty);
-	context_uload(&pcb[3], "/bin/bird", empty, empty);
+	context_uload(&pcb[3], "/bin/pal", empty, empty);
 	init_prio(0,0,0,1);
 	switch_boot_pcb();
 
