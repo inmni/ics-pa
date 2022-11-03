@@ -40,7 +40,7 @@ void init_proc() {
 	context_uload(&pcb[1], "/bin/nterm", empty, empty);
 	context_uload(&pcb[2], "/bin/nslider", empty, empty);
 	context_uload(&pcb[3], "/bin/bird", empty, empty);
-	init_prio(0,1024,0,0);
+	init_prio(0,0,0,1);
 	switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -60,7 +60,7 @@ void switch_prog(uint32_t id) {
 	for(int i = 0; i<MAX_NR_PROC; i++){
 			pcb[i].prio = 0;
 	}
-	pcb[id].prio = 512;
+	pcb[id].prio = 1;
 	yield();
 }
 Context* schedule(Context *prev) {
