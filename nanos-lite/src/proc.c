@@ -68,7 +68,9 @@ Context* schedule(Context *prev) {
 		count++;
 		return current->cp;
 	}
+	current = &pcb[0];
 	count = 1;
+	return current->cp;
 	do{
 		curr_pcb_id++;
 		curr_pcb_id %= MAX_NR_PROC;
