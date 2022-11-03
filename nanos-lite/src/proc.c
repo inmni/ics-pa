@@ -26,7 +26,7 @@ void hello_fun(void *arg) {
 		j ++;
   }
 }
-
+void init_prio(int,int,int,int);
 void init_proc() {
 	//memset(pcb, 0, sizeof(pcb));
 //	context_kload(&pcb[0], hello_fun, "AAAAAA");
@@ -39,8 +39,8 @@ void init_proc() {
 //	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/bird", empty, empty);
 	context_uload(&pcb[2], "/bin/nslider", empty, empty);
-	pcb[1].prio = 512;
 	context_uload(&pcb[3], "/bin/bird", empty, empty);
+	init_prio(0,1024,0,0);
 	switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -48,7 +48,12 @@ void init_proc() {
   // load program here
 	// naive_uload(NULL, "/bin/menu");
 }
-
+void init_prio(int a1,int a2,int a3,int a4){
+	pcb[0].prio = a1;
+	pcb[1].prio = a2;
+	pcb[2].prio = a3;
+	pcb[3].prio = a4;
+}
 void switch_prog(uint32_t id) {
 	Log("Switch to %d\n",id);
 	assert(id>=1 && id<=3);
