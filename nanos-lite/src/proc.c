@@ -62,6 +62,7 @@ void switch_prog(uint32_t id) {
 	}
 	pcb[0].prio = 1;
 	pcb[id].prio = 512;
+	yield();
 }
 Context* schedule(Context *prev) {
 	static int curr_pcb_id = 0;
