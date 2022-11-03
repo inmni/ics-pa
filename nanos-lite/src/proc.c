@@ -74,7 +74,7 @@ Context* schedule(Context *prev) {
 		curr_pcb_id %= MAX_NR_PROC;
 		//printf("check %d prio: %d\n", curr_pcb_id, pcb[curr_pcb_id].prio);
 	} while(pcb[curr_pcb_id].prio==0);
-	//printf("schedule to %d\n", curr_pcb_id);
+	printf("schedule to %d\n", curr_pcb_id);
 	current = &pcb[curr_pcb_id];
 
 	//current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
