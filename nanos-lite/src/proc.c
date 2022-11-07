@@ -11,41 +11,41 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 void context_kload(PCB* p, void (*entry)(void *), void* arg);
 
 void switch_boot_pcb() {
-  current = &pcb_boot;
+	current = &pcb_boot;
 }
 
 void hello_fun(void *arg) {
-  int j = 1;int _fun_count = 1;
-  while (1) {
-    if(j==100000){
+	int j = 1;int _fun_count = 1;
+	while (1) {
+		if(j==100000){
 			Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char *)arg, _fun_count);
 			_fun_count++; j = 0;
 			yield();
 		}
-//		yield();
+		//		yield();
 		j ++;
-  }
+	}
 }
 void init_prio(int,int,int,int);
 void init_proc() {
 	//memset(pcb, 0, sizeof(pcb));
-//	context_kload(&pcb[0], hello_fun, "AAAAAA");
+	//	context_kload(&pcb[0], hello_fun, "AAAAAA");
 	//context_kload(&pcb[1], hello_fun, "ZZZZZZ");
 	char *arg1[] = {"NTMDPA","1", NULL};
 	//char *arg2[] = {"/bin/cat", "/share/games/bird/atlas.txt", NULL};
 	char *empty[] = {NULL};
- // context_uload(&pcb[0], "/bin/hello", arg1, empty);
+	// context_uload(&pcb[0], "/bin/hello", arg1, empty);
 	context_uload(&pcb[0], "/bin/hello", arg1, empty);
-//	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
+	//	printf("arg1: %s, arg2: %s\n", arg1[0], arg2[0]);
 	context_uload(&pcb[1], "/bin/nterm", empty, empty);
 	context_uload(&pcb[2], "/bin/nslider", empty, empty);
 	context_uload(&pcb[3], "/bin/bird", empty, empty);
 	init_prio(0,0,0,1);
 	switch_boot_pcb();
 
-  Log("Initializing processes...");
+	Log("Initializing processes...");
 
-  // load program here
+	// load program here
 	// naive_uload(NULL, "/bin/menu");
 }
 void init_prio(int a1,int a2,int a3,int a4){
@@ -58,7 +58,7 @@ void switch_prog(uint32_t id) {
 	Log("Switch to %d\n",id);
 	assert(id>=1 && id<=3);
 	for(int i = 0; i<MAX_NR_PROC; i++){
-			pcb[i].prio = 0;
+		pcb[i].prio = 0;
 	}
 	pcb[id].prio = 1;
 	yield();
@@ -82,5 +82,5 @@ Context* schedule(Context *prev) {
 	current = &pcb[curr_pcb_id];
 
 	//current = (current == &pcb[0] ? &pcb[1]:&pcb[0]);
-  return current->cp;
+	return current->cp;
 }
