@@ -76,10 +76,13 @@ static int parse_args(int argc, char *argv[]) {
     {"diff"     , required_argument, NULL, 'd'},
     {"port"     , required_argument, NULL, 'p'},
     {"elf"			, required_argument, NULL, 'e'},
-	 	{"help"     , no_argument      , NULL, 'h'},
+    {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
+  #ifdef __BATCH_MODE__
+    sdb_set_batch_mode();
+  #endif
   while ( (o = getopt_long(argc, argv, "-bhl:d:p:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
