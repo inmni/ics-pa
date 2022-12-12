@@ -68,16 +68,16 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 				w = s->w; h = s->h;
 		}
 		uint32_t *pixels = (uint32_t *)s->pixels;
+		if(flag)printf("Update Rect with 0,0,0,0\n");
 		if(s->format->BitsPerPixel == 8){
 				uint32_t *new_pixels = (uint32_t *)malloc(s->w * s->h << 2);
 				SDL_Color *colors = s->format->palette->colors;
+				if(flag)printf("Successfully malloc\n");
 				for(int i = 0; i<s->w*s->h; i++){
 						new_pixels[i] = (colors[pixels[i]].a<<24)|(colors[pixels[i]].r<<16)|(colors[pixels[i]].g<<8)|(colors[pixels[i]].b);
 				}
 				pixels = new_pixels;
 		}
-
-		if(flag)printf("0,0,0,0 Get Here!\n");
 
 		NDL_DrawRect(pixels, x, y, w, h);
 		if(s->format->BitsPerPixel == 8){
