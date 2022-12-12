@@ -9,6 +9,8 @@ static const char *keyname[] = {
   "NONE",
   _KEYS(keyname)
 };
+static const uint32_t nr_key = 83;
+static uint8_t key_state[83] = {0};
 int ParseEvent(uint32_t* key, uint32_t* type){
 	char buf[32];
 	if(!NDL_PollEvent(buf, 32)){
@@ -23,8 +25,8 @@ int ParseEvent(uint32_t* key, uint32_t* type){
 	if(prefix[0]=='k'){
 		*key = code;
 		switch(prefix[1]){
-			case 'd': *type = SDL_KEYDOWN;	return 1;
-			case 'u': *type = SDL_KEYUP;	return 1;
+			case 'd': *type = SDL_KEYDOWN;	key_state[code] = 1; return 1;
+			case 'u': *type = SDL_KEYUP;	  key_state[code] = 0; return 1;
 			default: return 0;// keyboard but no action.
 		}
 //				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
@@ -44,6 +46,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 		ev->type = type;
 		ev->key.type = type;
 		ev->key.keysym.sym = key;
+
 		return ret;
 }
 
@@ -63,6 +66,11 @@ int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {
 }
 
 uint8_t* SDL_GetKeyState(int *numkeys) {
-  assert(0);
-	return NULL;
+  if(numkeys){
+		*numkeys = 0;
+		for(int i=0; i<nr_key; i++){
+			*numkeys+=key_state[i];
+		}
+	}
+	return key_state;
 }
