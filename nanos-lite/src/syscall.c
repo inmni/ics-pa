@@ -26,7 +26,7 @@ void do_syscall(Context *c) {
 	a[3] = c->GPR4;
 #ifdef CONFIG_STRACE
 	printf("===============syscall trace start================\n");
-	printf("syscall trace: %s(%d %d %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
+	printf("syscall trace: %s(%d %08x %d)\n",syscall_table[a[0]],a[1],a[2],a[3]);
 #endif
   switch (a[0]) {
 		case SYS_exit:	naive_uload(NULL, "/bin/menu"); c->GPRx=0;	//halt(a[1]);
