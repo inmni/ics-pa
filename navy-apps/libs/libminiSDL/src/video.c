@@ -191,6 +191,7 @@ printf("assert3\n");
     rect.y = y;
     rect.w = w;
     rect.h = h;
+printf("Before SDL_BlitSurface\n");
     SDL_BlitSurface(src, &rect, dst, dstrect);
   }
   else {
