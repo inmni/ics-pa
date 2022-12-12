@@ -196,6 +196,7 @@ printf("Before SDL_BlitSurface\n");
     SDL_BlitSurface(src, &rect, dst, dstrect);
   }
   else {
+printf("assert(0)\n");
     assert(0);
   }
 }
