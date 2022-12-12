@@ -170,20 +170,15 @@ SDL_Surface* SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags) {
 }
 
 void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-printf("src:%d,%d,dst:%d,%d\n", src->w, src->h, dst->w, dst->h);
   assert(src && dst);
-printf("assert1\n");
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-printf("assert2\n");
   assert(dst->format->BitsPerPixel == 8);
-printf("assert3\n");
   int x = (srcrect == NULL ? 0 : srcrect->x);
   int y = (srcrect == NULL ? 0 : srcrect->y);
   int w = (srcrect == NULL ? src->w : srcrect->w);
   int h = (srcrect == NULL ? src->h : srcrect->h);
 
   assert(dstrect);
-printf("assert4\n");
   if(w == dstrect->w && h == dstrect->h) {
     /* The source rectangle and the destination rectangle
      * are of the same size. If that is the case, there
@@ -193,11 +188,9 @@ printf("assert4\n");
     rect.y = y;
     rect.w = w;
     rect.h = h;
-printf("Before SDL_BlitSurface\n");
     SDL_BlitSurface(src, &rect, dst, dstrect);
   }
   else {
-printf("assert(0)\n");
     assert(0);
   }
 }
