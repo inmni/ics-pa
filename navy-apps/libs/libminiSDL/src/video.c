@@ -63,7 +63,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 		assert(s->format->BitsPerPixel==8 || s->format->BitsPerPixel==32);
 		// If x, y, w and h are all 0, update the entire screen
-		int flag = !(x||y||w||h);
+		int flag = 0;//!(x||y||w||h);
 		if(!(x||y||w||h)){
 				w = s->w; h = s->h;
 		}
