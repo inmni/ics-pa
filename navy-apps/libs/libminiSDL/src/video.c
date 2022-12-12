@@ -77,7 +77,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 						if(flag){
 								printf("pixels[i]:%08x/ s->pixels[i]:%08x/ %d\n",s->pixels[i], pixels[i], sizeof(colors)/sizeof(SDL_Color));
 						}
-						new_pixels[i] = (colors[pixels[i]].a<<24)|(colors[pixels[i]].r<<16)|(colors[pixels[i]].g<<8)|(colors[pixels[i]].b);
+						new_pixels[i] = (colors[s->pixels[i]].a<<24)|(colors[s->pixels[i]].r<<16)|(colors[s->pixels[i]].g<<8)|(colors[s->pixels[i]].b);
 				}
 				pixels = new_pixels;
 		}
