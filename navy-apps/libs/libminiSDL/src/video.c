@@ -170,6 +170,7 @@ SDL_Surface* SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags) {
 }
 
 void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+printf("src:%d,%d,dst:%d,%d\n", src->w, src->h, dst->w, dst->h);
   assert(src && dst);
 printf("assert1\n");
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
