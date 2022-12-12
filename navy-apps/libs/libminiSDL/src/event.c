@@ -9,36 +9,50 @@ static const char *keyname[] = {
   "NONE",
   _KEYS(keyname)
 };
-
+int ParseEvent(uint32_t* key, uint32_t* type){
+	char buf[32];
+	if(!NDL_PollEvent(buf, 32)){
+		*key = SDLK_NONE;
+		*type = SDL_KEYUP;
+		return 0;// Error
+	}
+//		printf("Get Event %s\n", buf);
+	char *prefix = strtok(buf, " ");
+	char *name = strtok(NULL, " ");
+	uint8_t code = atoi(strtok(NULL, " "));
+	if(prefix[0]=='k'){
+		*key = code;
+		switch(prefix[1]){
+			case 'd': *type = SDL_KEYDOWN;	return 1;
+			case 'u': *type = SDL_KEYUP;	return 1;
+			default: return 0;// keyboard but no action.
+		}
+//				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
+	}
+	assert(0);
+}
 int SDL_PushEvent(SDL_Event *ev) {
 	assert(0);
   return 0;
 }
 
 int SDL_PollEvent(SDL_Event *ev) {
-		assert(0);
-		return ev!=NULL&&SDL_WaitEvent(ev);
+		if(ev==NULL) return 0;
+		uint32_t key, type;
+		int ret = ParseEvent(&key, &type);
+		ev->type = type;
+		ev->key.type = type;
+		ev->key.keysym.sym = key;
+		return ret;
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
-		assert(0);
 		if(event==NULL)	return 0;
-  	char buf[32];
-		if(!NDL_PollEvent(buf, 32))return 0;// Error
-//		printf("Get Event %s\n", buf);
-		char *prefix = strtok(buf, " ");
-		char *name = strtok(NULL, " ");
-		uint8_t code = atoi(strtok(NULL, " "));
-		if(prefix[0]=='k'){
-				event->key.keysym.sym = code;
-				switch(prefix[1]){
-						case 'd': event->key.type = SDL_KEYDOWN;break;
-						case 'u': event->key.type = SDL_KEYUP;	break;
-						default: return 0;// keyboard but no action.
-				}
-				event->type = event->key.type;
-//				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
-		}
+		uint32_t key, type;
+		while(ParseEvent(&key, &type)==0);
+		event->type = type;
+		event->key.type = type;
+		event->key.keysym.sym = key;
 		return 1;
 }
 
