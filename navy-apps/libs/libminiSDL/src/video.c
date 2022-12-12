@@ -182,6 +182,7 @@ printf("assert3\n");
   int h = (srcrect == NULL ? src->h : srcrect->h);
 
   assert(dstrect);
+printf("assert4\n");
   if(w == dstrect->w && h == dstrect->h) {
     /* The source rectangle and the destination rectangle
      * are of the same size. If that is the case, there
