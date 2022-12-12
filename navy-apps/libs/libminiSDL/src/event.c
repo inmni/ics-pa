@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <assert.h>
 #define keyname(k) #k,
 
 static const char *keyname[] = {
@@ -11,10 +11,12 @@ static const char *keyname[] = {
 };
 
 int SDL_PushEvent(SDL_Event *ev) {
+	assert(0);
   return 0;
 }
 
 int SDL_PollEvent(SDL_Event *ev) {
+		assert(0);
 		return ev!=NULL&&SDL_WaitEvent(ev);
 }
 
@@ -40,9 +42,11 @@ int SDL_WaitEvent(SDL_Event *event) {
 }
 
 int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {
-  return 0;
+  assert(0);
+	return 0;
 }
 
 uint8_t* SDL_GetKeyState(int *numkeys) {
-  return NULL;
+  assert(0);
+	return NULL;
 }
