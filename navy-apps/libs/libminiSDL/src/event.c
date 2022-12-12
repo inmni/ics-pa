@@ -29,8 +29,8 @@ int ParseEvent(uint32_t* key, uint32_t* type){
 		}
 //				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
 	}
-	//assert(0);
-	return 0;
+	assert(0);
+	//return 0;
 }
 int SDL_PushEvent(SDL_Event *ev) {
 	assert(0);
