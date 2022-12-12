@@ -74,11 +74,14 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 				SDL_Color *colors = s->format->palette->colors;
 				if(flag)printf("Successfully malloc\n");
 				for(int i = 0; i<s->w*s->h; i++){
+						if(flag){
+								printf("pixels[i]:%d/ %d\n",pixels[i], sizeof(colors)/sizeof(SDL_Color));
+						}
 						new_pixels[i] = (colors[pixels[i]].a<<24)|(colors[pixels[i]].r<<16)|(colors[pixels[i]].g<<8)|(colors[pixels[i]].b);
 				}
 				pixels = new_pixels;
 		}
-
+		if(flag)printf("To Draw\n");
 		NDL_DrawRect(pixels, x, y, w, h);
 		if(s->format->BitsPerPixel == 8){
 				free(pixels);
