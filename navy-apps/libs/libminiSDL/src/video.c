@@ -31,7 +31,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 	if(dstrect->x < 0) dstrect->x = 0;
 	if(dstrect->y < 0) dstrect->y = 0;
 	dstrect->w = srcrect->w; dstrect->h = srcrect->h;
-	int shift = src->format->BitsPerPixel==8? 0: 2;
+	int shift = src->format->BitsPerPixel==8? 1: 4;
 	uintptr_t src_pixels = (uintptr_t)src->pixels + (srcrect->y * src->w << shift) + (srcrect->x << shift);
 	uintptr_t dst_pixels = (uintptr_t)dst->pixels + (dstrect->y * dst->w << shift) + (dstrect->x << shift);
 	int i = srcrect->h;
@@ -43,7 +43,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-		assert(dst->format->BitsPerPixel == 8 || dst->format->BitsPerPixel == 32);
 		SDL_Rect tmp;
 		if(!dstrect){
 				dstrect = &tmp;
