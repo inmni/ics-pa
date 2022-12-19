@@ -70,7 +70,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 		uint32_t *pixels = (uint32_t *)s->pixels;
 		if(flag)printf("Update Rect with 0,0,0,0\n");
 		if(s->format->BitsPerPixel == 8){
-				uint32_t *new_pixels = (uint32_t *)malloc(s->w * s->h << 2);
+				uint32_t *new_pixels = (uint32_t *)malloc(s->w * s->h);
 				SDL_Color *colors = s->format->palette->colors;
 				if(flag)printf("Successfully malloc\n");
 				for(int i = 0; i<s->w*s->h; i++){
