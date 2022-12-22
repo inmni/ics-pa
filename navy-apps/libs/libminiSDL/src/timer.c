@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <assert.h>
 SDL_TimerID SDL_AddTimer(uint32_t interval, SDL_NewTimerCallback callback, void *param) {
-  assert(0);
+  printf("SDL_AddTimer\n");
 	return NULL;
 }
 
 int SDL_RemoveTimer(SDL_TimerID id) {
-  assert(0);
+  printf("SDL_RemoveTimer\n");
 	return 1;
 }
 
