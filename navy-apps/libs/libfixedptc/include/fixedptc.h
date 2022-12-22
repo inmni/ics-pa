@@ -156,7 +156,7 @@ static inline fixedpt fixedpt_floor(fixedpt A) {
 }
 
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-		return (A&0xffffff00)+((A&0xff)!=0);
+		return (A&0xffffff00)+((A&0xff)!=0)<<8;
 }
 
 /*
