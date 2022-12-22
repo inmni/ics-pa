@@ -35,7 +35,7 @@ int ParseEvent(uint32_t* key, uint32_t* type){
 	//return 0;
 }
 int SDL_PushEvent(SDL_Event *ev) {
-	assert(0);
+	printf("SDL_PushEvent to implement!\n");
   return 0;
 }
 
