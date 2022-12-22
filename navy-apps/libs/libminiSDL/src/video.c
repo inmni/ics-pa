@@ -1,10 +1,17 @@
 #include <NDL.h>
 #include <sdl-video.h>
-#include <sdl-debug.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdio.h>
+/* width and height in srcrect determine the size to copy. 
+ * Only the position is used in the dstrect (the width and height are ignored). 
+ * Blits with negative dstrect coordinates will be cutted properly.
+ *
+ * If srcrect == NULL, copy all from src. If dstrect == NULL, copy to base on (0, 0).
+ *
+ * The final blit rectangle is saved in dstrect after all clipping is performed (srcrect is not modified).
+ */
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
@@ -36,7 +43,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  SDL_Rect tmp;
+    
+		SDL_Rect tmp;
 		if(!dstrect){
 				dstrect = &tmp;
 				dstrect->w = dst->w; dstrect->h = dst->h;
@@ -44,44 +52,55 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 		}
 		// Maybe uint32_t and uint8_t .
     assert(dst->format->BitsPerPixel!=8);
-		uint32_t *dst_pixels = (uint32_t *)dst->pixels + dstrect->y*dst->w + dstrect->x;
+		
 		int i, j;
-		for(i = 0; i < dstrect->h; i++){
+    if(dst->format->BitsPerPixel!=8){
+      uint32_t *dst_pixels = (uint32_t *)dst->pixels + dstrect->y*dst->w + dstrect->x;
+      for(i = 0; i < dstrect->h; i++){
+          for(j = 0; j < dstrect->w; j++){
+              *dst_pixels++ = color;
+          }
+          dst_pixels-=dstrect->w; dst_pixels+=dst->w;
+      }
+    }
+    else{
+      uint8_t *dst_pixels = (uint8_t *)dst->pixels + dstrect->y*dst->w + dstrect->x;
+      for(i = 0; i < dstrect->h; i++){
 				for(j = 0; j < dstrect->w; j++){
 						*dst_pixels++ = color;
 				}
 				dst_pixels-=dstrect->w; dst_pixels+=dst->w;
-		}
+		  }
+    }
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-  uint32_t *pixels;
-  if (s->format->BitsPerPixel == 8)
-  {
-    pixels = malloc(sizeof(uint32_t) * s->w * s->h);
-    for (int i = 0; i < s->w * s->h; i++)
-    {
-      uint8_t *src_pixels = (uint8_t *)(s->pixels);
-      SDL_Color *colors = s->format->palette->colors;
-      pixels[i] = colors[src_pixels[i]].val;
-    }
-  }
-  else
-    pixels = (uint32_t *)s->pixels;
-  if (x == 0 && y == 0 && w == 0 && h == 0)
-  {
-    NDL_OpenCanvas(&w, &h);
-    NDL_OpenCanvas(&s->w, &s->h);
-    NDL_DrawRect(pixels, 0, 0, s->w, s->h);
-  }
-  else
-  {
-    NDL_OpenCanvas(&s->w, &s->h);
-    NDL_DrawRect(pixels, x, y, w, h);
-  }
-  if (s->format->BitsPerPixel == 8)
-    free(pixels);
-  // sdl_TODO();
+		assert(s->format->BitsPerPixel==8 || s->format->BitsPerPixel==32);
+		// If x, y, w and h are all 0, update the entire screen
+		if(!(x||y||w||h)){
+				w = s->w; h = s->h;
+		}
+		uint8_t *pixels = (uint8_t *)s->pixels;
+		if(s->format->BitsPerPixel == 8){
+				uint32_t *new_pixels = (uint32_t *)malloc(w * h << 2);
+				SDL_Color *colors = s->format->palette->colors;
+				int dst_idx = 0;
+				int src_idx = (x+y*s->w);
+				for(int i = 0; i<h; i++){
+					for(int j = 0; j<w; j++){
+						new_pixels[dst_idx] = (colors[pixels[src_idx]].a<<24)|(colors[pixels[src_idx]].r<<16)|(colors[pixels[src_idx]].g<<8)|(colors[pixels[src_idx]].b);
+						src_idx++;
+						dst_idx++;
+					}
+					src_idx+=s->w-w;
+				}
+
+				pixels = new_pixels;
+		}
+		NDL_DrawRect(pixels, x, y, w, h);
+		if(s->format->BitsPerPixel == 8){
+				free(pixels);
+		}
 }
 
 // APIs below are already implemented.
@@ -169,7 +188,6 @@ void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(src && dst);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   assert(dst->format->BitsPerPixel == 8);
-
   int x = (srcrect == NULL ? 0 : srcrect->x);
   int y = (srcrect == NULL ? 0 : srcrect->y);
   int w = (srcrect == NULL ? src->w : srcrect->w);
@@ -210,7 +228,6 @@ void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, int firstcolor
     }
     SDL_UpdateRect(s, 0, 0, 0, 0);
   }
-  // sdl_TODO();
 }
 
 static void ConvertPixelsARGB_ABGR(void *dst, void *src, int len) {
@@ -263,10 +280,8 @@ uint32_t SDL_MapRGBA(SDL_PixelFormat *fmt, uint8_t r, uint8_t g, uint8_t b, uint
 }
 
 int SDL_LockSurface(SDL_Surface *s) {
-  sdl_TODO();
   return 0;
 }
 
 void SDL_UnlockSurface(SDL_Surface *s) {
-  sdl_TODO();
 }
