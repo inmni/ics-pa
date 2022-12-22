@@ -1,5 +1,5 @@
 #include <nterm.h>
-#include <stdio.h>
+
 #define EMPTY ' '
 
 enum Color {

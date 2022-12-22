@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 }
 
 static void draw_ch(int x, int y, char ch, uint32_t fg, uint32_t bg) {
-	SDL_Surface *s = BDF_CreateSurface(font, ch, fg, bg);
+  SDL_Surface *s = BDF_CreateSurface(font, ch, fg, bg);
   SDL_Rect dstrect = { .x = x, .y = y };
   SDL_BlitSurface(s, NULL, screen, &dstrect);
   SDL_FreeSurface(s);
@@ -40,11 +40,11 @@ void refresh_terminal() {
   for (int i = 0; i < W; i ++)
     for (int j = 0; j < H; j ++)
       if (term->is_dirty(i, j)) {
-				//printf("Draw char %c on (%d, %d), fg: %08x, bg: %08x\n", term->getch(i, j), i, j, term->foreground(i, j), term->background(i, j));
         draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
         needsync = 1;
       }
   term->clear();
+
   static uint32_t last = 0;
   static int flip = 0;
   uint32_t now = SDL_GetTicks();
@@ -145,8 +145,9 @@ char handle_key(SDL_Event *ev) {
   static int shift = 0;
   int key = ev->key.keysym.sym;
   if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) { shift ^= 1; return '\0'; }
+
   if (ev->type == SDL_KEYDOWN) {
-		for (auto item: SHIFT) {
+    for (auto item: SHIFT) {
       if (item.keycode == key) {
         if (shift) return item.shift;
         else return item.noshift;

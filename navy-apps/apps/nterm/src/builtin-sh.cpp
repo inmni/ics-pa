@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <SDL.h>
 
+char cmd_list[30][30];
+
 char handle_key(SDL_Event *ev);
 
 static void sh_printf(const char *format, ...) {
@@ -11,7 +13,7 @@ static void sh_printf(const char *format, ...) {
   va_start(ap, format);
   int len = vsnprintf(buf, 256, format, ap);
   va_end(ap);
-	term->write(buf, len);
+  term->write(buf, len);
 }
 
 static void sh_banner() {
@@ -21,71 +23,48 @@ static void sh_banner() {
 static void sh_prompt() {
   sh_printf("sh> ");
 }
-// From NEMU sdb
-static int cmd_run(char *);		static int helper_run(char *);
-static int cmd_exit(char *);	static int helper_exit(char *);
-static int cmd_help(char *);	static int helper_help(char *);
-static int cmd_export(char *);static int helper_export(char *);
-static int cmd_echo(char *);	static int helper_echo(char *);
-int void_cmd(char * _){sh_printf("to implement"); return 0;}
-#define NR_CMD __get_nr_cmd()
-static struct {
-		const char *name;
-		const char *description;
-		int (*helper)(char *);
-		int (*handler)(char *);
-}	cmd_table [] = {
-		{ "help", "Display information about commands", helper_help, cmd_help},
-		{ "run", "Execute file", helper_run, cmd_run},
-		{ "echo", "Output the value of the expression", helper_echo, cmd_echo},
-		{ "export", "Add new variable", helper_export, cmd_export},
-		{ "exit", "Quit terminal", helper_exit, cmd_exit},
-};
-static inline int __get_nr_cmd(){
-		static int __nr_cmd = (int)(sizeof(cmd_table) / sizeof(cmd_table[0]));
-		return __nr_cmd;
-}
-static void sh_handle_cmd(const char *_cmd) {
-		int i = strlen(_cmd);	// used as the size of _cmd and then the index of cmd_table
 
-		char *cmd = (char *)malloc(i+1);
-		strcpy(cmd, _cmd);
-
-		char *end = cmd + i - 1;
-			*end-- = 0;// To set the last '\n' to 0
-		char *cmd_name = strtok(cmd, " ");
-		if(cmd_name == NULL)	return;
-
-		char *args = cmd + strlen(cmd_name) + 1;
-		if(args >= end)	args = NULL;
-
-		int ret;
-		for(i = 0; i < NR_CMD; i++){
-				if(strcmp(cmd_name, cmd_table[i].name) == 0){
-						if(cmd_table[i].handler(args)){
-								cmd_table[i].helper(args);
-						}
-						break;
-				}
-		}
-		if(i == NR_CMD)	{ 
-			if(execvp(cmd_name,NULL))
-				sh_printf("Unknown command '%s'\n", cmd_name); 
-		}
-		free(cmd);
+static void sh_handle_cmd(const char *cmd) {
+  char *argv_list[30];
+  setenv("PATH", "/bin:/usr/bin", 0);
+  int cmd_cnt = 0;
+  while (*cmd && *cmd != '\n')
+  {
+    while(*cmd && *cmd == ' ')
+      cmd++;
+    sscanf(cmd, "%s", cmd_list[cmd_cnt]);
+    // printf("%s\n", cmd_list[cmd_cnt]);
+    argv_list[cmd_cnt] = cmd_list[cmd_cnt];
+    cmd_cnt++;
+    while(*cmd && *cmd != ' ' && *cmd != '\n')
+      cmd++;
+    // printf("@%c@\n", *cmd);
+  }
+  argv_list[cmd_cnt] = NULL;
+  // for (int i = 0; i <= cmd_cnt; i++)
+    // printf("%s ", argv_list[i]);
+  // printf("\n");
+  int res = execvp(argv_list[0], argv_list);
+  printf("execvp result: %d", res);
+  // printf("%s %s %d\n", cmd_list[0], argv_list[0], cmd_cnt);
+  // sscanf(cmd, "%s", name);
+  // printf("@%s@\n", name);
+  // char hello_args[20][20] = {"/bin/exec-test", "666"};
+  // char *list[10] = {hello_args[0], hello_args[1]};
+  // execvp("exec-test", list);
 }
 
 void builtin_sh_run() {
   sh_banner();
   sh_prompt();
-	setenv("PATH","/bin",0);
+
   while (1) {
     SDL_Event ev;
     if (SDL_PollEvent(&ev)) {
       if (ev.type == SDL_KEYUP || ev.type == SDL_KEYDOWN) {
         const char *res = term->keypress(handle_key(&ev));
         if (res) {
-					sh_handle_cmd(res);
+          sh_handle_cmd(res);
           sh_prompt();
         }
       }
@@ -93,53 +72,3 @@ void builtin_sh_run() {
     refresh_terminal();
   }
 }
-static int cmd_help(char *args){
-		char *cmd_name = strtok(NULL, " ");
-		if(cmd_name==NULL)	return 1;
-		int i;
-		for(i = 0; i<NR_CMD; i++){
-				if(strcmp(cmd_name, cmd_table[i].name)==0){
-						cmd_table[i].helper(strtok(NULL, " "));
-						return 0;
-				}
-		}
-		sh_printf("No found command: '%s'", cmd_name);
-		return 0;
-}
-static int cmd_run(char *args){
-		char *img_to_run = strtok(NULL, "");
-		if(img_to_run==NULL)	return 1;
-		printf("Try to run %s\n",img_to_run);
-		execvp(img_to_run, NULL);
-		return 0;
-}
-static int cmd_exit(char *_){exit(0);return 0;}
-static int cmd_echo(char *key){
-		char *value = getenv(key);
-		if(value==NULL){
-				sh_printf("%s\n", key);
-				return 0;
-		}
-		sh_printf("%s\n", value);
-		return 0;
-}
-static int cmd_export(char *args){
-		char *key; char *value;
-		while((key = strtok(NULL, "="))){
-				value = strtok(NULL, " ");
-				if(value==NULL){
-						sh_printf("No set for '%s' and the following all\n", key);
-						break;
-				}
-				printf("%d\n", setenv(key, value, 1));
-		}
-		return 0;
-}
-static int helper_help(char *_){
-		sh_printf("Show help about the command\nFor example:\n	help run\n");
-		return 0;
-}
-static int helper_run(char *_){return 0;}
-static int helper_exit(char *_){return 0;}
-static int helper_export(char *_){return 0;}
-static int helper_echo(char *_){return 0;}

@@ -4,7 +4,9 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <time.h>
+#include <errno.h>
 #include "syscall.h"
+
 // helper macros
 #define _concat(x, y) x ## y
 #define concat(x, y) _concat(x, y)
@@ -55,41 +57,51 @@ void _exit(int status) {
 }
 
 int _open(const char *path, int flags, mode_t mode) {
-  	return _syscall_(SYS_open, (intptr_t)path, flags, (int)mode);
+  return _syscall_(SYS_open, path, flags, mode);
 }
 
 int _write(int fd, void *buf, size_t count) {
-		return _syscall_(SYS_write, fd, (intptr_t)buf, count);
+  return _syscall_(SYS_write, fd, buf, count);
 }
 
+extern char end;
 void *_sbrk(intptr_t increment) {
-		extern char _end;
-		static intptr_t pb = (intptr_t)(&_end);
-		if(_syscall_(SYS_brk, pb+increment, 0, 0)==0){
-				pb += increment;
-				return (void *)(pb-increment);
-		}
-	  return (void *)-1;
+  static intptr_t program_break = &end;
+  intptr_t new_addr = program_break + increment;
+  if (_syscall_(SYS_brk, new_addr, 0, 0) == 0) {
+    void *previous_break = (void *)program_break;
+    program_break = new_addr;
+    return previous_break;
+  }
+  else
+    return (void *)-1;
 }
 
 int _read(int fd, void *buf, size_t count) {
-  	return _syscall_(SYS_read, fd, (intptr_t)buf, count);
+  return _syscall_(SYS_read, fd, buf, count);
 }
 
 int _close(int fd) {
-		return _syscall_(SYS_close, fd, 0, 0);
+  return _syscall_(SYS_close, fd, 0, 0);
 }
 
 off_t _lseek(int fd, off_t offset, int whence) {
-  	return _syscall_(SYS_lseek, fd, offset, whence);
+  return _syscall_(SYS_lseek, fd, offset, whence);
 }
 
 int _gettimeofday(struct timeval *tv, struct timezone *tz) {
-		return _syscall_(SYS_gettimeofday, (intptr_t)tv, (intptr_t)tz, 0);
+  return _syscall_(SYS_gettimeofday, tv, tz, 0);
 }
 
 int _execve(const char *fname, char * const argv[], char *const envp[]) {
-  	return _syscall_(SYS_execve, (intptr_t)fname, (intptr_t)argv, (intptr_t)envp);
+  int res = _syscall_(SYS_execve, fname, argv, envp);
+  if (res < 0)
+  {
+    errno = -res;
+    return -1;
+  }
+  printf("get execve\n");
+  return 0;
 }
 
 // Syscalls below are not used in Nanos-lite.
