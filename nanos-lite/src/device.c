@@ -16,11 +16,11 @@ static const char *keyname[256] __attribute__((used)) = {
 };
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
-  	int i;
+  	size_t i;
 		for(i=0; i<len; i++){
 				putch(*((char *)buf+i));
 		}
-		return 0;
+		return len;
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
@@ -40,7 +40,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-		if(offset + len > fs_size(4)){
+		if(offset + len > fs_size(4)){ 
 				len = fs_size(4) - offset;
 		}
 		//printf("%08x, %d, %08x\n", (uintptr_t)buf, offset, (uint32_t)len);	
