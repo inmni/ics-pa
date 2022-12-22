@@ -68,7 +68,10 @@ static void sh_handle_cmd(const char *_cmd) {
 						break;
 				}
 		}
-		if(i == NR_CMD)	{ sh_printf("Unknown command '%s'\n", cmd_name); }
+		if(i == NR_CMD)	{ 
+			if(cmd_run(cmd_name))
+				sh_printf("Unknown command '%s'\n", cmd_name); 
+		}
 		free(cmd);
 }
 
