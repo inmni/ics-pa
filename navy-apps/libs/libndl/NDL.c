@@ -11,7 +11,7 @@ static int screen_w = 0, screen_h = 0;
 static int canvas_w = 0, canvas_h = 0;
 
 uint32_t NDL_GetTicks() {
-  struct timeval tv;
+  struct timeval tv; 
   gettimeofday(&tv, NULL);
   uint32_t res = tv.tv_sec * 1000 + tv.tv_usec / 1000;
   return res;
