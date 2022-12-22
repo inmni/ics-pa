@@ -6,43 +6,33 @@
 #include <stdlib.h>
 
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-  // printf("dst: %d src: %d\n", dst->format->BitsPerPixel, src->format->BitsPerPixel);
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  SDL_Rect tmp1 = {0, 0, 0, 0}, tmp2 = {0, 0, 0, 0};
-  // printf("dstw: %d, srcw: %d\ndsth: %d, srch: %d\n", dstrect->w, srcrect->w, dstrect->h, srcrect->h);
-  if (srcrect == NULL)
-  {
-    // printf("src is null.\n");
-    srcrect = &tmp1;
-    srcrect->x = 0;
-    srcrect->y = 0;
-    srcrect->w = src->w;
-    srcrect->h = src->h;
-  }
-  if (dstrect == NULL)
-  {
-    // printf("dst is null.\n");
-    dstrect = &tmp2;
-    dstrect->x = 0;
-    dstrect->y = 0;
-  }
-  // printf("w: %d h: %d x: %d y: %d\n", srcrect->w, srcrect->h, srcrect->x, srcrect->y);
-  uint32_t *dst_pixels = (uint32_t *)dst->pixels;
-  uint32_t *src_pixels = (uint32_t *)src->pixels;
-  for (int i = 0; i < srcrect->w; i++)
-    for (int j = 0; j < srcrect->h; j++)
-    {
-      if (src->format->BitsPerPixel == 8)
-        memcpy(dst->pixels + (dstrect->y + j) * dst->w + (dstrect->x + i), src->pixels + (srcrect->y + j) * src->w + (srcrect->x + i), src->format->BytesPerPixel);
-      else
-        dst_pixels[(dstrect->y + j) * dst->w + (dstrect->x + i)] = src_pixels[(srcrect->y + j) * src->w + (srcrect->x + i)];
-      // printf("%d %d", src->format->BytesPerPixel, src->format->BitsPerPixel);
-      // printf("x: %d y: %d src: %p dst: %p\n", i, j, src_pixels[(srcrect->y + j) * src->w + (srcrect->x + i)], dst_pixels[(dstrect->y + j) * dst->w + (dstrect->x + i)]);
-    }
-  NDL_OpenCanvas(&dst->w, &dst->h);
-  // SDL_UpdateRect(dst, dstrect->x, dstrect->y, srcrect->w, srcrect->h);
-  // sdl_TODO();
+	assert(dst->format->BitsPerPixel == 8 || dst->format->BitsPerPixel == 32);
+	// src should not be modified !!
+	
+	SDL_Rect tmp1; SDL_Rect tmp2;
+	if(!srcrect){
+			srcrect = &tmp1;
+			srcrect->w = src->w; srcrect->h = src->h;
+			srcrect->x = 0;			 srcrect->y = 0;
+	}
+	if(!dstrect){
+			dstrect = &tmp2;
+			dstrect->x = 0;						dstrect->y = 0;
+	}
+	if(dstrect->x < 0) dstrect->x = 0;
+	if(dstrect->y < 0) dstrect->y = 0;
+	dstrect->w = srcrect->w; dstrect->h = srcrect->h;
+	int shift = src->format->BitsPerPixel==8? 0: 2;
+	uintptr_t src_pixels = (uintptr_t)src->pixels + (srcrect->y * src->w << shift) + (srcrect->x << shift);
+	uintptr_t dst_pixels = (uintptr_t)dst->pixels + (dstrect->y * dst->w << shift) + (dstrect->x << shift);
+	int i = srcrect->h;
+	while(i--){
+			memcpy((void *)dst_pixels, (void *)src_pixels, srcrect->w << shift);
+			src_pixels += src->w << shift;
+			dst_pixels += dst->w << shift;
+	}
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
