@@ -78,9 +78,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 
 				pixels = new_pixels;
 		}
-    printf("Begin Draw\n");
 		NDL_DrawRect(pixels, x, y, w, h);
-    printf("End Draw\n");
 		if(s->format->BitsPerPixel == 8){
 				free(pixels);
 		}
