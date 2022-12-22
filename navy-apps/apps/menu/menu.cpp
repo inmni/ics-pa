@@ -34,6 +34,7 @@ struct MenuItem {
   {"NPlayer", "/bin/nplayer", NULL},
   {"coremark", "/bin/coremark", NULL},
   {"dhrystone", "/bin/dhrystone", NULL},
+	{"microbench", "/bin/microbench", NULL},
   {"typing-game", "/bin/typing-game", NULL},
   {"ONScripter", "/bin/onscripter", NULL},
 };
@@ -64,9 +65,7 @@ static void prev() {
 }
 
 static void clear_display(void) {
-  // printf("logo_sf(before clear): %d\n", logo_sf->format->BitsPerPixel);
   SDL_FillRect(screen, NULL, 0xffffff);
-  // printf("logo_sf(after clear): %d\n", logo_sf->format->BitsPerPixel);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
@@ -75,10 +74,8 @@ int main(int argc, char *argv[], char *envp[]) {
 
   font = new BDF_Font(font_fname);
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
-  // printf("logo_sf(main): %d\n", logo_sf->format->BitsPerPixel);
   assert(logo_sf);
   set_i_max();
-  // printf("logo_sf(before loop): %d\n", logo_sf->format->BitsPerPixel);
 
   while (1) {
     display_menu(i_max);
@@ -113,8 +110,7 @@ int main(int argc, char *argv[], char *envp[]) {
       exec_argv[2] = NULL;
       clear_display();
       SDL_UpdateRect(screen, 0, 0, 0, 0);
-      printf("%s\n", exec_argv[0]);
-      execve(exec_argv[0], (char **)exec_argv, (char **)envp);
+      execve(exec_argv[0], (char**)exec_argv, (char**)envp);
       fprintf(stderr, "\033[31m[ERROR]\033[0m Exec %s failed.\n\n", exec_argv[0]);
     } else {
       fprintf(stderr, "Choose a number between %d and %d\n\n", 0, i_max);
@@ -126,14 +122,14 @@ int main(int argc, char *argv[], char *envp[]) {
 static void draw_ch(BDF_Font *font, int x, int y, char ch, uint32_t fg, uint32_t bg) {
   SDL_Surface *s = BDF_CreateSurface(font, ch, fg, bg);
   SDL_Rect dstrect = { .x = x, .y = y };
-  // printf("s: %d\n", s->format->BitsPerPixel);
-  SDL_BlitSurface(s, NULL, screen, &dstrect);              
+  SDL_BlitSurface(s, NULL, screen, &dstrect);
   SDL_FreeSurface(s);
 }
 
 static void draw_str(BDF_Font *font, int x, int y, char *str, uint32_t fp, uint32_t bg) {
   while (*str) {
-    draw_ch(font, x, y, *str, fp, bg);
+    //printf("Draw char %c on (%d, %d), fp: %08x, bg: %08x\n", *str, x, y, fp, bg);
+		draw_ch(font, x, y, *str, fp, bg);
     x += font->w;
     str ++;
   }
@@ -147,9 +143,7 @@ static void draw_text_row(char *s, int r) {
 
 static void display_menu(int n) {
   clear_display();
-  // printf("logo_sf(enter_display_menu): %d\n", logo_sf->format->BitsPerPixel);
   SDL_Rect rect = { .x = screen->w - logo_sf->w, .y = 0 };
-  // printf("logo_sf(display_menu): %d\n", logo_sf->format->BitsPerPixel);
   SDL_BlitSurface(logo_sf, NULL, screen, &rect);
   printf("Available applications:\n");
   char buf[80];

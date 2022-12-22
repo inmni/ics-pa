@@ -1,6 +1,6 @@
 REPO_PATH = repo
 ifeq ($(wildcard repo/include/BirdGame.h),)
-  $(shell git clone --depth=1 https://github.com/NJU-ProjectN/sdlbird.git $(REPO_PATH))
+  $(shell git clone --depth=1 git@github.com:NJU-ProjectN/sdlbird.git $(REPO_PATH))
 endif
 
 NAME = bird
@@ -13,6 +13,6 @@ install: install-file
 init:;
 
 install-file:
-	# ln -sf -T $(abspath $(REPO_PATH)/res) $(NAVY_HOME)/fsimg/share/games/bird
+	ln -sf -T $(abspath $(REPO_PATH)/res) $(NAVY_HOME)/fsimg/share/games/bird
 
 .PHONY: install-file init
