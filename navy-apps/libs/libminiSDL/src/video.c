@@ -51,7 +51,6 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 				dstrect->x = 0; dstrect->y = 0;
 		}
 		// Maybe uint32_t and uint8_t .
-    assert(dst->format->BitsPerPixel!=8);
 		
 		int i, j;
     if(dst->format->BitsPerPixel!=8){
