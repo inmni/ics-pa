@@ -83,9 +83,9 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 					src_idx+=s->w-w;
 				}
 
-				pixels = (uint8_t *)new_pixels;
+				pixels = new_pixels;
 		}
-		NDL_DrawRect((uint32_t *)pixels, x, y, w, h);
+		NDL_DrawRect(pixels, x, y, w, h);
 		if(s->format->BitsPerPixel == 8){
 				free(pixels);
 		}
