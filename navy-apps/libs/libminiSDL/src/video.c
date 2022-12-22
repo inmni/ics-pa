@@ -73,8 +73,15 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 				uint32_t *new_pixels = (uint32_t *)malloc(w * h << 2);
 				if(w!=320&&h!=200)printf("w:%d, h:%d\n",w,h);
 				SDL_Color *colors = s->format->palette->colors;
-				for(int i = 0; i<w*h; i++){
-						new_pixels[i] = (colors[pixels[i]].a<<24)|(colors[pixels[i]].r<<16)|(colors[pixels[i]].g<<8)|(colors[pixels[i]].b);
+				int dst_idx = 0;
+				int src_idx = (x+y*s->w);
+				for(int i = 0; i<h; i++){
+					for(int j = 0; j<w; j++){
+						new_pixels[dst_idx] = (colors[pixels[src_idx]].a<<24)|(colors[pixels[src_idx]].r<<16)|(colors[pixels[src_idx]].g<<8)|(colors[pixels[src_idx]].b);
+						src_idx++;
+						dst_idx++;
+					}
+					src_idx+=s->w-w;
 				}
 
 				pixels = new_pixels;
