@@ -124,45 +124,39 @@ typedef	__uint128_t fixedptud;
  * (e.g. microcontrollers, kernels), so we can't use floating point types directly.
  * Putting them only in macros will effectively make them optional. */
 #define fixedpt_tofloat(T) ((float) ((T)*((float)(1)/(float)(1L << FIXEDPT_FBITS))))
-
+static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B);
+static inline fixedpt fixedpt_div(fixedpt A, fixedpt B);
 /* Multiplies a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_muli(fixedpt A, int B) {
-	return A * B;
+		return fixedpt_mul(A, fixedpt_fromint(B));
 }
 
 /* Divides a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	return A / B;
+		return fixedpt_div(A, fixedpt_fromint(B));
 }
 
 /* Multiplies two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	int64_t res = A * B;
-	return res >> 8;
+		return ((fixedptd)A*(fixedptd)B)>>8;
 }
 
 
 /* Divides two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	int64_t res = A;
-	res <<= 8;
-	res /= B;
-	return res;
+		return (((fixedptd)A)<<8)/(fixedptd)B;
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
-	return (A >= 0) ? A : (-A);
+		return A<0?-A:A;
 }
 
 static inline fixedpt fixedpt_floor(fixedpt A) {
-	return A & 0xffffff00;
+		return A&0xffffff00;
 }
 
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-	if ((A & 0xff) == 0x0)
-		return A;
-	else
-		return (A & 0xffffff00) + 0x100;
+		return (A&0xffffff00)+((A&0xff)!=0)<<8;
 }
 
 /*
