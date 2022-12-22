@@ -1,15 +1,7 @@
 #include <am.h>
-#include <NDL.h>
-#include <stdio.h>
+#include <stdlib.h>
+Area heap = {};
 
-Area heap;
+void putch(char ch) { putchar(ch);}
 
-void putch(char ch) {
-	// printf("Enter am: putch!\n");
-	putchar(ch);
-}
-
-void halt(int code) {
-	// printf("Enter am: halt!\n");
-	NDL_Quit();
-}
+void halt(int code) { exit(code); }

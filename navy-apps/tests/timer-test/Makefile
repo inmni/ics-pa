@@ -1,4 +1,3 @@
 NAME = timer-test
-SRCS = main.c
-LIBS += libndl
+SRCS = timer-test.c
 include $(NAVY_HOME)/Makefile

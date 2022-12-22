@@ -72,13 +72,10 @@ LINKAGE   = $(OBJS) $(foreach l,$(LIBS),$(NAVY_HOME)/libs/$(l)/build/$(l)-$(ISA)
 
 ## 3. General Compilation Flags
 
-### Check whether Ccache exists to accelerate compilation
-CCACHE := $(if $(shell which ccache),ccache,)
-
 ### (Cross) compilers, e.g., mips-linux-gnu-g++
-AS        = $(CCACHE) $(CROSS_COMPILE)gcc
-CC        = $(CCACHE) $(CROSS_COMPILE)gcc
-CXX       = $(CCACHE) $(CROSS_COMPILE)g++
+AS        = $(CROSS_COMPILE)gcc
+CC        = $(CROSS_COMPILE)gcc
+CXX       = $(CROSS_COMPILE)g++
 LD        = $(CROSS_COMPILE)ld
 
 ### Compilation flags
@@ -139,7 +136,7 @@ $(ARCHIVE): $(OBJS) libs
 
 ### Pull newlib from github if it does not exist
 ifeq ($(wildcard $(NAVY_HOME)/libs/libc/Makefile),)
-  $(shell cd $(NAVY_HOME)/libs && git clone https://github.com/NJU-ProjectN/newlib-navy.git libc)
+  $(shell cd $(NAVY_HOME)/libs && git clone git@github.com:NJU-ProjectN/newlib-navy.git libc)
 endif
 
 ### Build order control
@@ -170,7 +167,7 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS = pal menu nterm bird
-TESTS = dummy
+TESTS = hello event-test bmp-test
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done

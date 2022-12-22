@@ -7,21 +7,30 @@
 
 SDL_Surface* IMG_Load_RW(SDL_RWops *src, int freesrc) {
   assert(src->type == RW_TYPE_MEM);
+  assert(freesrc == 0);
   return NULL;
 }
 
 SDL_Surface* IMG_Load(const char *filename) {
-  FILE *fp = fopen(filename, "r");
-  if (!fp) return NULL;
-  fseek(fp, 0L, SEEK_END);
-  int size = ftell(fp);
-  void *buf = malloc(size + 5);
-  fseek(fp, 0L, SEEK_SET);
-  fread(buf, 1, size, fp);
-  SDL_Surface *res = STBIMG_LoadFromMemory((unsigned char *)buf, size);
-  fclose(fp);
-  free(buf);
-  return res;
+  	FILE *file = fopen(filename, "rb");
+		if(file == NULL){
+				printf("File %s No Found\n", filename);
+				return NULL;
+		}
+		
+		fseek(file, 0, SEEK_END);
+		uint32_t file_size = ftell(file);
+		
+		fseek(file, 0, SEEK_SET);
+		
+		char *buf = (char *)malloc(file_size);
+		fread(buf, file_size, 1, file);
+		SDL_Surface *s = STBIMG_LoadFromMemory(buf, file_size);
+		//assert(s);
+		fclose(file);
+		free(buf);
+
+		return s;
 }
 
 int IMG_isPNG(SDL_RWops *src) {
