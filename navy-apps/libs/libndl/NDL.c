@@ -1,56 +1,61 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <unistd.h>
-
+#include <sys/time.h>
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 static int canvas_w = 0, canvas_h = 0;
-
+static struct timeval tv;
+static uint64_t startTime = 0;
 uint32_t NDL_GetTicks() {
-  struct timeval tv; 
-  gettimeofday(&tv, NULL);
-  uint32_t res = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-  return res;
+  	gettimeofday(&tv, NULL); 
+		return tv.tv_usec/1000+tv.tv_sec*1000-startTime;
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  int fd = open("/dev/events", 0, 0);
-  int res = read(fd, buf, len);
-  return (res == 0) ? 0 : 1;
+		return read(evtdev, buf, len)>0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
-  if (*w ==0 && *h ==0)
-  {
-    *w = screen_w;
-    *h = screen_h;
-    canvas_w = screen_w;
-    canvas_h = screen_h;
+  if (getenv("NWM_APP")) {
+    int fbctl = open("/proc/dispinfo", 0, 0);
+    screen_w = *w; screen_h = *h;
+    char buf[64];
+    int len = sprintf(buf, "%d %d", screen_w, screen_h);
+    // let NWM resize the window and create the frame buffer
+    write(fbctl, buf, len);
+    while (1) {
+      // 3 = evtdev
+      int nread = read(3, buf, sizeof(buf) - 1);
+      if (nread <= 0) continue;
+      buf[nread] = '\0';
+      if (strcmp(buf, "mmap ok") == 0) break;
+    }
+    close(fbctl);
   }
-  else
-  {
-    canvas_w = *w;
-    canvas_h = *h;
-  }
+	if(*w > screen_w || *h> screen_h){
+		printf("Error canvas size:%d*%d for screen: %d*%d\n", *w, *h, screen_w, screen_h);
+	}
+	if(*w==0 && *h==0){
+		*w = screen_w; *h = screen_h;
+	}
+	canvas_w = *w;	canvas_h = *h;
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  uint32_t *p_pixels = pixels;
-  int real_x = (screen_w - canvas_w) / 2 + x;
-  int real_y = (screen_h - canvas_h) / 2 + y;
-  for (int i = 0; i < h; i++)
-  {
-    int fb = open("/dev/fb", 0, 0);
-    lseek(fb, (real_y + i) * screen_w + real_x, 0);
-    // for (int j = 0; j < w; j++)
-      // printf("x: %d y: %d p: %p realp: %p\n", j, i, pixels[i * w + j], p_pixels[j]);
-    write(fb, p_pixels + y * canvas_w + x, w);
-    p_pixels += canvas_w;
-  }
+	printf("%d,%d\n",w,h);
+	x += (screen_w - canvas_w)>>1;
+	y += (screen_h - canvas_h)>>1;
+	lseek(fbdev, (x + y * screen_w)<<2, SEEK_SET);
+	while(h > 0){
+			write(fbdev, pixels, w<<2);
+			pixels += w;	h--;
+			lseek(fbdev, (screen_w-w) << 2, SEEK_CUR);
+	}
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
@@ -68,14 +73,34 @@ int NDL_QueryAudio() {
 }
 
 int NDL_Init(uint32_t flags) {
-  char buf[35] = "";
-  int fd = open("/proc/dispinfo", 0, 0);
-  int res = read(fd, buf, 30);
-  sscanf(buf, "WIDTH: %d\nHEIGHT: %d\n", &screen_w, &screen_h);
-  return 0;
+  if (getenv("NWM_APP")) {
+    evtdev = 3;
+  }
+	gettimeofday(&tv, NULL);
+	startTime = tv.tv_sec*1000-tv.tv_usec/1000;
+ 	
+	evtdev = open("/dev/events", 0, 0);
+	fbdev = open("/dev/fb", 0, 0);
+
+	int fd = open("/proc/dispinfo", 0, 0);
+	char buf[64];
+	
+	read(fd, buf, 64);
+	char *key1 = strtok(buf, ":");
+	char *val1 = strtok(NULL, "\n");
+	char *key2 = strtok(NULL, ":");
+	char *val2 = strtok(NULL, "\n");
+	if(strcmp(key1, "WIDTH")==0){screen_w = atoi(val1);}
+	else if(strcmp(key1, "HEIGHT")==0){screen_h = atoi(val1);}
+	else{printf("valid /proc/dispinfo file\n"); return 1;}
+
+	if(strcmp(key2, "WIDTH")==0){screen_w = atoi(val2);}
+	else if(strcmp(key2, "HEIGHT")==0){screen_h = atoi(val2);}
+	else{printf("valid /proc/dispinfo file\n"); return 1;}
+	
+	return 0;
 }
 
 void NDL_Quit() {
-  // printf("going to quit\n");
-  exit(0);
+//	exit(0);
 }
