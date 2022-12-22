@@ -69,7 +69,7 @@ static void sh_handle_cmd(const char *_cmd) {
 				}
 		}
 		if(i == NR_CMD)	{ 
-			if(execvp(cmd_name))
+			if(execvp(cmd_name,NULL))
 				sh_printf("Unknown command '%s'\n", cmd_name); 
 		}
 		free(cmd);
