@@ -40,7 +40,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 			src_pixels += src->w << shift;
 			dst_pixels += dst->w << shift;
 	}
-  NDL_OpenCanvas(&dst->w, &dst->h);
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
@@ -61,7 +60,6 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 				}
 				dst_pixels-=dstrect->w; dst_pixels+=dst->w;
 		}
-    NDL_OpenCanvas(&dst->w, &dst->h);
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
@@ -85,10 +83,9 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 					src_idx+=s->w-w;
 				}
 
-				pixels = new_pixels;
+				pixels = (uint8_t *)new_pixels;
 		}
-    NDL_OpenCanvas(&s->w, &s->h);
-		NDL_DrawRect(pixels, x, y, w, h);
+		NDL_DrawRect((uint32_t *)pixels, x, y, w, h);
 		if(s->format->BitsPerPixel == 8){
 				free(pixels);
 		}
