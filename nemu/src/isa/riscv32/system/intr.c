@@ -22,7 +22,8 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    */
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
-			sr(MSTATUS) = ((BITS(sr(MSTATUS), 31, 8)<<8) | (BITS(sr(MSTATUS), 3, 3)<<7) | (BITS(sr(MSTATUS), 6, 0))) & 0xFFFFFFF7;
+	if(NO == IRQ_TIMER)
+		sr(MSTATUS) = ((BITS(sr(MSTATUS), 31, 8)<<8) | (BITS(sr(MSTATUS), 3, 3)<<7) | (BITS(sr(MSTATUS), 6, 0))) & 0xFFFFFFF7;
 
 #ifdef CONFIG_ETRACE
 	Log("Exception Trace: PC=0x%08x status: %08x cause: %d\n", epc, sr(MSTATUS),sr(MCAUSE));
