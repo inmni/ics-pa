@@ -57,7 +57,7 @@ int fs_open(const char *filename, int flags, int mode){
 		int idx = NR_OCCUPIED;
 		for(; idx < NR_FILES; idx++){
 				if(!strcmp(file(idx).name, filename)){
-								printf("Found file: %s\n", filename);
+								//printf("Found file: %s\n", filename);
 								file(idx).open_offset = file(idx).disk_offset;
 								return idx;
 				}
