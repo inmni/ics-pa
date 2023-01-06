@@ -12,7 +12,7 @@ static int canvas_w = 0, canvas_h = 0;
 static struct timeval tv;
 static uint64_t startTime = 0;
 uint32_t NDL_GetTicks() {
-  	gettimeofday(&tv, NULL);
+  	gettimeofday(&tv, NULL); 
 		return tv.tv_usec/1000+tv.tv_sec*1000-startTime;
 }
 
@@ -38,7 +38,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     close(fbctl);
   }
 	if(*w > screen_w || *h> screen_h){
-		printf("Error canvas size\n");
+		printf("Error canvas size:%d*%d for screen: %d*%d\n", *w, *h, screen_w, screen_h);
 	}
 	if(*w==0 && *h==0){
 		*w = screen_w; *h = screen_h;
@@ -47,13 +47,14 @@ void NDL_OpenCanvas(int *w, int *h) {
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+	//printf("%d,%d\n",w,h);
 	x += (screen_w - canvas_w)>>1;
 	y += (screen_h - canvas_h)>>1;
 	lseek(fbdev, (x + y * screen_w)<<2, SEEK_SET);
 	while(h > 0){
 			write(fbdev, pixels, w<<2);
 			pixels += w;	h--;
-			lseek(fbdev, (screen_w-canvas_w) << 2, SEEK_CUR);
+			lseek(fbdev, (screen_w-w) << 2, SEEK_CUR);
 	}
 }
 
@@ -101,4 +102,5 @@ int NDL_Init(uint32_t flags) {
 }
 
 void NDL_Quit() {
+//	exit(0);
 }
