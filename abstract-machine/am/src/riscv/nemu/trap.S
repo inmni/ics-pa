@@ -21,47 +21,41 @@ f(30) f(31)
 #define PUSH(n) STORE concat(x, n), (n * XLEN)(sp);
 #define POP(n)  LOAD  concat(x, n), (n * XLEN)(sp);
 
-#define CONTEXT_SIZE  ((32 + 4 + 1) * XLEN)
+#define CONTEXT_SIZE  ((32 + 3 + 1 + 1) * XLEN)
 #define OFFSET_SP     ( 2 * XLEN)
 #define OFFSET_CAUSE  (32 * XLEN)
 #define OFFSET_STATUS (33 * XLEN)
 #define OFFSET_EPC    (34 * XLEN)
-#define OFFSET_NP			(35 * XLEN)
+//中间有一个pdir没有地址
+#define OFFSET_NP     (36 * XLEN)
 
 .align 3
 .globl __am_asm_trap
 __am_asm_trap:
-	// c->sp = sp has been set in ucontext and kcontext
-	// The statement is useless
-	// STORE sp, (-CONTEXT_SIZE + OFFSET_SP)(sp)	
+//还在用户栈底
+  addi sp, sp, -XLEN
+  STORE t4, (sp)
+  mv t4, sp
 
-	// swap sp, ksp
-	csrrw sp, mscratch, sp
-	// if ksp!=0, fix swap
-	bnez sp, save_context
-	// if ksp==0, swap back
-	csrrw sp, mscratch, sp
+  csrrw sp, mscratch, sp   // (1) atomically exchange sp and mscratch
+  bnez sp, save_context    // (2) take the branch if we trapped from user
+  csrrw sp, mscratch, sp   // (3) if we trapped from kernel, 恢复之前的状态
 
-	// c->np = kstack.end if USER else 0
-save_context:
-	// now sp is pointing to the kernel stack
-	// now ksp is kstack.end if USER else 0
-	addi sp, sp, -CONTEXT_SIZE
-	
+//进入内核栈
+  save_context:
+  addi sp, sp, -CONTEXT_SIZE
+
+  STORE t4, OFFSET_SP(sp)
+
   MAP(REGS, PUSH)
 
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
+
   STORE t0, OFFSET_CAUSE(sp)
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
-	csrr t0, mscratch
-	STORE t0, OFFSET_NP(sp)
-	// now np is kstack.end if USER else 0
-	
-	csrw mscratch, zero
-	// now ksp = 0 to support CTE re-entry
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
@@ -70,24 +64,30 @@ save_context:
 
   mv a0, sp
   jal __am_irq_handle
-	mv sp, a0
-	
-	LOAD t0, OFFSET_NP(sp)// if c->np=0, ksp keeps 0, else ksp = c->np = sp
+  mv sp, a0
+//切换到新的内核栈空间
+
+//判断c->np == USER
+  LOAD t4, OFFSET_NP(sp)
+  bnez t4, restore_contexts
+//c->np == USER
+  addi t4, sp, CONTEXT_SIZE
+  csrw mscratch, t4
+
+restore_contexts:
+
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
-	csrw mscratch, t0
-	// now ksp is kstack.end if USER else 0
   csrw mstatus, t1
   csrw mepc, t2
 
   MAP(REGS, POP)
 
-	addi sp, sp, CONTEXT_SIZE
-	csrrw sp, mscratch, sp
-	bnez sp, return					
-	// if ksp != 0, means USER, just exchange back and return
-	csrrw sp, mscratch, sp	
-	// if ksp == 0, means KERNEL, no action
-
-return:
+  LOAD t4, OFFSET_SP(sp)
+  addi sp, sp, CONTEXT_SIZE
+//回到了用户栈
+  mv sp, t4
+  LOAD t4, (sp)
+  addi sp, sp, XLEN
+  
   mret
