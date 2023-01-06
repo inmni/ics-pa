@@ -197,9 +197,7 @@ void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, int firstcolor
   assert(firstcolor == 0);
 
   s->format->palette->ncolors = ncolors;
-  printf("before memcpy\n");
 	memcpy(s->format->palette->colors, colors, sizeof(SDL_Color) * ncolors);
-	printf("after memcpy\n");
   if(s->flags & SDL_HWSURFACE) {
     assert(ncolors == 256);
     for (int i = 0; i < ncolors; i ++) {
@@ -207,7 +205,9 @@ void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, int firstcolor
       uint8_t g = colors[i].g;
       uint8_t b = colors[i].b;
     }
+		printf("before update rect\n");
     SDL_UpdateRect(s, 0, 0, 0, 0);
+		printf("after update rect\n");
   }
 }
 
