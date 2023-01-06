@@ -3,8 +3,6 @@
 #include <klib.h>
 #include <arch/riscv32-nemu.h>
 
-#define Machine_Software_Interrupt (11)
-#define User_Software_Interrupt (8)
 #define IRQ_TIMER 0x80000007
 
 #define KERNEL 3
@@ -32,8 +30,6 @@ Context* __am_irq_handle(Context *c) {
     Event ev = {0};
     
     switch (c->mcause) {
-      case Machine_Software_Interrupt:
-      case User_Software_Interrupt:
 			case EVENT_YIELD:
 				// printf("c->GPR1 = %d \n", c->GPR1);
         if (c->GPR1 == -1){ // 特指-1
@@ -41,7 +37,7 @@ Context* __am_irq_handle(Context *c) {
         }else {
           ev.event = EVENT_SYSCALL;
         }
-        c->mepc += 4;
+        //c->mepc += 4;
         break;
 
       case IRQ_TIMER:
