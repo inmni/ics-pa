@@ -20,11 +20,12 @@ word_t vaddr_ifetch(vaddr_t addr, int len)
 {
 	paddr_t paddr;
 	switch (isa_mmu_check(addr, len, MEM_TYPE_IFETCH))
-	{
+	{ 
 	case MMU_DIRECT:
 		paddr = addr;
 		break;
 	case MMU_TRANSLATE:
+		if(addr==0) printf("error in vaddr_ifetch\n");
 		paddr = isa_mmu_translate(addr, len, 0);
 		break;
 	default:
@@ -38,11 +39,12 @@ word_t vaddr_read(vaddr_t addr, int len)
 {
 	paddr_t paddr;
 	switch (isa_mmu_check(addr, len, 0))
-	{
+	{ 
 	case MMU_DIRECT:
 		paddr = addr;
 		break;
 	case MMU_TRANSLATE:
+		if(addr==0) printf("error in vaddr_read\n");
 		paddr = isa_mmu_translate(addr, len, 0);
 		break;
 	default:
@@ -61,6 +63,7 @@ void vaddr_write(vaddr_t addr, int len, word_t data)
 		paddr = addr;
 		break;
 	case MMU_TRANSLATE:
+		if(addr==0) printf("error in vaddr_write\n");
 		paddr = isa_mmu_translate(addr, len, 1);
 		break;
 	default:
