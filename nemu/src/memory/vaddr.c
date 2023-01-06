@@ -43,7 +43,7 @@ word_t vaddr_read(vaddr_t addr, int len)
 		paddr = addr;
 		break;
 	case MMU_TRANSLATE:
-		paddr = isa_mmu_translate(addr, len, MEM_TYPE_READ);
+		paddr = isa_mmu_translate(addr, len, 0);
 		break;
 	default:
 		assert(0);
