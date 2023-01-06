@@ -25,13 +25,13 @@ word_t vaddr_ifetch(vaddr_t addr, int len)
 		paddr = addr;
 		break;
 	case MMU_TRANSLATE:
-		if(addr==0) printf("error in vaddr_ifetch\n");
+		if(1||addr==0) printf("error in vaddr_ifetch\n");
 		paddr = isa_mmu_translate(addr, len, 0);
 		break;
 	default:
 		assert(0);
 		break;
-	}
+	} 
 	return paddr_read(paddr, len);
 }
 
@@ -44,7 +44,7 @@ word_t vaddr_read(vaddr_t addr, int len)
 		paddr = addr;
 		break;
 	case MMU_TRANSLATE:
-		if(addr==0) printf("error in vaddr_read\n");
+		if(1||addr==0) printf("error in vaddr_read\n");
 		paddr = isa_mmu_translate(addr, len, 0);
 		break;
 	default:
