@@ -37,7 +37,7 @@ __am_asm_trap:
 
   csrrw sp, mscratch, sp   // (1) atomically exchange sp and mscratch
   bnez sp, save_context    // (2) take the branch if we trapped from user
-  csrrw sp, mscratch, sp   // (3) if we trapped from kernel, 恢复之前的状态
+  csrrw sp, mscratch, sp   // (3) if we trapped from kernel
 
   save_context:
   addi sp, sp, -CONTEXT_SIZE
@@ -54,10 +54,9 @@ __am_asm_trap:
   STORE t1, OFFSET_STATUS(sp)
   STORE t2, OFFSET_EPC(sp)
 
-  # set mstatus.MPRV to pass difftest
-  li a0, (1 << 17)
-  or t1, t1, a0
-  csrw mstatus, t1
+  //li a0, (1 << 17)
+  //or t1, t1, a0
+  //csrw mstatus, t1
 
   mv a0, sp
   jal __am_irq_handle
