@@ -20,12 +20,7 @@ Context* __am_irq_handle(Context *c) {
   c->np = (mscratch == 0 ? KERNEL : USER);
   asm volatile("csrw mscratch, %0" : : "r"(kas));
 
-  if (0&((uintptr_t)&c < 0x80000000)){
-    halt(10001);
-  }
   __am_get_cur_as(c);
-  //printf("__am_irq_handle c->pdir内容地址修改前 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
-  //printf("设置c->np为%d\n", c->np);
   if (user_handler) {
     Event ev = {0};
     
@@ -42,7 +37,6 @@ Context* __am_irq_handle(Context *c) {
 
       case IRQ_TIMER:
         ev.event = EVENT_IRQ_TIMER;
-				//c->mepc -= 4;
 				break;
 
       default: ev.event = EVENT_ERROR; break;
@@ -52,9 +46,7 @@ Context* __am_irq_handle(Context *c) {
     assert(c != NULL);
   }
 
-  //printf("__am_irq_handle c->pdir内容地址修改后 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
   __am_switch(c);
-  //printf("c->np为%d\n", c->np);
   return c;
 }
 
@@ -71,7 +63,6 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  //-4是为了缓存一个t0，为了Real VME
   uintptr_t *t0_buf = kstack.end - 4;
   *t0_buf = 0;
 
@@ -80,8 +71,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   context->mepc    = (uintptr_t)entry;
   context->gpr[10] = (uintptr_t)arg;
   context->pdir    = NULL;
-  //为了Real VME
-  context->np      = 3;
+  context->np      = KERNEL;
   context->gpr[2]  = (uintptr_t)kstack.end - 4;
   //TODO: 还需要添加一些
   return context;
