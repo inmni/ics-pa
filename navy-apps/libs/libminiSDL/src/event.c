@@ -12,14 +12,17 @@ static const char *keyname[] = {
 static const uint32_t nr_key = 83;
 static uint8_t key_state[83] = {0};
 int ParseEvent(uint8_t* key, uint8_t* type){
-  char buf[64];
-	if(NDL_PollEvent(buf, 64)<1){
+  char buf[64]; int len; int i;
+	if(len = NDL_PollEvent(buf, 64)){
 		return 0;// Error
 	}
-	char *prefix = strtok(buf, " ");
-	char *name = strtok(NULL, " ");
-	uint8_t code = atoi(strtok(NULL, " "));
-	if(prefix[0]=='k'){
+	
+	char *prefix = buf;
+	for(i=0;i<len && buf[i]!=' ';i++){}
+	buf[i] = 0;
+	for(;i<len && buf[i]!=' ';i++){}
+	uint8_t code = atoi(buf+i+1);
+	if(prefix[0]=='k' && code != 0){
 		*key = code;
 		switch(prefix[1]){
 			case 'd': *type = SDL_KEYDOWN;	key_state[code] = 1; return 1;
