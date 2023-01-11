@@ -77,12 +77,12 @@ void naive_uload(PCB *pcb, const char *filename) {
   assert(0);
 }
 #define ceil_up_to_4(x) ((x+3)&(~0x11))
-void context_kload(PCB *pcb, void (*entry)(void *), void *arg){
-  Area karea;
-  karea.start = &pcb->cp;
-  karea.end = &pcb->cp + STACK_SIZE;
+void context_kload(PCB *p, void (*entry)(void *), void *arg){
+  Area kstack;
+  kstack.start = &p->cp;
+  kstack.end = &p->cp + STACK_SIZE;
 
-  pcb->cp = kcontext(karea, entry, arg);
+  p->cp = kcontext(kstack, entry, arg);
 }
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	int i; protect(&p->as);
@@ -99,19 +99,19 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	// printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
 	int argv_c = 0; int envp_c = 0;
-	if(argv) {while(argv[argv_c++]){}; argv_c--;}
-	if(envp) {while(envp[envp_c++]){}; envp_c--;}
+	if(argv) for(; argv[argv_c]; argv_c++){} 
+	if(envp) for(; envp[envp_c]; envp_c++){}
 	char **argv_ptr = (char **)malloc(argv_c*sizeof(char **));
 	char **envp_ptr = (char **)malloc(envp_c*sizeof(char **));
 	for(i=0; i<argv_c; i++){
 		ustack_cur -= ceil_up_to_4(strlen(argv[i]) + 1); // keep zero ternimating
-		strcpy((char *)ustack_cur, argv[i]);
-		argv_ptr[i] = (char *)ustack_cur;
+		strcpy(ustack_cur, argv[i]);
+		argv_ptr[i] = ustack_cur;
 	}
 	for(i=0; i<envp_c; i++){
 		ustack_end -= ceil_up_to_4(strlen(envp[i]) + 1);
-		strcpy((char *)ustack_cur, envp[envp_c]);
-		envp_ptr[i] = (char *)ustack_cur;
+		strcpy(ustack_cur, envp[envp_c]);
+		envp_ptr[i] = ustack_cur;
 	}
 	uintptr_t *ustack_cur_ptr = (uintptr_t *)ustack_cur;
 	ustack_cur_ptr--; *ustack_cur_ptr = 0;
