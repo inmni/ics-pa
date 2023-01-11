@@ -67,6 +67,39 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   // if ((page_table_entry & PTE_V) == 0){
   //   Log("page_table_entry not valid, vaddr: %#x", vaddr);
   // }
+	if(!(page_table_entry & PTE_V)){
+		Assert(page_table_entry & 0x02, "");
+		Assert(page_table_entry & 0x04, "");
+		Assert(page_table_entry & 0x08, "");
+		Assert(page_table_entry & 0x10, "");
+		Assert(page_table_entry & 0x20, "");
+		Assert(page_table_entry & 0x40, "");
+		Assert(page_table_entry & 0x80, "");
+		Assert(page_table_entry & 0x100, "");
+		Assert(page_table_entry & 0x200, "");
+		Assert(page_table_entry & 0x400, "");
+		Assert(page_table_entry & 0x800, "");
+		Assert(page_table_entry & 0x1000, "");
+		Assert(page_table_entry & 0x2000, "");
+		Assert(page_table_entry & 0x4000, "");
+		Assert(page_table_entry & 0x8000, "");
+		Assert(page_table_entry & 0x10000, "");
+		Assert(page_table_entry & 0x20000, "");
+		Assert(page_table_entry & 0x40000, "");
+		Assert(page_table_entry & 0x80000, "");
+		Assert(page_table_entry & 0x100000, "");
+		Assert(page_table_entry & 0x200000, "");
+		Assert(page_table_entry & 0x400000, "");
+		Assert(page_table_entry & 0x800000, "");
+		Assert(page_table_entry & 0x1000000, "");
+		Assert(page_table_entry & 0x2000000, "");
+		Assert(page_table_entry & 0x4000000, "");
+		Assert(page_table_entry & 0x8000000, "");
+		Assert(page_table_entry & 0x10000000, "");
+		Assert(page_table_entry & 0x20000000, "");
+		Assert(page_table_entry & 0x40000000, "");
+		Assert(page_table_entry & 0x80000000, "");
+	}
   Assert(page_table_entry & PTE_V, "page_table_entry not valid, vaddr: %#x", vaddr);
 
   paddr_t leaf_page_table_entry_addr = PTE_PPN(page_table_entry) * 4096 + VA_VPN_0(vaddr) * 4;
