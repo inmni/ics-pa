@@ -16,7 +16,7 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include <memory/vaddr.h>
-/**
+
 
 #define PTE_T uint32_t
 #define LEVELS								2
@@ -35,7 +35,7 @@
 #define PTE_A(pte)						(pte&0x40)
 #define PTE_D(pte)						(pte&0x80)
 #define PTE_PPN(pte)					(pte>>10)
-**/
+
 #define SATP_T uint32_t
 #define SATP_PPN_MASK					0x3FFFFF
 #define SATP_PPN(satp)				(satp&SATP_PPN_MASK)
@@ -48,6 +48,7 @@ inline int isa_mmu_check(vaddr_t vaddr, int len, int type) {
 		default:	return MMU_FAIL;
 	}
 }
+/*
 #define VA_VPN_0(x) (((vaddr_t)x & 0x003FF000u) >> 12)
 #define VA_VPN_1(x) (((vaddr_t)x & 0xFFC00000u) >> 22)
 #define VA_OFFSET(x) ((vaddr_t)x & 0x00000FFFu)
@@ -85,7 +86,7 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 
   return pa;
 }
-/**
+*/
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   SATP_T satp = cpu.sr[SATP];
 	// Step 1
@@ -131,4 +132,4 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
 	// Step 8
 	return  PTE_PPN(leaf_pte_val)*PAGESIZE | VA_PGOFF(vaddr);
 }
-**/
+
