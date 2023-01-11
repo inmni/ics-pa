@@ -42,7 +42,8 @@ Context* __am_irq_handle(Context *c) {
 
       case IRQ_TIMER:
         ev.event = EVENT_IRQ_TIMER;
-        break;
+				c->mepc -= 4;
+				break;
 
       default: ev.event = EVENT_ERROR; break;
     }
