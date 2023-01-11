@@ -13,7 +13,7 @@ static const uint32_t nr_key = 83;
 static uint8_t key_state[83] = {0};
 int ParseEvent(uint8_t* key, uint8_t* type){
   char buf[64] = {0}; int len; int i;
-	if(len = NDL_PollEvent(buf, 64)){
+	if(!(len = NDL_PollEvent(buf, 64))){
 		return 0;// Error
 	}
 	printf("ParseEvent: '%s', len: %d\n", buf, len);	
