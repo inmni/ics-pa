@@ -38,9 +38,9 @@ void hello_fun(void *arg) {
 void naive_uload(PCB *pcb, const char *filename);
 void context_kload(PCB *pcb, void (*entry)(void *), void *arg);
 void context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]);
-#define PROG_PATH1 "/bin/nslider"
+#define PROG_PATH1 "/bin/bird"
 #define PROG_PATH2 "/bin/pal"
-#define PROG_PATH3 "/bin/bird"
+#define PROG_PATH3 "/bin/nslider"
 void init_proc() {
 	context_kload(&pcb[0], hello_fun, "RNMPA");
 	char *argv1[] = {PROG_PATH1, NULL};
