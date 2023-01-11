@@ -37,7 +37,7 @@ static void read(int fd, void *buf, size_t offset, size_t len){
   
   for (int i = 0; i < page_n; ++i){
     // TODO: 这里prot参数不规范
-    map(as, (void *)((vaddr & ~0xfff) + i * PAGESIZE), (void *)(page_start + i * PAGESIZE), 1);
+    map(as, (void *)((vaddr & ~0xfff) + i * PAGESIZE), (void *)(page_start + i * PAGESIZE), MMAP_READ | MMAP_WRITE);
   }
 
   return page_start;
@@ -149,14 +149,14 @@ void context_uload(PCB *pcb, const char *filename, char *const argv[], char *con
   //这个问题确实已经被修正了，TMD，真cao dan
   // 2021/12/16
   
-  map(as, as->area.end - 8 * PAGESIZE, alloced_page - 8 * PAGESIZE, 1); 
-  map(as, as->area.end - 7 * PAGESIZE, alloced_page - 7 * PAGESIZE, 1);
-  map(as, as->area.end - 6 * PAGESIZE, alloced_page - 6 * PAGESIZE, 1); 
-  map(as, as->area.end - 5 * PAGESIZE, alloced_page - 5 * PAGESIZE, 1);
-  map(as, as->area.end - 4 * PAGESIZE, alloced_page - 4 * PAGESIZE, 1); 
-  map(as, as->area.end - 3 * PAGESIZE, alloced_page - 3 * PAGESIZE, 1);
-  map(as, as->area.end - 2 * PAGESIZE, alloced_page - 2 * PAGESIZE, 1); 
-  map(as, as->area.end - 1 * PAGESIZE, alloced_page - 1 * PAGESIZE, 1); 
+  map(as, as->area.end - 8 * PAGESIZE, alloced_page - 8 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
+  map(as, as->area.end - 7 * PAGESIZE, alloced_page - 7 * PAGESIZE, MMAP_READ | MMAP_WRITE);
+  map(as, as->area.end - 6 * PAGESIZE, alloced_page - 6 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
+  map(as, as->area.end - 5 * PAGESIZE, alloced_page - 5 * PAGESIZE, MMAP_READ | MMAP_WRITE);
+  map(as, as->area.end - 4 * PAGESIZE, alloced_page - 4 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
+  map(as, as->area.end - 3 * PAGESIZE, alloced_page - 3 * PAGESIZE, MMAP_READ | MMAP_WRITE);
+  map(as, as->area.end - 2 * PAGESIZE, alloced_page - 2 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
+  map(as, as->area.end - 1 * PAGESIZE, alloced_page - 1 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
   
   char *brk = (char *)(alloced_page - 4);
   // 拷贝字符区
