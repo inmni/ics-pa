@@ -116,13 +116,13 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	uintptr_t *ustack_cur_ptr = (uintptr_t *)ustack_cur;
 	ustack_cur_ptr--; *ustack_cur_ptr = 0;
 	for(i=envp_c-1; i>=0; i--){
-		*ustack_cur_ptr = (uintptr_t)envp_ptr[i];
 		ustack_cur_ptr--;
+		*ustack_cur_ptr = (uintptr_t)envp_ptr[i];
 	}
 	ustack_cur_ptr--; *ustack_cur_ptr = 0;
 	for(i=argv_c-1; i>=0; i--){
-		*ustack_cur_ptr = (uintptr_t)argv_ptr[i];
 		ustack_cur_ptr--;
+		*ustack_cur_ptr = (uintptr_t)argv_ptr[i];
 	}
 	ustack_cur_ptr--; *ustack_cur_ptr = argv_c;
 	ustack_cur_ptr--; *ustack_cur_ptr = 0; // Leave space for t0_buffer which is used in trap
