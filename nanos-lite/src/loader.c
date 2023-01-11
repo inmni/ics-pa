@@ -88,9 +88,10 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	int i; protect(&p->as);
 
 	void *ustack = new_page(8);
-	for(i=0; i<8; i++){
-		map(&p->as,	p->as.area.start + i*PGSIZE, 
-		ustack + i*PGSIZE, MMAP_READ | MMAP_WRITE);
+	
+	for(i=8; i>=1; i--){
+		map(&p->as,	p->as.area.end - i*PGSIZE, 
+		ustack + STACK_SIZE - i*PGSIZE, MMAP_READ | MMAP_WRITE);
 	}
 	// Record the bottom of user stack
 	uint32_t* ustack_end = ustack + STACK_SIZE;
