@@ -95,12 +95,12 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	// Record the bottom of user stack
 	uint32_t* ustack_end = ustack + STACK_SIZE;
 	// The Top of current user stack
-	uint8_t* ustack_cur = (uint8_t *)(ustack_end - 1);
+	char* ustack_cur = (char *)(ustack_end - 1);
 	// printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
-	int argv_c = -1; int envp_c = -1;
-	if(argv) while(argv[++argv_c]);
-	if(envp) while(envp[++envp_c]);
+	int argv_c = 0; int envp_c = 0;
+	if(argv) {while(argv[argv_c++]){}; argv_c--;}
+	if(envp) {while(envp[envp_c++]){}; envp_c--;}
 	char **argv_ptr = (char **)malloc(argv_c*sizeof(char **));
 	char **envp_ptr = (char **)malloc(envp_c*sizeof(char **));
 	for(i=0; i<argv_c; i++){
