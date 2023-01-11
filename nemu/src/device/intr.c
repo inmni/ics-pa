@@ -16,6 +16,5 @@
 #include <isa.h>
 
 void dev_raise_intr() {
-	Log("dev_raise_intr");
 	cpu.INTR = 1;
 }
