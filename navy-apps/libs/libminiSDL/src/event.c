@@ -25,8 +25,8 @@ int ParseEvent(uint8_t* key, uint8_t* type){
 	if(prefix[0]=='k' && code != 0){
 		*key = code;
 		switch(prefix[1]){
-			case 'd': *type = SDL_KEYDOWN;	key_state[code] = 1; return 1;
-			case 'u': *type = SDL_KEYUP;	  key_state[code] = 0; return 1;
+			case 'd': *type = SDL_KEYDOWN;	printf("keydown %d\n", code); key_state[code] = 1; return 1;
+			case 'u': *type = SDL_KEYUP;	  printf("keyup %d\n", code); key_state[code] = 0; return 1;
 			default: return 0;// keyboard but no action.
 		}
 //				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
