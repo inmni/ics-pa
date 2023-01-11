@@ -31,6 +31,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 		if( input.keycode  == AM_KEY_NONE ){
 				return 0;
 		}
+		size_t ret;
 		if( input.keydown ) {
 				switch(input.keycode){
 					case AM_KEY_F1:	switch_pg(1);	break;
@@ -38,9 +39,13 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 					case AM_KEY_F3: switch_pg(3); break;
 					default:												break;
 				}
-				return snprintf(buf, len, "kd %s %d", keyname[input.keycode], input.keycode);
+				 ret = snprintf(buf, len, "kd %s %d", keyname[input.keycode], input.keycode);
+		}else{
+		ret = snprintf(buf, len, "ku %s %d", keyname[input.keycode],input.keycode);
+
 		}
-		return snprintf(buf, len, "ku %s %d", keyname[input.keycode],input.keycode);
+		printf("events_read: '%s'\n", buf);
+		return ret;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
