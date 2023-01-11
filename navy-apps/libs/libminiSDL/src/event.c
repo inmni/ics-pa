@@ -16,12 +16,12 @@ int ParseEvent(uint8_t* key, uint8_t* type){
 	if(!(len = NDL_PollEvent(buf, 64))){
 		return 0;// Error
 	}
-	printf("ParseEvent: '%s', len: %d\n", buf, len);	
 	char *prefix = buf;
 	for(i=0;i<len && buf[i]!=' ';i++){}
 	buf[i] = 0;
 	for(;i<len && buf[i]!=' ';i++){}
 	uint8_t code = atoi(buf+i+1);
+	printf("Decoded result: '%s', '%s'\n", buf, buf+i+1);
 	if(prefix[0]=='k' && code != 0){
 		*key = code;
 		switch(prefix[1]){
