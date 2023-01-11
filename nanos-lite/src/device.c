@@ -1,7 +1,6 @@
 #include <common.h>
 #include <device.h>
 #include <fs.h>
-#define MULTIPROGRAM
 #if defined(MULTIPROGRAM) && !defined(TIME_SHARING)
 # define MULTIPROGRAM_YIELD() yield()
 #else
