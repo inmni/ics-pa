@@ -18,7 +18,7 @@ int ParseEvent(uint8_t* key, uint8_t* type){
 	}
 	char *prefix = buf;
 	for(i=0;i<len && buf[i]!=' ';i++){}
-	buf[i] = 0;
+	buf[i] = 0; i++;
 	for(;i<len && buf[i]!=' ';i++){}
 	uint8_t code = atoi(buf+i+1);
 	printf("Decoded result: '%s', '%s'\n", buf, buf+i+1);
