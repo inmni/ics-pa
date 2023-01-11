@@ -89,9 +89,47 @@ void context_kload(PCB *pcb, void (*entry)(void *), void *arg){
   karea.end = &pcb->cp + STACK_SIZE;
 
   pcb->cp = kcontext(karea, entry, arg);
-  printf("kcontext地址为:%p\n", pcb->cp);
 }
-
+void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
+	int i; protect(&p->as);
+	void *ustack = new_page(8);
+	for(i=0; i<8; i++){
+		map(&p->as,	p->as.area.start + i*PGSIZE, 
+		ustack + i*PGSIZE, MMAP_READ | MMAP_WRITE);
+	}
+	uint32_t* ustack_start = ustack + 4;
+	uint32_t* ustack_end = ustack + STACK_SIZE;
+	// printf("MALLOC [%p, %p)\n", ustack, ustack_end);
+	// copy arguments
+	int argv_c = 0; int envp_c = 0;
+	while(argv && argv[argv_c]){
+		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
+		strcpy((char *)ustack_end, argv[argv_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		argv_c++;
+	}
+	*ustack_start++ = 0;
+	while(envp && envp[envp_c]){
+		ustack_end -= strlen(envp[envp_c]) + 1;
+		strcpy((char *)ustack_end, envp[envp_c]);
+		*ustack_start++ = (uint32_t)ustack_end;
+		envp_c++;
+	}
+	*ustack_start = 0;
+	*(uint32_t *)ustack = argv_c + envp_c;
+	Area kstack;
+	kstack.start = p->stack;
+	kstack.end = p->stack + STACK_SIZE;
+	// printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
+//	printf("try to load %s\n",filename);
+	uintptr_t entry = loader(p, filename);
+	// printf("%s's entry: %08x\n",filename, entry);
+	p->cp = ucontext(&(p->as), kstack, (void *)entry);
+	p->cp->GPRx = (uintptr_t)ustack;
+	// printf("pcb->cp: %08x\n", p->cp);
+	// printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
+	// printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
+}
 static size_t ceil_4_bytes(size_t size){
   if (size & 0x3)
     return (size & (~0x3)) + 0x4;
@@ -99,7 +137,7 @@ static size_t ceil_4_bytes(size_t size){
 }
 
 
-void context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]){
+void __context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]){
   int envc = 0, argc = 0;
   AddrSpace *as = &pcb->as;
   protect(as);
