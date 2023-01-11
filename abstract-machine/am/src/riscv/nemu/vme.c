@@ -93,18 +93,13 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 	}
 	PTE *leaf_pte = (PTE *)(PTE_PPN(*pte)*PGSIZE + VPN_0(va)*PTESIZE);
 	*leaf_pte = ((PTE)pa>>2) | 0xf;
-
-	//if(prot)printf("map va[%08x]->pa[%08x] with pte %08x and leaf pte %08x\n", (uintptr_t)va, (uintptr_t)pa, *pte, *leaf_pte);
-	//assert(PTE_PPN(*leaf_pte) * PGSIZE + ((uintptr_t)va & VA_POFF_MASK) == (uintptr_t)pa);
 }
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
   Context *context = kstack.end - sizeof(Context);
   context->mstatus = 0xC0000 | 0x80;//MPP设置为U模式，MXR=1，SUM=1
   context->mepc    = (uintptr_t)entry;
   context->pdir    = as->ptr;
-  //为了real VME
   context->np      = 0;//USER
-  //在loader中设置sp
 
   return context;
 }
