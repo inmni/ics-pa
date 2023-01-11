@@ -139,9 +139,9 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
 
 	// Set sp
-	p->cp->gpr[2] = (uintptr_t)ustack_cur_ptr - (uintptr_t)ustack_end + (uintptr_t)(p->as.area.end);
+	// p->cp->gpr[2] = (uintptr_t)ustack_cur_ptr - (uintptr_t)ustack_end + (uintptr_t)(p->as.area.end);
 	
-	// p->cp->GPRx = p->cp->gpr[2] + 4;
+	p->cp->GPRx = p->cp->gpr[2] + 4;
 	// printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
 	// printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
