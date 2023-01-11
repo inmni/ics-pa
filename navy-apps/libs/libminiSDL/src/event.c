@@ -11,14 +11,11 @@ static const char *keyname[] = {
 };
 static const uint32_t nr_key = 83;
 static uint8_t key_state[83] = {0};
-int ParseEvent(uint32_t* key, uint32_t* type){
-	char buf[32];
-	if(!NDL_PollEvent(buf, 32)){
-		*key = SDLK_NONE;
-		*type = SDL_KEYUP;
+int ParseEvent(uint8_t* key, uint8_t* type){
+  char buf[64];
+	if(NDL_PollEvent(buf, 64)<6){
 		return 0;// Error
 	}
-//		printf("Get Event %s\n", buf);
 	char *prefix = strtok(buf, " ");
 	char *name = strtok(NULL, " ");
 	uint8_t code = atoi(strtok(NULL, " "));
@@ -31,8 +28,7 @@ int ParseEvent(uint32_t* key, uint32_t* type){
 		}
 //				printf("event type: %d key code: %d\n", event->type, (int32_t)event->key.keysym.sym);
 	}
-	assert(0);
-	//return 0;
+	return 0;
 }
 int SDL_PushEvent(SDL_Event *ev) {
 	printf("SDL_PushEvent to implement!\n");
@@ -41,21 +37,20 @@ int SDL_PushEvent(SDL_Event *ev) {
 
 int SDL_PollEvent(SDL_Event *ev) {
 		if(ev==NULL) return 0;
-		uint32_t key, type;
+		uint8_t key = 0, type = 0;
 		int ret = ParseEvent(&key, &type);
-		ev->type = type;
-		ev->key.type = type;
-		ev->key.keysym.sym = key;
-
+    if(ret){
+		  ev->type = type;
+		  ev->key.keysym.sym = key;
+    }
 		return ret;
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
 		if(event==NULL)	return 0;
-		uint32_t key, type;
+		uint8_t key = 0, type = 0;
 		while(ParseEvent(&key, &type)==0);
 		event->type = type;
-		event->key.type = type;
 		event->key.keysym.sym = key;
 		return 1;
 }
