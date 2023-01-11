@@ -44,7 +44,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 		ret = snprintf(buf, len, "ku %s %d", keyname[input.keycode],input.keycode);
 
 		}
-		printf("events_read: '%s'\n", buf);
+		printf("events_read: '%s', length: %d\n", buf, ret);
 		return ret;
 }
 
