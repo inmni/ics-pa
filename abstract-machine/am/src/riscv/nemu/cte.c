@@ -37,12 +37,12 @@ Context* __am_irq_handle(Context *c) {
         }else {
           ev.event = EVENT_SYSCALL;
         }
-        //c->mepc += 4;
+        c->mepc += 4;
         break;
 
       case IRQ_TIMER:
         ev.event = EVENT_IRQ_TIMER;
-				c->mepc -= 4;
+				//c->mepc -= 4;
 				break;
 
       default: ev.event = EVENT_ERROR; break;
