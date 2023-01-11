@@ -51,19 +51,19 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-	va_list ap;
+	va_list ap; int len;
 	va_start(ap, fmt);
-	vsprintf(out, fmt, ap);
+	len = vsprintf(out, fmt, ap);
 	va_end(ap);
-	return 1;
+	return len;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
-  va_list ap;
+  va_list ap; int len;
 	va_start(ap, fmt);
-	vsnprintf(out, n, fmt, ap);
+	len = vsnprintf(out, n, fmt, ap);
 	va_end(ap);
-	return 1;
+	return len;
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
