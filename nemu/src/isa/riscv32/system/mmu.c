@@ -67,6 +67,7 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   // if ((page_table_entry & PTE_V) == 0){
   //   Log("page_table_entry not valid, vaddr: %#x", vaddr);
   // }
+	Assert(page_table_entry == 0, "");
 	if(!(page_table_entry & PTE_V)){
 		Assert(page_table_entry & 0x02, "");
 		Assert(page_table_entry & 0x04, "");
