@@ -16,7 +16,7 @@ int ParseEvent(uint8_t* key, uint8_t* type){
 	if(len = NDL_PollEvent(buf, 64)){
 		return 0;// Error
 	}
-	printf("ParseEvent: '%s'\n", buf);	
+	printf("ParseEvent: '%s', len: %d\n", buf, len);	
 	char *prefix = buf;
 	for(i=0;i<len && buf[i]!=' ';i++){}
 	buf[i] = 0;
