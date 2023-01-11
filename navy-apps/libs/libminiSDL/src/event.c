@@ -13,7 +13,7 @@ static const uint32_t nr_key = 83;
 static uint8_t key_state[83] = {0};
 int ParseEvent(uint8_t* key, uint8_t* type){
   char buf[64];
-	if(NDL_PollEvent(buf, 64)<6){
+	if(NDL_PollEvent(buf, 64)<1){
 		return 0;// Error
 	}
 	char *prefix = strtok(buf, " ");
