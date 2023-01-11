@@ -20,7 +20,7 @@ Context* __am_irq_handle(Context *c) {
   c->np = (mscratch == 0 ? KERNEL : USER);
   asm volatile("csrw mscratch, %0" : : "r"(kas));
 
-  if ((uintptr_t)&c < 0x80000000){
+  if (0&((uintptr_t)&c < 0x80000000)){
     halt(10001);
   }
   __am_get_cur_as(c);
