@@ -88,7 +88,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	int i; protect(&p->as);
 
 	void *ustack = new_page(8);
-	
+	// For the definition of protect, it is neccessary to begin at the end of the area.	
 	for(i=8; i>=1; i--){
 		map(&p->as,	p->as.area.end - i*PGSIZE, 
 		ustack + STACK_SIZE - i*PGSIZE, MMAP_READ | MMAP_WRITE);
@@ -141,7 +141,7 @@ void context_uload(PCB* p, const char *filename, char *const argv[], char *const
 	// Set sp
 	p->cp->gpr[2] = (uintptr_t)ustack_cur_ptr - (uintptr_t)ustack_end + (uintptr_t)(p->as.area.end);
 	
-	p->cp->GPRx = p->cp->gpr[2] + 4;
+	// p->cp->GPRx = p->cp->gpr[2] + 4;
 	// printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
 	// printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
 }
