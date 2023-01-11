@@ -22,20 +22,20 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 		}
 		return len;
 }
-void switch_program_index(int id);
+void switch_pg(int id);
 
 void switch_prog(uint32_t id);
 size_t events_read(void *buf, size_t offset, size_t len) {
 		MULTIPROGRAM_YIELD();
 		AM_INPUT_KEYBRD_T input = io_read(AM_INPUT_KEYBRD);
-		if( input.keycode == AM_KEY_NONE ){
+		if( input.keycode  == AM_KEY_NONE ){
 				return 0;
 		}
-		if( input.keydown ){
+		if( input.keydown ) {
 				switch(input.keycode){
-					case AM_KEY_F1:	switch_program_index(1);	break;
-					case AM_KEY_F2: switch_program_index(2); break;
-					case AM_KEY_F3: switch_program_index(3); break;
+					case AM_KEY_F1:	switch_pg(1);	break;
+					case AM_KEY_F2: switch_pg(2); break;
+					case AM_KEY_F3: switch_pg(3); break;
 					default:												break;
 				}
 				return snprintf(buf, len, "kd %s %d", keyname[input.keycode], input.keycode);

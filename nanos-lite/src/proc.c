@@ -7,23 +7,20 @@ static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
 
-int program_index = 1;
+int pg_idx = 1;
 
 void switch_boot_pcb() {
   current = &pcb_boot;
 }
 
-void switch_program_index(int new_index){
-  if (new_index == program_index)
+void switch_pg(int new_idx){
+  if (new_idx == pg_idx)
     return ;
-
+	assert(new_idx>=1 && new_idx<=3);
   switch_boot_pcb();  
   
-  program_index = new_index;
+  pg_idx = new_idx;
   pcb[0].cp->pdir = NULL;
-  //TODO: 这是一种trade-off
-  //set_satp(pcb[1].cp->pdir);
-  printf("Switch to PCB[%d]\n", new_index);
 
   yield();
 }
@@ -59,34 +56,21 @@ void init_proc() {
 }
 
 Context* schedule(Context *prev) {
-  // save the context pointer
   current->cp = prev;
 
-  // always select pcb[0] as the new process
-  current = (current == &pcb[0] ? &pcb[program_index] : &pcb[0]);
-  //printf("schedule c->pdir内容地址修改后 页表项:%p\t页表项地址%p\n", current->cp->pdir, &current->cp->pdir);
-  // then return the new context
+  current = (current == &pcb[0] ? &pcb[pg_idx] : &pcb[0]);
   return current->cp;
 }
 
-static inline void set_satp(void *pdir) {
-  uintptr_t mode = 1ul << (__riscv_xlen - 1);
-  asm volatile("csrw satp, %0" : : "r"(mode | ((uintptr_t)pdir >> 12)));
-}
 
 int execve(const char *filename, char *const argv[], char *const envp[]){
-  if (fs_open(filename, 0, 0) == -1){// 文件不存在
+  if (fs_open(filename, 0, 0) == -1){
     return -1;
   }
-  printf("Loading from %s ...\n", filename);
-  context_uload(&pcb[program_index], filename, argv, envp);
+  context_uload(&pcb[pg_idx], filename, argv, envp);
   switch_boot_pcb();  
   
   pcb[0].cp->pdir = NULL;
-  //TODO: 这是一种trade-off
-  //set_satp(pcb[1].cp->pdir);
-  printf("PCB[0] pdir: %p cp: %p\n", pcb[0].cp->pdir, pcb[0].cp);
-
   yield();
   return 0;
 }
