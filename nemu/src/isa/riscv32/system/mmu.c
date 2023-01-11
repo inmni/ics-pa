@@ -67,9 +67,6 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   // if ((page_table_entry & PTE_V) == 0){
   //   Log("page_table_entry not valid, vaddr: %#x", vaddr);
   // }
-	if(!(page_table_entry & PTE_V)){
-		Assert(vaddr & 0x80000000, "");
-	}
   Assert(page_table_entry & PTE_V, "page_table_entry not valid, vaddr: %#x", vaddr);
 
   paddr_t leaf_page_table_entry_addr = PTE_PPN(page_table_entry) * 4096 + VA_VPN_0(vaddr) * 4;
