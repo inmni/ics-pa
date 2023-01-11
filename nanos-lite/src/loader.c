@@ -18,12 +18,6 @@ size_t fs_write(int fd, const void *buf, size_t len);
 size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
 
-
-#define NR_PAGE 8
-#define PAGESIZE 4096
-
-#define MAX(a, b)((a) > (b) ? (a) : (b))
-
 static uintptr_t loader(PCB *pcb, const char *filename) {
   int fr_r, i;
 	uintN offset;
@@ -82,7 +76,7 @@ void naive_uload(PCB *pcb, const char *filename) {
   ((void(*)())entry) ();
   assert(0);
 }
-
+#define ceil_up_to_4(x) ((x+3)&(~0x11))
 void context_kload(PCB *pcb, void (*entry)(void *), void *arg){
   Area karea;
   karea.start = &pcb->cp;
@@ -92,139 +86,61 @@ void context_kload(PCB *pcb, void (*entry)(void *), void *arg){
 }
 void context_uload(PCB* p, const char *filename, char *const argv[], char *const envp[]) {
 	int i; protect(&p->as);
+
 	void *ustack = new_page(8);
 	for(i=0; i<8; i++){
 		map(&p->as,	p->as.area.start + i*PGSIZE, 
 		ustack + i*PGSIZE, MMAP_READ | MMAP_WRITE);
 	}
-	uint32_t* ustack_start = ustack + 4;
+	// Record the bottom of user stack
 	uint32_t* ustack_end = ustack + STACK_SIZE;
+	// The Top of current user stack
+	uint8_t* ustack_cur = (uint8_t *)(ustack_end - 1);
 	// printf("MALLOC [%p, %p)\n", ustack, ustack_end);
 	// copy arguments
-	int argv_c = 0; int envp_c = 0;
-	while(argv && argv[argv_c]){
-		ustack_end -= strlen(argv[argv_c]) + 1; // keep zero ternimating
-		strcpy((char *)ustack_end, argv[argv_c]);
-		*ustack_start++ = (uint32_t)ustack_end;
-		argv_c++;
+	int argv_c = -1; int envp_c = -1;
+	if(argv) while(argv[++argv_c]);
+	if(envp) while(envp[++envp_c]);
+	char **argv_ptr = (char **)malloc(argv_c*sizeof(char **));
+	char **envp_ptr = (char **)malloc(envp_c*sizeof(char **));
+	for(i=0; i<argv_c; i++){
+		ustack_cur -= ceil_up_to_4(strlen(argv[i]) + 1); // keep zero ternimating
+		strcpy((char *)ustack_cur, argv[i]);
+		argv_ptr[i] = (char *)ustack_cur;
 	}
-	*ustack_start++ = 0;
-	while(envp && envp[envp_c]){
-		ustack_end -= strlen(envp[envp_c]) + 1;
-		strcpy((char *)ustack_end, envp[envp_c]);
-		*ustack_start++ = (uint32_t)ustack_end;
-		envp_c++;
+	for(i=0; i<envp_c; i++){
+		ustack_end -= ceil_up_to_4(strlen(envp[i]) + 1);
+		strcpy((char *)ustack_cur, envp[envp_c]);
+		envp_ptr[i] = (char *)ustack_cur;
 	}
-	*ustack_start = 0;
-	*(uint32_t *)ustack = argv_c + envp_c;
-	Area kstack;
-	kstack.start = p->stack;
-	kstack.end = p->stack + STACK_SIZE;
+	uintptr_t *ustack_cur_ptr = (uintptr_t *)ustack_cur;
+	ustack_cur_ptr--; *ustack_cur_ptr = 0;
+	for(i=envp_c-1; i>=0; i--){
+		*ustack_cur_ptr = (uintptr_t)envp_ptr[i];
+		ustack_cur_ptr--;
+	}
+	ustack_cur_ptr--; *ustack_cur_ptr = 0;
+	for(i=argv_c-1; i>=0; i--){
+		*ustack_cur_ptr = (uintptr_t)argv_ptr[i];
+		ustack_cur_ptr--;
+	}
+	ustack_cur_ptr--; *ustack_cur_ptr = argv_c;
+	ustack_cur_ptr--; *ustack_cur_ptr = 0; // Leave space for t0_buffer which is used in trap
+																				 
 	// printf("KERNEL stack [%p, %p)\n", kstack.start, kstack.end);
 //	printf("try to load %s\n",filename);
 	uintptr_t entry = loader(p, filename);
 	// printf("%s's entry: %08x\n",filename, entry);
+	Area kstack;
+	kstack.start = &p->cp;
+	kstack.end = &p->cp + STACK_SIZE;
+
 	p->cp = ucontext(&(p->as), kstack, (void *)entry);
-	p->cp->GPRx = (uintptr_t)ustack;
-	// printf("pcb->cp: %08x\n", p->cp);
+
+	// Set sp
+	p->cp->gpr[2] = (uintptr_t)ustack_cur_ptr - (uintptr_t)ustack_end + (uintptr_t)(p->as.area.end);
+	
+	// p->cp->GPRx = (uintptr_t)ustack;
 	// printf("prio set:%d, addr: %p\n", p->prio, &p->prio);
 	// printf("args begin: %p, argc: %d, argv begin: %p, argv[0] value: %s\n", ustack, *(uint32_t *)ustack, ustack + 4, *(char **)(ustack + 4));
-}
-static size_t ceil_4_bytes(size_t size){
-  if (size & 0x3)
-    return (size & (~0x3)) + 0x4;
-  return size;
-}
-
-
-void __context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]){
-  int envc = 0, argc = 0;
-  AddrSpace *as = &pcb->as;
-  protect(as);
-  
-  if (envp){
-    for (; envp[envc]; ++envc){}
-  }
-  if (argv){
-    for (; argv[argc]; ++argc){}
-  }
-  char *envp_ustack[envc];
-
-  void *alloced_page = new_page(NR_PAGE) + NR_PAGE * 4096; //得到栈顶
-
-  //这段代码有古怪，一动就会出问题，莫动
-  //这个问题确实已经被修正了，TMD，真cao dan
-  // 2021/12/16
-  
-  map(as, as->area.end - 8 * PAGESIZE, alloced_page - 8 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
-  map(as, as->area.end - 7 * PAGESIZE, alloced_page - 7 * PAGESIZE, MMAP_READ | MMAP_WRITE);
-  map(as, as->area.end - 6 * PAGESIZE, alloced_page - 6 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
-  map(as, as->area.end - 5 * PAGESIZE, alloced_page - 5 * PAGESIZE, MMAP_READ | MMAP_WRITE);
-  map(as, as->area.end - 4 * PAGESIZE, alloced_page - 4 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
-  map(as, as->area.end - 3 * PAGESIZE, alloced_page - 3 * PAGESIZE, MMAP_READ | MMAP_WRITE);
-  map(as, as->area.end - 2 * PAGESIZE, alloced_page - 2 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
-  map(as, as->area.end - 1 * PAGESIZE, alloced_page - 1 * PAGESIZE, MMAP_READ | MMAP_WRITE); 
-  
-  char *brk = (char *)(alloced_page - 4);
-  // 拷贝字符区
-  for (int i = 0; i < envc; ++i){
-    brk -= (ceil_4_bytes(strlen(envp[i]) + 1)); // 分配大小
-    envp_ustack[i] = brk;
-    strcpy(brk, envp[i]);
-  }
-
-  char *argv_ustack[envc];
-  for (int i = 0; i < argc; ++i){
-    brk -= (ceil_4_bytes(strlen(argv[i]) + 1)); // 分配大小
-    argv_ustack[i] = brk;
-    strcpy(brk, argv[i]);
-  }
-  
-  intptr_t *ptr_brk = (intptr_t *)(brk);
-
-  // 分配envp空间
-  ptr_brk -= 1;
-  *ptr_brk = 0;
-  ptr_brk -= envc;
-  for (int i = 0; i < envc; ++i){
-    ptr_brk[i] = (intptr_t)(envp_ustack[i]);
-  }
-
-  // 分配argv空间
-  ptr_brk -= 1;
-  *ptr_brk = 0;
-  ptr_brk = ptr_brk - argc;
-  
-  // printf("%p\n", ptr_brk);
-  printf("%p\t%p\n", alloced_page, ptr_brk);
-  //printf("%x\n", ptr_brk);
-  //assert((intptr_t)ptr_brk == 0xDD5FDC);
-  for (int i = 0; i < argc; ++i){
-    ptr_brk[i] = (intptr_t)(argv_ustack[i]);
-  }
-
-  ptr_brk -= 1;
-  *ptr_brk = argc;
-  
-  //这条操作会把参数的内存空间扬了，要放在最后
-  uintptr_t entry = loader(pcb, filename);
-  Area karea;
-  karea.start = &pcb->cp;
-  karea.end = &pcb->cp + STACK_SIZE;
-
-  Context* context = ucontext(as, karea, (void *)entry);
-  pcb->cp = context;
-
-  printf("新分配ptr=%p\n", as->ptr);
-  printf("UContext Allocted at %p\n", context);
-  printf("Alloced Page Addr: %p\t PTR_BRK_ADDR: %p\n", alloced_page, ptr_brk);
-
-  ptr_brk -= 1;
-  *ptr_brk = 0;//为了t0_buffer
-  //设置了sp
-  context->gpr[2]  = (uintptr_t)ptr_brk - (uintptr_t)alloced_page + (uintptr_t)as->area.end;
-
-  //似乎不需要这个了，但我还不想动
-  context->GPRx = (uintptr_t)ptr_brk - (uintptr_t)alloced_page + (uintptr_t)as->area.end + 4;
-  //context->GPRx = (intptr_t)(ptr_brk);
 }
