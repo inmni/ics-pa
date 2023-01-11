@@ -21,7 +21,7 @@ int ParseEvent(uint8_t* key, uint8_t* type){
 	buf[i] = 0; i++;
 	for(;i<len && buf[i]!=' ';i++){}
 	uint8_t code = atoi(buf+i+1);
-	printf("Decoded result: '%s', '%s'\n", buf, buf+i+1);
+	printf("Decoded result: '%s', '%s', total len: %d\n", buf, buf+i+1, len);
 	if(prefix[0]=='k' && code != 0){
 		*key = code;
 		switch(prefix[1]){
