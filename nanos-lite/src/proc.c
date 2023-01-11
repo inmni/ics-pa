@@ -43,8 +43,8 @@ void context_kload(PCB *pcb, void (*entry)(void *), void *arg);
 void context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]);
 
 #define PROG_PATH1 "/bin/menu"
-#define PROG_PATH2 "/bin/menu"
-#define PROG_PATH3 "/bin/menu"
+#define PROG_PATH2 "/bin/pal"
+#define PROG_PATH3 "/bin/bird"
 void init_proc() {
 	context_kload(&pcb[0], hello_fun, "ONE");
   char *argv1[] = {PROG_PATH1, NULL};
