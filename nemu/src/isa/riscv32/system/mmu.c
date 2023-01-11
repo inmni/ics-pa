@@ -68,22 +68,6 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   //   Log("page_table_entry not valid, vaddr: %#x", vaddr);
   // }
 	if(!(page_table_entry & PTE_V)){
-		Assert(vaddr & 0x7fff0000, "");
-		Assert(vaddr & 0x10000, "");
-		Assert(vaddr & 0x20000, "");
-		Assert(vaddr & 0x40000, "");
-		Assert(vaddr & 0x80000, "");
-		Assert(vaddr & 0x100000, "");
-		Assert(vaddr & 0x200000, "");
-		Assert(vaddr & 0x400000, "");
-		Assert(vaddr & 0x800000, "");
-		Assert(vaddr & 0x1000000, "");
-		Assert(vaddr & 0x2000000, "");
-		Assert(vaddr & 0x4000000, "");
-		Assert(vaddr & 0x8000000, "");
-		Assert(vaddr & 0x10000000, "");
-		Assert(vaddr & 0x20000000, "");
-		Assert(vaddr & 0x40000000, "");
 		Assert(vaddr & 0x80000000, "");
 	}
   Assert(page_table_entry & PTE_V, "page_table_entry not valid, vaddr: %#x", vaddr);
