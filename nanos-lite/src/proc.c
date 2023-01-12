@@ -42,9 +42,9 @@ void context_uload(PCB *pcb, const char *filename, char *const argv[], char *con
 #define PROG_PATH2 "/bin/pal"
 #define PROG_PATH3 "/bin/nslider"
 void init_proc() {
-	//context_kload(&pcb[0], hello_fun, "RNMPA");
-	char *argv0[] = {"RNMPA", NULL};
-	context_uload(&pcb[0], "/bin/hello", argv0, NULL);
+	context_kload(&pcb[0], hello_fun, "RNMPA");
+	//char *argv0[] = {"RNMPA", NULL};
+	//context_uload(&pcb[0], "/bin/hello", argv0, NULL);
 
 	char *argv1[] = {PROG_PATH1, NULL};
   char *argv2[] = {PROG_PATH2, NULL};
