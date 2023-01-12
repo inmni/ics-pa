@@ -21,7 +21,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
-	if(sr(MSTATUS)!=0&&!(sr(MSTATUS)&MSTATUS_MIE_MASK)) {Log("mstatus:%08x\n", sr(MSTATUS)); return epc;}
+	//if(sr(MSTATUS)!=0&&!(sr(MSTATUS)&MSTATUS_MIE_MASK)) {Log("mstatus:%08x\n", sr(MSTATUS)); return epc;}
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
 	sr(MSTATUS) = ((BITS(sr(MSTATUS), 31, 8)<<8) | (BITS(sr(MSTATUS), 3, 3)<<7) | (BITS(sr(MSTATUS), 6, 0))) & 0xFFFFFFF7;
@@ -37,7 +37,7 @@ word_t isa_query_intr() {
 	if(cpu.INTR && (sr(MSTATUS)&MSTATUS_MIE_MASK)){
 		cpu.INTR = false;
 		//Log("SWITCH");
-//		return INTR_EMPTY;
+		return INTR_EMPTY;
 		return IRQ_TIMER;
 	} 
   return INTR_EMPTY;
