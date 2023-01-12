@@ -16,13 +16,15 @@
 #include "../local-include/reg.h"
 void isa_reg_display();
 #define IRQ_TIMER 0x80000007
+#define MSTATUS_MIE_MASK 0x8
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
+	if(!(sr(MSTATUS)&MSTATUS_MIE_MASK)) return epc;
 	sr(MEPC) = epc;
 	sr(MCAUSE) = NO;
-		sr(MSTATUS) = ((BITS(sr(MSTATUS), 31, 8)<<8) | (BITS(sr(MSTATUS), 3, 3)<<7) | (BITS(sr(MSTATUS), 6, 0))) & 0xFFFFFFF7;
+	sr(MSTATUS) = ((BITS(sr(MSTATUS), 31, 8)<<8) | (BITS(sr(MSTATUS), 3, 3)<<7) | (BITS(sr(MSTATUS), 6, 0))) & 0xFFFFFFF7;
 
 #ifdef CONFIG_ETRACE
 	Log("Exception Trace: PC=0x%08x status: %08x cause: %d\n", epc, sr(MSTATUS),sr(MCAUSE));
@@ -31,13 +33,12 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	//isa_reg_display();
 	return sr(MTVEC);
 }
-#define MSTATUS_MIE_MASK 0x8
 word_t isa_query_intr() {
 	if(cpu.INTR && (sr(MSTATUS)&MSTATUS_MIE_MASK)){
 		cpu.INTR = false;
 		//Log("SWITCH");
 //		return INTR_EMPTY;
 		return IRQ_TIMER;
-	}
+	} 
   return INTR_EMPTY;
 }
