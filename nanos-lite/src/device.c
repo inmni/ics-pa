@@ -26,7 +26,7 @@ void switch_pg(int id);
 
 void switch_prog(uint32_t id);
 size_t events_read(void *buf, size_t offset, size_t len) {
-		MULTIPROGRAM_YIELD();
+		MULTIPROGRAM_YIELD(); 
 		AM_INPUT_KEYBRD_T input = io_read(AM_INPUT_KEYBRD);
 		if( input.keycode  == AM_KEY_NONE ){
 				return 0;
